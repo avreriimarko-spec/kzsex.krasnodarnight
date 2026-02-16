@@ -1,0 +1,32 @@
+{
+  "name": "sage",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "translate": "npm run translate:pot && npm run translate:update",
+    "translate:pot": "wp i18n make-pot . ./resources/lang/sage.pot --include=\"theme.json,patterns,app,resources\"",
+    "translate:update": "for file in ./resources/lang/*.po; do wp i18n update-po ./resources/lang/sage.pot $file; done",
+    "translate:compile": "npm run translate:mo && npm run translate:js",
+    "translate:js": "wp i18n make-json ./resources/lang --pretty-print",
+    "translate:mo": "wp i18n make-mo ./resources/lang ./resources/lang"
+  },
+  "devDependencies": {
+    "@roots/vite-plugin": "^1.2.3",
+    "@tailwindcss/typography": "github:tailwindcss/typography",
+    "@tailwindcss/vite": "^4.1.18",
+    "laravel-vite-plugin": "^2.0.1",
+    "tailwindcss": "^4.1.18",
+    "vite": "^7.3.1"
+  },
+  "dependencies": {
+    "@alpinejs/collapse": "^3.15.3",
+    "@alpinejs/mask": "^3.15.3",
+    "@fancyapps/ui": "^6.1.7",
+    "alpinejs": "^3.15.3"
+  }
+}

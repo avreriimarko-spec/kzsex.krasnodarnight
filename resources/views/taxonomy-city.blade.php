@@ -1,0 +1,375 @@
+@extends('layouts.app')
+
+@section('content')
+    @php
+        // Получаем текущий город
+        $current_city = get_queried_object();
+        $city_name = $current_city ? $current_city->name : 'Город';
+        
+        // Получаем SEO данные города
+        $special_page = get_query_var('special_page');
+        
+        if ($special_page && $current_city) {
+            // Для спецстраниц (VIP, Independent) ищем данные в repeater
+            $city_pages = get_field('city_pages_seo', 'city_' . $current_city->term_id);
+            $seo_data = [];
+            
+            if (is_array($city_pages)) {
+                foreach ($city_pages as $page_data) {
+                    if (isset($page_data['page_key']) && $page_data['page_key'] === $special_page) {
+                        $seo_data = [
+                            'seo_title' => $page_data['meta_title'] ?? '',
+                            'seo_description' => $page_data['meta_description'] ?? '',
+                            'custom_h1' => $page_data['h1'] ?? '',
+                            'description' => $page_data['intro_text'] ?? '',
+                            'main_text' => $page_data['seo_text'] ?? '',
+                        ];
+                        break;
+                    }
+                }
+            }
+            
+            // Используем данные для спецстраницы или базовые данные города
+            $seo_title = $seo_data['seo_title'] ?? '' ?: get_field('seo_title', $current_city);
+            $seo_description = $seo_data['seo_description'] ?? '' ?: get_field('seo_description', $current_city);
+            $custom_h1 = $seo_data['custom_h1'] ?? '' ?: get_field('custom_h1', $current_city);
+            $description = $seo_data['description'] ?? '' ?: get_field('description', $current_city);
+            $main_text = $seo_data['main_text'] ?? '' ?: get_field('main_text', $current_city);
+        } else {
+            // Базовые данные города (для главной страницы города)
+            $seo_title = get_field('seo_title', $current_city);
+            $seo_description = get_field('seo_description', $current_city);
+            $custom_h1 = get_field('custom_h1', $current_city);
+            $description = get_field('description', $current_city);
+            $main_text = get_field('main_text', $current_city);
+        }
+        
+        // Дополнительная информация
+        $population = get_field('population', $current_city);
+        $coordinates = get_field('coordinates', $current_city);
+        $phone_code = get_field('phone_code', $current_city);
+        
+        // Формируем заголовки с автоматической подстановкой города
+        $page_title = $custom_h1 ?: $city_name;
+        $meta_title = $seo_title ?: $city_name;
+        $meta_description = $seo_description ?: '';
+        
+        // Добавляем город к title если его нет
+        if ($city_name && strpos(strtolower($meta_title), strtolower($city_name)) === false) {
+            $meta_title .= ' ' . $city_name;
+        }
+        
+        // Добавляем город к H1 если его нет
+        if ($city_name && strpos(strtolower($page_title), strtolower($city_name)) === false) {
+            $page_title .= ' ' . $city_name;
+        }
+        
+        // Добавляем пагинацию к SEO title
+        if (is_paged()) {
+            $page_num = get_query_var('paged') ?: get_query_var('page');
+            if ($page_num > 1) {
+                $meta_title .= ' | Страница ' . $page_num;
+            }
+        }
+        
+        // Устанавливаем SEO метаданные
+        if ($meta_title) {
+            add_filter('pre_get_document_title', function() use ($meta_title) { return $meta_title; }, 999);
+            add_filter('wpseo_title', function() use ($meta_title) { return $meta_title; }, 999);
+            add_filter('rank_math/frontend/title', function() use ($meta_title) { return $meta_title; }, 999);
+        }
+        
+        if ($meta_description) {
+            add_filter('wpseo_metadesc', function() use ($meta_description) { return $meta_description; }, 999);
+            add_filter('rank_math/frontend/description', function() use ($meta_description) { return $meta_description; }, 999);
+        }
+        
+        // Получаем данные для фильтров
+        $filter_data = [];
+        $taxonomies = [
+            'service'       => 'Услуги',
+            'hair_color'    => 'Цвет волос',
+            'breast_size'   => 'Размер груди',
+            'body_type'     => 'Телосложение',
+            'ethnicity'     => 'Типаж',
+            'nationality'   => 'Национальность',
+            'eye_color'     => 'Цвет глаз',
+            'hair_length'   => 'Длина волос',
+            'breast_type'   => 'Тип груди',
+            'intimate'      => 'Интимная стрижка',
+            'piercing'      => 'Пирсинг',
+            'travel'        => 'Путешествия',
+            'smoker'        => 'Курение',
+            'inoutcall'     => 'У себя / Выезд',
+            'what'          => 'Что',
+            'parameters'    => 'Параметры',
+            'metadata'      => 'Метаданные',
+        ];
+        
+        foreach ($taxonomies as $slug => $label) {
+            $terms = get_terms([
+                'taxonomy'   => $slug,
+                'hide_empty' => true,
+            ]);
+
+            if (!is_wp_error($terms) && !empty($terms)) {
+                $filter_data[$slug] = [
+                    'label' => $label,
+                    'terms' => $terms,
+                ];
+            }
+        }
+        
+        // Получаем анкеты только для текущего города
+        $tax_query = [
+            [
+                'taxonomy' => 'city',
+                'field' => 'term_id',
+                'terms' => $current_city->term_id,
+            ],
+        ];
+        
+        // Добавляем фильтр по специальной странице (VIP, Independent)
+        if ($special_page === 'vip') {
+            $vip_term = get_term_by('slug', 'vip', 'vip');
+            if ($vip_term) {
+                $tax_query[] = [
+                    'taxonomy' => 'vip',
+                    'field' => 'term_id',
+                    'terms' => $vip_term->term_id,
+                ];
+            }
+        } elseif ($special_page === 'independent') {
+            $tax_query[] = [
+                'taxonomy' => 'independent',
+                'field' => 'slug',
+                'terms' => 'independent',
+            ];
+        }
+        
+        $profiles_query = new WP_Query([
+            'post_type' => 'profile',
+            'posts_per_page' => 48,
+            'paged' => get_query_var('paged') ?: 1,
+            'tax_query' => $tax_query,
+        ]);
+    @endphp
+    <div class="container mx-auto px-4 py-8">
+
+        {{-- Header --}}
+        <header class="prose mb-10 text-center max-w-4xl mx-auto">
+            <h1 class="text-3xl md:text-5xl font-bold text-white uppercase mb-4 tracking-tight">
+                {{ $page_title }}
+                @if (is_paged())
+                    <span class="text-[#cd1d46]">| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
+                @endif
+            </h1>
+            @if (!is_paged() && $description)
+                <p class="leading-relaxed max-w-2xl mx-auto">
+                    {!! $description !!}
+                </p>
+            @endif
+        </header>
+
+        {{-- Основной контент --}}
+        <div class="prose prose-lg max-w-none">
+        
+
+            {{-- Дополнительная информация о городе --}}
+            @if (!is_paged() && ($population || $coordinates || $phone_code))
+                <div class="bg-gray-900 p-6 md:p-10  border border-gray-700 prose-invert mb-8">
+                    <h2 class="text-xl font-bold text-white mb-4">Информация о городе</h2>
+                    @if ($population)
+                        <p><strong>Население:</strong> {{ number_format($population) }} человек</p>
+                    @endif
+                    @if ($coordinates)
+                        <p><strong>Координаты:</strong> {{ $coordinates }}</p>
+                    @endif
+                    @if ($phone_code)
+                        <p><strong>Телефонный код:</strong> +{{ $phone_code }}</p>
+                    @endif
+                </div>
+            @endif
+        </div>
+
+        {{-- LAYOUT --}}
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+
+            {{-- 1. САЙДБАР --}}
+            <aside class="lg:col-span-1 hidden lg:block">
+                <x-catalog-filters :filter-data="$filter_data" />
+            </aside>
+
+            {{-- 2. КОНТЕНТ --}}
+            <div class="lg:col-span-3">
+
+                {{-- Мобильная кнопка фильтра --}}
+                <div class="lg:hidden mb-6">
+                    <button onclick="openMobileFiltersGlobal()"
+                            class="w-full bg-[#cd1d46] hover:bg-[#b71833] text-white font-bold uppercase py-4  shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-3">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                        </svg>
+                        Фильтр
+                    </button>
+                </div>
+
+                {{-- ВЕРХНЯЯ ПАНЕЛЬ --}}
+                <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
+                    <h2 class="text-xl md:text-2xl font-bold text-white uppercase tracking-wide">
+                        Найдено анкет: {{ $profiles_query->found_posts }}
+    </h2>
+
+                    {{-- ПЕРЕКЛЮЧАТЕЛЬ ВИДА --}}
+                    <div class="flex items-center bg-black p-1 border border-[#cd1d46] gap-1">
+                        
+                        {{-- Кнопка Grid (4 квадратика) --}}
+                        <button id="btn-view-grid" type="button" class="p-2 transition-colors text-[#cd1d46] hover:text-white" title="Сетка">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M4 4h7v7H4V4zm11 0h5v7h-5V4zm0 11h5v5h-5v-5zm-11 0h7v5H4v-5z" />
+                            </svg>
+                        </button>
+                        
+                        <div class="w-px h-4 bg-[#cd1d46]"></div>
+
+                        {{-- Кнопка List (2 квадратика) --}}
+                        <button id="btn-view-list" type="button" class="p-2 transition-colors text-[#cd1d46] hover:text-white" title="По 2 в ряд">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M4 6h7v12H4V6zm9 0h7v12h-7V6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                @if ($profiles_query->have_posts())
+                    
+                    {{-- 
+                        ВАРИАНТ 1: ОБЫЧНАЯ СЕТКА (4 в ряд)
+                        id="view-grid"
+                    --}}
+                    <ul id="view-grid" class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                        @while ($profiles_query->have_posts())
+                            @php
+                                $profiles_query->the_post();
+                                $paged = get_query_var('paged') ?: get_query_var('page') ?: 1;
+                                $isLcp = $profiles_query->current_post === 0 && $paged == 1;
+                            @endphp
+                            <li><x-profile-card :lcp="$isLcp" /></li>
+                        @endwhile
+                    </ul>
+
+                    @php $profiles_query->rewind_posts(); @endphp
+
+                    {{-- 
+                        ВАРИАНТ 2: КАРТОЧКИ ПО СКРИНШОТУ (2 в ряд)
+                        id="view-list"
+                    --}}
+                    <div id="view-list" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        @while ($profiles_query->have_posts())
+                            @php 
+                                $profiles_query->the_post(); 
+                                $paged = get_query_var('paged') ?: get_query_var('page') ?: 1;
+                                $isLcp = $profiles_query->current_post === 0 && $paged == 1;
+                            @endphp
+                            <x-profile-list-card :lcp="$isLcp" />
+                        @endwhile
+                        @php
+                            wp_reset_postdata();
+                        @endphp
+                    </div>
+
+                    {{-- Пагинация --}}
+                    <div class="mt-12 flex justify-center">
+                        @php
+                            // Фильтр для исправления ссылок на первую страницу
+                            add_filter('paginate_links', function($link) {
+                                // Убираем /page/1/ из ссылок
+                                if (strpos($link, '/page/1/') !== false) {
+                                    $link = str_replace('/page/1/', '/', $link);
+                                }
+                                return $link;
+                            });
+                        @endphp
+                        {!! paginate_links([
+                            'base' => str_replace(999999999, '%#%', get_pagenum_link(999999999)),
+                            'format' => '?paged=%#%',
+                            'current' => max(1, get_query_var('paged'), get_query_var('page')),
+                            'total' => $profiles_query->max_num_pages,
+                            'type' => 'list',
+                            'prev_text' => '&larr;',
+                            'next_text' => '&rarr;',
+                        ]) !!}
+                    </div>
+                @else
+                    <div class="bg-black border-l-4 border-yellow-400 p-6 rounded text-yellow-800">
+                        <p class="font-bold text-lg">Ничего не найдено 😔</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        {{-- Мобильный фильтр --}}
+        <div class="lg:hidden">
+            <x-catalog-filters :filter-data="$filter_data" />
+        </div>
+
+                    {{-- Кастомный контент для города (если есть) --}}
+            @if (!is_paged() && $main_text)
+                <div class="prose prose-lg mt-4 max-w-none bg-black p-6 md:p-10 border border-[#cd1d46]">
+                    {!! $main_text !!}
+                </div>
+            @endif
+
+        {{-- SEO Text --}}
+        @if (!is_paged() && $seoText = get_field('main_seo_text'))
+            <div class="mt-16">
+                <article class="prose prose-lg prose-invert max-w-none bg-black p-8 md:p-12  border border-[#cd1d46]">
+                    {!! $seoText !!}
+                </article>
+            </div>
+        @endif
+
+    </div>
+
+    {{-- СКРИПТ ПЕРЕКЛЮЧЕНИЯ --}}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnGrid = document.getElementById('btn-view-grid');
+        const btnList = document.getElementById('btn-view-list');
+        const viewGrid = document.getElementById('view-grid');
+        const viewList = document.getElementById('view-list');
+
+        const activeClasses = ['bg-[#cd1d46]', 'text-white', 'shadow-sm'];
+        const inactiveClasses = ['text-[#cd1d46]', 'hover:text-white'];
+
+        function setView(mode) {
+            if (mode === 'grid') {
+                if(viewGrid) viewGrid.classList.remove('hidden');
+                if(viewList) viewList.classList.add('hidden');
+                
+                btnGrid.classList.add(...activeClasses);
+                btnGrid.classList.remove(...inactiveClasses);
+                btnList.classList.remove(...activeClasses);
+                btnList.classList.add(...inactiveClasses);
+            } else {
+                if(viewGrid) viewGrid.classList.add('hidden');
+                if(viewList) viewList.classList.remove('hidden');
+                
+                btnList.classList.add(...activeClasses);
+                btnList.classList.remove(...inactiveClasses);
+                btnGrid.classList.remove(...activeClasses);
+                btnGrid.classList.add(...inactiveClasses);
+            }
+            localStorage.setItem('catalogViewMode', mode);
+        }
+
+        if (btnGrid && btnList) {
+            btnGrid.addEventListener('click', () => setView('grid'));
+            btnList.addEventListener('click', () => setView('list'));
+        }
+
+        const savedMode = localStorage.getItem('catalogViewMode') || 'grid';
+        setView(savedMode);
+    });
+    </script>
+@endsection

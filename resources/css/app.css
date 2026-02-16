@@ -1,0 +1,353 @@
+@import "@fancyapps/ui/dist/fancybox/fancybox.css";
+@import "./profile.css";
+@import "tailwindcss" theme(static);
+@source "../views/";
+@source "../../app/";
+
+/* Глобальные стили для темной темы */
+body {
+  color: white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff;
+}
+
+p, span, div, li, a {
+  color: white;
+}
+
+/* Исключения для ссылок */
+a:hover {
+  color: #cd1d46;
+}
+
+
+@layer utilities {
+
+  /* Скрыть скроллбар для Chrome, Safari and Opera */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Скрыть скроллбар для IE, Edge and Firefox */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+}
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 20px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #ef4444;
+  }
+}
+
+@layer components {
+
+  .brand span:first-of-type {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .brand:hover span:first-of-type {
+    filter: drop-shadow(0 2px 8px rgba(251, 191, 36, 0.4));
+  }
+
+  @media (min-width: 768px) {
+    .brand {
+      font-size: 1.75rem;
+    }
+  }
+
+  /*
+    Кастомизация типографики для SEO-текстов и статей
+    Используем класс .prose
+  */
+  .prose {
+    @apply text-gray-300 leading-relaxed max-w-none;
+  }
+
+  /* --- ЗАГОЛОВКИ --- */
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    @apply text-white font-bold uppercase tracking-tight mb-4 mt-8 scroll-mt-24;
+  }
+
+  .prose h1 {
+    @apply text-3xl md:text-4xl border-b-2 border-[#cd1d46] inline-block pb-1 pr-4;
+  }
+
+  .prose h2 {
+    @apply text-2xl md:text-3xl relative pl-4 border-l-4 border-[#cd1d46];
+  }
+
+  .prose h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  /* --- ПАРАГРАФЫ --- */
+  .prose p {
+    @apply mb-4 text-base md:text-lg text-gray-300;
+  }
+
+  /* --- ССЫЛКИ --- */
+  .prose a {
+    @apply text-[#cd1d46] font-bold no-underline transition-colors border-b border-[#cd1d46] hover:text-[#cd1d46] hover:border-[#cd1d46];
+  }
+
+  /* --- СПИСКИ (UL / OL) --- */
+  .prose ul {
+    @apply list-disc list-outside ml-6 mb-6 space-y-2 text-gray-300;
+  }
+
+  .prose ol {
+    @apply list-decimal list-outside ml-6 mb-6 space-y-2 text-gray-300;
+  }
+
+  /* Цвет маркеров (точек и цифр) - желтый */
+  .prose li::marker {
+    @apply text-[#cd1d46] font-bold;
+  }
+
+  /* --- ЦИТАТЫ --- */
+  .prose blockquote {
+    @apply border-l-4 border-[#cd1d46] bg-[#0f0f0f] p-6 my-6 rounded-r-lg italic text-gray-300 relative;
+  }
+
+  /* Кавычка для цитаты */
+  .prose blockquote::before {
+    content: '"';
+    @apply absolute top-2 left-4 text-4xl text-[#cd1d46] font-serif -z-10;
+  }
+
+  /* --- ТАБЛИЦЫ --- */
+  .prose table {
+    @apply w-full text-left border-collapse my-8 overflow-hidden shadow-sm border border-gray-700;
+  }
+
+  /* Адаптация для мобильных устройств */
+  @media (max-width: 768px) {
+    .prose table {
+      @apply block overflow-x-auto;
+      min-width: 100%;
+      white-space: nowrap;
+    }
+    
+    .prose table th,
+    .prose table td {
+      @apply px-2 py-3 text-xs;
+      min-width: 120px;
+      white-space: nowrap;
+    }
+    
+    .prose table th:first-child,
+    .prose table td:first-child {
+      min-width: 100px;
+    }
+  }
+
+  .prose thead {
+    @apply bg-gray-900 text-white uppercase text-sm font-bold;
+  }
+
+  .prose th {
+    @apply p-4 font-semibold border-r border-gray-700 last:border-r-0;
+  }
+
+  .prose td {
+    @apply p-4 border-b border-gray-700 text-sm text-gray-300 border-r border-gray-700 last:border-r-0;
+  }
+
+  .prose tr:nth-child(even) {
+    @apply bg-[#0a0a0a];
+  }
+
+  .prose tr:hover {
+    @apply bg-[#cd1d46]/10 transition-colors;
+  }
+
+  /* --- ИЗОБРАЖЕНИЯ --- */
+  .prose img {
+    @apply shadow-md my-8 w-full object-cover;
+  }
+
+  .prose figcaption {
+    @apply text-center text-sm text-gray-500 mt-2 italic;
+  }
+
+  /* --- ЖИРНЫЙ ТЕКСТ --- */
+  .prose strong {
+    @apply font-extrabold text-[#cd1d46];
+  }
+}
+
+@layer components {
+
+  /* Контейнер списка (UL) */
+  ul.page-numbers {
+    @apply flex flex-wrap justify-center items-center gap-2 list-none p-0 m-0;
+  }
+
+  /* Ссылки и текущая страница (A, SPAN) */
+  .page-numbers li a,
+  .page-numbers li span {
+    @apply px-4 py-2  border text-sm font-bold transition-all duration-200 block;
+  }
+
+  /* Обычная ссылка (неактивная) */
+  .page-numbers li a {
+    @apply bg-[#0f0f0f] text-gray-300 border-gray-600 hover:bg-gray-700 hover:border-gray-500 hover:text-white shadow-sm;
+  }
+
+  /* Текущая активная страница */
+  .page-numbers li span.current {
+    @apply bg-gray-900 text-white border-[#cd1d46] cursor-default shadow-md;
+  }
+
+  /* Троеточие (...) */
+  .page-numbers li span.dots {
+    @apply border-transparent bg-transparent text-gray-400 cursor-default px-2;
+  }
+
+  .badge-slide-in {
+    animation: slideIn 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .badge-1 {
+    animation-delay: 0.1s;
+  }
+
+  .badge-2 {
+    animation-delay: 0.2s;
+  }
+
+  .badge-3 {
+    animation-delay: 0.3s;
+  }
+
+  .badge-4 {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes pulse-glow {
+
+    0%,
+    100% {
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+    }
+
+    50% {
+      box-shadow: 0 4px 25px rgba(239, 68, 68, 0.8);
+    }
+  }
+
+  .card-shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-shine::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+  }
+
+  .card-shine:hover::before {
+    left: 100%;
+  }
+
+  .footer-nav ul li a {
+    color: #e5e5e5;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    /* text-sm */
+    letter-spacing: 0.05em;
+    /* tracking-wide */
+    transition: color 0.2s;
+  }
+
+  .footer-nav ul li a:hover {
+    color: #ef4444;
+    /* red-500 */
+    text-decoration: none;
+  }
+
+  details[open] summary~* {
+    animation: sweep .3s ease-in-out;
+  }
+
+  @keyframes sweep {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px)
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0)
+    }
+  }
+}
+
+[x-cloak],
+[data-x-cloak] {
+  display: none !important;
+}
+
+nav.flex-col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+nav.flex-col ul li a {
+  display: block;
+  padding: 0.5rem;
+}
+
+nav.flex-col ul li.current-menu-item a {
+  color: #cd1d46;
+}
+
+        .filter-scroll::-webkit-scrollbar { width: 5px; }
+        .filter-scroll::-webkit-scrollbar-track { background: #000; }
+        .filter-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .filter-scroll::-webkit-scrollbar-thumb:hover { background: #ca8a04; }
