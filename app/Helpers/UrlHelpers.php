@@ -10,7 +10,7 @@ class UrlHelpers
 {
     // Слаг города, который работает от корня сайта
     // ОБЯЗАТЕЛЬНО проверьте, что такой слаг есть в базе
-    public const DEFAULT_CITY_SLUG = 'almaty'; 
+    public const DEFAULT_CITY_SLUG = CityCatalog::DEFAULT_CITY_SLUG;
 
     /**
      * Получить URL главной страницы города

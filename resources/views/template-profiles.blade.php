@@ -15,9 +15,9 @@
         $current_city = get_term_by('slug', $city_slug, 'city');
         $special_page = isset($wp->query_vars['special_page']) ? $wp->query_vars['special_page'] : get_query_var('special_page');
         
-        // Если город не определен в URL, используем Алматы как дефолтный
+        // Если город не определен в URL, используем дефолтный
         if (!$current_city) {
-            $current_city = get_term_by('slug', 'almaty', 'city');
+            $current_city = get_term_by('slug', \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG, 'city');
         }
         
         $city_name = $current_city ? $current_city->name : 'Город';
@@ -213,7 +213,7 @@
                     [
                         'taxonomy' => 'city',
                         'field'    => 'slug',
-                        'terms'    => $current_city ? $current_city->slug : 'almaty',
+                        'terms'    => $current_city ? $current_city->slug : \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG,
                         'operator' => 'IN', // IN работает правильно для таксономий
                     ]
                 ],

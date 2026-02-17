@@ -116,8 +116,8 @@ if (!function_exists('city_prefixed_url')) {
             $has_city_in_url = true;
         }
         
-        // Для Алматы (дефолтный город) не добавляем префикс вообще
-        if ($current_city && $current_city->slug === 'almaty') {
+        // Для дефолтного города не добавляем префикс вообще
+        if ($current_city && $current_city->slug === UrlHelpers::DEFAULT_CITY_SLUG) {
             // Если путь пустой или только /, возвращаем корень
             if (empty($path) || $path === '/') {
                 return home_url('/');

@@ -159,7 +159,7 @@ class ProfileQuery
                 $args['tax_query'][] = [
                     'taxonomy' => 'city',
                     'field'    => 'slug',
-                    'terms'    => ['almaty'],
+                    'terms'    => [\App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG],
                     'operator' => 'IN', // IN работает правильно для таксономий
                 ];
             }

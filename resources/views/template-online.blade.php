@@ -9,9 +9,9 @@
         $city_slug = get_query_var('city');
         $current_city = get_term_by('slug', $city_slug, 'city');
         
-        // Если город не определен в URL, используем Алматы как дефолтный
+        // Если город не определен в URL, используем дефолтный
         if (!$current_city) {
-            $current_city = get_term_by('slug', 'almaty', 'city');
+            $current_city = get_term_by('slug', \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG, 'city');
         }
         
         $city_name = $current_city ? $current_city->name : 'Город';

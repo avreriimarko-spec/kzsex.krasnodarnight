@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Helpers\CityCatalog;
 
 class ContentServiceProvider extends ServiceProvider
 {
@@ -43,6 +44,7 @@ class ContentServiceProvider extends ServiceProvider
     {
         $this->registerPostTypes();
         $this->registerTaxonomies();
+        CityCatalog::syncTerms();
         $this->addCustomRewriteRules();
         $this->registerAcfCityFields(); // Регистрация полей ACF
         $this->addTemplateFilter(); // Фильтр для шаблонов таксономий
@@ -102,12 +104,20 @@ class ContentServiceProvider extends ServiceProvider
         });
 
         add_action('init', function () {
+            $citySlugs = CityCatalog::getSlugs();
+            $escapedCitySlugs = array_map(static function ($slug) {
+                return preg_quote((string) $slug, '/');
+            }, $citySlugs);
+            $excludedCitiesPattern = !empty($escapedCitySlugs)
+                ? '(?:' . implode('|', $escapedCitySlugs) . ')(?:/|$)'
+                : 'a^';
+
             // --- ПРАВИЛА ДЛЯ ПАГИНАЦИИ СТРАНИЦ БЕЗ ГОРОДА ---
 
             // Пагинация обычных страниц (исключая известные города): /individualki/page/2/, /vip/page/3/
-            // Исключаем: almaty, astana, aktobe, etc.
+            // Список городов берем из CityCatalog.
             add_rewrite_rule(
-                '^(?!almaty|astana|aktobe|shymkent|pavlodar|karaganda|kostanay|petropavl|atyrau|oral|taraz|kokshetau|temirtau|ekibastuz|ridder|aralsk|baikonur|zhezkazgan|kapchagay|kulsary|lisakovsk|rudny|saryagash|shakhtinsk|stepnogorsk|taldykorgan|tekeli|turkestan|ushtobe|zhanaozen)([^/]+)/page/([0-9]{1,})/?$',
+                '^(?!' . $excludedCitiesPattern . ')([^/]+)/page/([0-9]{1,})/?$',
                 'index.php?pagename=$matches[1]&paged=$matches[2]',
                 'top'
             );

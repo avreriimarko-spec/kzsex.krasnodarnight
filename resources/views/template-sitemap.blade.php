@@ -6,6 +6,8 @@
 
 @section('content')
     @php
+        $default_city_slug = \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG;
+
         // 1. СЛАГИ ДЛЯ ИСКЛЮЧЕНИЯ ИЗ БЛОКА "ОСНОВНОЕ"
         $excluded_slugs = [
             'sample-page',
@@ -24,7 +26,20 @@
         ];
 
         // 2. СПИСОК ГОРОДОВ
-        $cities = get_terms(['taxonomy' => 'city', 'hide_empty' => true, 'orderby' => 'name', 'order' => 'ASC']);
+        $cities = get_terms([
+            'taxonomy' => 'city',
+            'hide_empty' => false,
+            'slug' => \App\Helpers\CityCatalog::getSlugs(),
+        ]);
+
+        if (is_array($cities)) {
+            $city_order = array_flip(\App\Helpers\CityCatalog::getSlugs());
+            usort($cities, function ($a, $b) use ($city_order) {
+                $a_order = $city_order[$a->slug] ?? PHP_INT_MAX;
+                $b_order = $city_order[$b->slug] ?? PHP_INT_MAX;
+                return $a_order <=> $b_order;
+            });
+        }
 
         // 3. ПОЛУЧЕНИЕ СТРАНИЦ
         $pages = get_pages([
@@ -118,8 +133,8 @@
                         @if (!is_wp_error($cities))
                             @foreach ($cities as $city)
                                 @php
-                                    // Алматы -> /, Остальные -> /slug/
-                                    $link = ($city->slug === 'almaty') ? home_url('/') : home_url('/' . $city->slug . '/');
+                                    // Дефолтный город -> /, Остальные -> /slug/
+                                    $link = ($city->slug === $default_city_slug) ? home_url('/') : home_url('/' . $city->slug . '/');
                                 @endphp
                                 <li>
                                     <a href="{{ $link }}" class="text-gray-700 hover:text-red-600 transition font-medium">

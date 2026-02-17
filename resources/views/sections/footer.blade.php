@@ -1,7 +1,7 @@
 @php
     // 1. Определяем текущий город
     $city_obj = get_current_city();
-    $current_slug = $city_obj ? $city_obj->slug : 'almaty';
+    $current_slug = $city_obj ? $city_obj->slug : \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG;
 
     // 2. Ссылка для Логотипа (всегда на главную без города)
     $logo_url = home_url('/');

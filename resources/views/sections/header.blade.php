@@ -1,16 +1,18 @@
 @php
     // 1. Определяем устройство
     $is_mobile = wp_is_mobile();
+    $default_city_slug = \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG;
+    $default_city_name = \App\Helpers\CityCatalog::getDefaultCityName();
 
-    // 2. Определяем текущий город (если нет — almaty)
+    // 2. Определяем текущий город (если нет — дефолтный)
     $city_obj = get_current_city();
-    $current_slug = $city_obj ? $city_obj->slug : 'almaty';
+    $current_slug = $city_obj ? $city_obj->slug : $default_city_slug;
     
     // 3. Ссылки
-    // Логотип: Для Алматы -> '/', для других -> '/city/'
-    $logo_url = ($current_slug === 'almaty') ? home_url('/') : home_url("/{$current_slug}/");
+    // Логотип: Для дефолтного города -> '/', для других -> '/city/'
+    $logo_url = ($current_slug === $default_city_slug) ? home_url('/') : home_url("/{$current_slug}/");
     
-    // Online: ВСЕГДА с городом (даже для Алматы -> /almaty/online/)
+    // Online: ВСЕГДА с городом
     $online_url = home_url("/{$current_slug}/online/");
 
     // 4. Получаем текущий путь
@@ -21,7 +23,7 @@
     $is_home_page = ($current_request_path === $logo_path_clean);
 
     // 6. Фильтр для меню WP
-    add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_slug, $current_request_path) {
+    add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_slug, $current_request_path, $default_city_slug) {
         if ($args->theme_location !== 'primary_navigation') return $atts;
 
         $default_classes = 'text-sm font-medium uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors';
@@ -36,7 +38,7 @@
                 
                 // Главная (пустой путь)
                 if (empty($path)) {
-                    $atts['href'] = ($current_slug === 'almaty') ? home_url('/') : home_url("/{$current_slug}/");
+                    $atts['href'] = ($current_slug === $default_city_slug) ? home_url('/') : home_url("/{$current_slug}/");
                 } 
                 // Ссылка Online (всегда добавляем город)
                 elseif ($path === 'online') {
@@ -109,7 +111,7 @@
                     $path = trim($path, '/');
 
                     if (empty($path)) {
-                        $item_url = ($current_slug === 'almaty') ? home_url('/') : home_url("/{$current_slug}/");
+                        $item_url = ($current_slug === $default_city_slug) ? home_url('/') : home_url("/{$current_slug}/");
                     } elseif ($path === 'online') {
                         $item_url = home_url("/{$current_slug}/online/");
                     } else {
@@ -301,7 +303,7 @@
                                 class="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
                                 aria-expanded="false">
                             @php
-                                $display_name = $city_obj ? $city_obj->name : 'Almaty'; 
+                                $display_name = $city_obj ? $city_obj->name : $default_city_name; 
                             @endphp
                             <span>{{ $display_name }}</span>
                             <svg class="w-4 h-4 text-[#cd1d46] group-hover:text-white transition-transform transition-colors duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -323,7 +325,7 @@
                                     class="group flex items-center gap-2 text-xs md:text-sm font-bold uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
                                     aria-expanded="false">
                                 @php
-                                    $display_name = $city_obj ? $city_obj->name : 'Almaty';
+                                    $display_name = $city_obj ? $city_obj->name : $default_city_name;
                                 @endphp
                                 <span>{{ $display_name }}</span>
                                 <svg id="city-chevron" class="w-4 h-4 text-[#cd1d46] group-hover:text-white transition-transform transition-colors duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -336,7 +338,7 @@
                                 <div class="max-h-[300px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
                                     @foreach($cities as $city)
                                         @php
-                                            $city_link = ($city->slug === 'almaty') ? home_url('/') : home_url("/{$city->slug}/");
+                                            $city_link = ($city->slug === $default_city_slug) ? home_url('/') : home_url("/{$city->slug}/");
                                         @endphp
                                         <a href="{{ $city_link }}" 
                                            class="flex justify-between items-center px-5 py-3 text-white hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-zinc-800 last:border-0 group">
@@ -360,7 +362,7 @@
                             <div class="max-h-[250px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
                                 @foreach($cities as $city)
                                     @php
-                                        $city_link = ($city->slug === 'almaty') ? home_url('/') : home_url("/{$city->slug}/");
+                                        $city_link = ($city->slug === $default_city_slug) ? home_url('/') : home_url("/{$city->slug}/");
                                     @endphp
                                     <a href="{{ $city_link }}" 
                                        class="flex justify-between items-center px-4 py-2.5 text-white hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-zinc-800 last:border-0 text-sm">
@@ -421,7 +423,7 @@
                         <span class="text-lg text-white font-bold uppercase tracking-widest mb-2">Города</span>
                         @foreach($cities as $city)
                             @php
-                                $city_link = ($city->slug === 'almaty') ? home_url('/') : home_url("/{$city->slug}/");
+                                $city_link = ($city->slug === $default_city_slug) ? home_url('/') : home_url("/{$city->slug}/");
                             @endphp
                             <a href="{{ $city_link }}" class="text-md text-white hover:text-[#cd1d46] uppercase tracking-wider transition-colors">
                                 {{ $city->name }}
