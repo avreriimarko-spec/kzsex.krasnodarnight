@@ -48,9 +48,9 @@
                 <div class="space-y-3">
                     @php
                         $priceRanges = [
-                            ['min' => '75000', 'max' => '95000', 'label' => '75 000 - 95 000'],
-                            ['min' => '95000', 'max' => '120000', 'label' => '95 000 - 120 000'],
-                            ['min' => '120000', 'max' => '', 'label' => 'больше 120 000'],
+                            ['min' => '', 'max' => '15000', 'label' => 'меньше 15000'],
+                            ['min' => '15000', 'max' => '25000', 'label' => '15000-25000'],
+                            ['min' => '25000', 'max' => '', 'label' => 'больше 25000'],
                         ];
                         $curPriceMin = request('price_min');
                         $curPriceMax = request('price_max');
