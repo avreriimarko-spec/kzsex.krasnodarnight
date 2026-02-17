@@ -34,6 +34,9 @@
         if ($special_page === 'vip' || is_page_template('template-vip.blade.php')) {
             $page_type = 'vip';
             $parent_page = get_page_by_path('vip');
+        } elseif (in_array($special_page, ['cheap', 'deshevye'], true) || is_page_template('template-cheap.blade.php')) {
+            $page_type = 'cheap';
+            $parent_page = get_page_by_path('cheap') ?: get_page_by_path('deshevye');
         } elseif ($special_page === 'outcall' || is_page_template('template-outcall.blade.php')) {
             $page_type = 'outcall';
             $parent_page = get_page_by_path('prostitutki-na-vyezd'); // правильный slug
@@ -223,6 +226,15 @@
                     'field'    => 'slug', 
                     'terms'    => ['vip'],
                     'operator' => 'IN',
+                ];
+            }
+
+            if ($page_type === 'cheap' || in_array($special_page, ['cheap', 'deshevye'], true)) {
+                $args['meta_query'][] = [
+                    'key'     => 'price_price_1h',
+                    'value'   => 15000,
+                    'compare' => '<=',
+                    'type'    => 'NUMERIC',
                 ];
             }
             

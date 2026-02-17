@@ -89,7 +89,7 @@ class UrlHelpers
         $city_slug = ($city instanceof WP_Term) ? $city->slug : $city;
 
         // Страницы, которые всегда должны быть с вложением города
-        $with_city_pages = ['vip', 'independent', 'online'];
+        $with_city_pages = ['vip', 'cheap', 'deshevye', 'independent', 'online'];
         
         // Страницы, которые всегда должны быть без города
         $without_city_pages = ['map', 'reviews', 'catalog'];

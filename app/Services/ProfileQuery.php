@@ -107,6 +107,7 @@ class ProfileQuery
         $is_template_profiles = is_page_template('template-profiles.blade.php') 
                                || is_page_template('template-independent.blade.php')
                                || is_page_template('template-vip.blade.php')
+                               || is_page_template('template-cheap.blade.php')
                                || is_page_template('template-incall.blade.php')
                                || is_page_template('template-outcall.blade.php')
                                || get_query_var('special_page');
@@ -135,6 +136,14 @@ class ProfileQuery
 
         if (is_page_template('template-vip.blade.php') || get_query_var('special_page') === 'vip') {
             $args['tax_query'][] = ['taxonomy' => 'vip', 'field' => 'slug', 'terms' => ['vip'], 'operator' => 'IN'];
+        }
+
+        if (
+            is_page_template('template-cheap.blade.php')
+            || in_array(get_query_var('special_page'), ['cheap', 'deshevye'], true)
+        ) {
+            // Дешевые анкеты: ограничиваем верхнюю границу цены за 1 час
+            $args['meta_query'][] = ['key' => 'price_price_1h', 'value' => 15000, 'compare' => '<=', 'type' => 'NUMERIC'];
         }
 
         // Главная страница - только анкеты Алматы

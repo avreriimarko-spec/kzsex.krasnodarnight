@@ -71,6 +71,10 @@
     $online_path = trim(parse_url($online_url, PHP_URL_PATH), '/');
     $is_online_active = ($online_path === $current_request_path);
 
+    // Классы для ссылок меню
+    $menu_classes_default = 'text-sm font-medium uppercase tracking-widest text-[#cd1d46] hover:text-white transition-colors';
+    $menu_classes_active  = 'text-sm font-medium uppercase tracking-widest text-white cursor-default';
+
     // Классы для десктопа
     $link_classes_default = 'text-sm font-medium uppercase tracking-widest text-[#cd1d46] hover:text-white transition-colors flex items-center gap-2';
     $link_classes_active  = 'text-sm font-medium uppercase tracking-widest text-white cursor-default flex items-center gap-2';
@@ -79,37 +83,197 @@
     $mobile_classes_default = 'text-lg font-medium uppercase tracking-widest text-[#cd1d46] hover:text-white transition-colors flex justify-center items-center gap-2';
     $mobile_classes_active  = 'text-lg font-medium uppercase tracking-widest text-white cursor-default flex justify-center items-center gap-2';
 
+    // Десктоп-меню: берём top-level пункты и готовим URL/active вручную
+    $desktop_menu_items = [];
+    $menu_locations = get_nav_menu_locations();
+    $primary_menu_id = $menu_locations['primary_navigation'] ?? null;
+
+    if ($primary_menu_id) {
+        $raw_menu_items = wp_get_nav_menu_items($primary_menu_id);
+
+        if (is_array($raw_menu_items)) {
+            foreach ($raw_menu_items as $menu_item) {
+                if ((int) ($menu_item->menu_item_parent ?? 0) !== 0) {
+                    continue;
+                }
+
+                $item_url = $menu_item->url ?? '';
+
+                if (
+                    strpos($item_url, home_url()) === 0
+                    && strpos($item_url, '#') === false
+                    && strpos($item_url, 'tel:') === false
+                    && strpos($item_url, 'mailto:') === false
+                ) {
+                    $path = str_replace(home_url(), '', $item_url);
+                    $path = trim($path, '/');
+
+                    if (empty($path)) {
+                        $item_url = ($current_slug === 'almaty') ? home_url('/') : home_url("/{$current_slug}/");
+                    } elseif ($path === 'online') {
+                        $item_url = home_url("/{$current_slug}/online/");
+                    } else {
+                        $path_parts = explode('/', $path);
+                        if (($path_parts[0] ?? '') !== $current_slug) {
+                            $item_url = home_url("/{$current_slug}/{$path}/");
+                        } else {
+                            $item_url = home_url("/{$path}/");
+                        }
+                    }
+                }
+
+                $item_path = trim(parse_url($item_url, PHP_URL_PATH), '/');
+                $desktop_menu_items[] = [
+                    'title' => $menu_item->title ?? '',
+                    'url' => $item_url,
+                    'is_active' => ($item_path === $current_request_path),
+                ];
+            }
+        }
+    }
+
+    $can_group_price_dropdown = count($desktop_menu_items) >= 4;
+    $price_item_a = $can_group_price_dropdown ? $desktop_menu_items[2] : null;
+    $price_item_b = $can_group_price_dropdown ? $desktop_menu_items[3] : null;
+    $price_dropdown_active = $can_group_price_dropdown && (
+        !empty($price_item_a['is_active']) || !empty($price_item_b['is_active'])
+    );
+
+    // Отдельный dropdown "Цена": только VIP + deshevye (или cheap как fallback)
+    $price_menu_vip_item = null;
+    $price_menu_deshevye_item = null;
+    $price_menu_vip_index = null;
+    $price_menu_deshevye_index = null;
+
+    foreach ($desktop_menu_items as $menu_index => $menu_item) {
+        // Индексы 2 и 3 уже заняты блоком "Доступность"
+        if (in_array($menu_index, [2, 3], true)) {
+            continue;
+        }
+
+        $menu_path = trim(parse_url($menu_item['url'] ?? '', PHP_URL_PATH), '/');
+        $menu_parts = explode('/', $menu_path);
+        $menu_slug = strtolower(end($menu_parts) ?: '');
+
+        if ($price_menu_vip_item === null && $menu_slug === 'vip') {
+            $price_menu_vip_item = $menu_item;
+            $price_menu_vip_index = $menu_index;
+            continue;
+        }
+
+        if ($price_menu_deshevye_item === null && in_array($menu_slug, ['deshevye', 'cheap'], true)) {
+            $price_menu_deshevye_item = $menu_item;
+            $price_menu_deshevye_index = $menu_index;
+        }
+    }
+
+    $can_group_price_menu = $price_menu_vip_item !== null && $price_menu_deshevye_item !== null;
+    $price_menu_items = $can_group_price_menu ? [$price_menu_vip_item, $price_menu_deshevye_item] : [];
+    $price_menu_skip_indices = $can_group_price_menu ? [$price_menu_vip_index, $price_menu_deshevye_index] : [];
+    $price_menu_insert_index = $can_group_price_menu ? min($price_menu_skip_indices) : null;
+    $price_menu_active = $can_group_price_menu && (
+        !empty($price_menu_vip_item['is_active']) || !empty($price_menu_deshevye_item['is_active'])
+    );
+
 @endphp
 
-<header class="bg-black text-white shadow-md sticky top-0 z-50 w-full font-serif">
+<header class="bg-[#141416] text-white shadow-md sticky top-0 z-50 w-full font-serif">
     <div class="container mx-auto px-4 py-1">
         <div class="flex justify-between items-center h-15 relative">
-
-            {{-- 1. ЛОГОТИП --}}
-            @if($is_home_page)
-                <div class="group flex flex-col items-center justify-center shrink-0 z-50 text-white cursor-default">
-                    <img src="{{ asset('resources/images/logo.png') }}" alt="{{ get_bloginfo('name') }}" class="h-12 w-auto">
-                </div>
-            @else
-                <a class="group flex flex-col items-center justify-center shrink-0 z-50 text-white hover:text-[#cd1d46] transition-opacity duration-300"
-                   href="{{ $logo_url }}">
-                    <img src="{{ asset('resources/images/logo.png') }}" alt="{{ get_bloginfo('name') }}" class="h-12 w-auto">
-                </a>
-            @endif
 
             {{-- 2. НАВИГАЦИЯ (Только ПК) --}}
             @if (!$is_mobile)
                 @if (has_nav_menu('primary_navigation'))
                     <nav class="flex flex-1 justify-center px-6" aria-label="Main Navigation">
                         <ul class="flex items-center gap-6 xl:gap-8 text-sm font-medium uppercase tracking-widest text-[#cd1d46]">
-                            {!! wp_nav_menu([
-                                'theme_location' => 'primary_navigation',
-                                'menu_class' => 'flex items-center gap-6 xl:gap-8',
-                                'echo' => false,
-                                'container' => false,
-                                'items_wrap' => '%3$s',
-                            ]) !!}
-                            
+                            @foreach($desktop_menu_items as $index => $item)
+                                @if($can_group_price_dropdown && $index === 2)
+                                    <li class="relative">
+                                        <button id="price-dropdown-btn"
+                                                class="{{ $price_dropdown_active ? $menu_classes_active : $menu_classes_default }} flex items-center gap-2 focus:outline-none"
+                                                aria-expanded="false">
+                                            <span>Доступность</span>
+                                            <svg id="price-dropdown-chevron" class="w-4 h-4 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+
+                                        <div id="price-dropdown-list"
+                                             class="hidden absolute left-0 top-full mt-4 w-64 bg-zinc-900 border border-zinc-800 shadow-2xl rounded-sm z-[60] overflow-hidden">
+                                            <ul class="py-1">
+                                                @foreach([$price_item_a, $price_item_b] as $price_item)
+                                                    @if($price_item)
+                                                        <li class="border-b border-zinc-800 last:border-0">
+                                                            @if($price_item['is_active'])
+                                                                <span class="{{ $menu_classes_active }} flex items-center px-5 py-3">
+                                                                    {{ $price_item['title'] }}
+                                                                </span>
+                                                            @else
+                                                                <a href="{{ $price_item['url'] }}"
+                                                                   class="{{ $menu_classes_default }} flex items-center px-5 py-3 hover:bg-[#cd1d46] hover:!text-white transition-colors">
+                                                                    {{ $price_item['title'] }}
+                                                                </a>
+                                                            @endif
+                                                        </li>
+                                                    @endif
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    @continue
+                                @endif
+
+                                @if($can_group_price_dropdown && $index === 3)
+                                    @continue
+                                @endif
+
+                                @if($can_group_price_menu && $index === $price_menu_insert_index)
+                                    <li class="relative">
+                                        <button id="price-menu-dropdown-btn"
+                                                class="{{ $price_menu_active ? $menu_classes_active : $menu_classes_default }} flex items-center gap-2 focus:outline-none"
+                                                aria-expanded="false">
+                                            <span>Цена</span>
+                                            <svg id="price-menu-dropdown-chevron" class="w-4 h-4 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+
+                                        <div id="price-menu-dropdown-list"
+                                             class="hidden absolute left-0 top-full mt-4 w-64 bg-zinc-900 border border-zinc-800 shadow-2xl rounded-sm z-[60] overflow-hidden">
+                                            <ul class="py-1">
+                                                @foreach($price_menu_items as $price_menu_item)
+                                                    <li class="border-b border-zinc-800 last:border-0">
+                                                        @if($price_menu_item['is_active'])
+                                                            <span class="{{ $menu_classes_active }} flex items-center px-5 py-3">
+                                                                {{ $price_menu_item['title'] }}
+                                                            </span>
+                                                        @else
+                                                            <a href="{{ $price_menu_item['url'] }}"
+                                                               class="{{ $menu_classes_default }} flex items-center px-5 py-3 hover:bg-[#cd1d46] hover:!text-white transition-colors">
+                                                                {{ $price_menu_item['title'] }}
+                                                            </a>
+                                                        @endif
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    @continue
+                                @endif
+
+                                @if($can_group_price_menu && in_array($index, $price_menu_skip_indices, true))
+                                    @continue
+                                @endif
+
+                                <li>
+                                    @if($item['is_active'])
+                                        <span class="{{ $menu_classes_active }}">{{ $item['title'] }}</span>
+                                    @else
+                                        <a href="{{ $item['url'] }}" class="{{ $menu_classes_default }}">{{ $item['title'] }}</a>
+                                    @endif
+                                </li>
+                            @endforeach
+
                             {{-- Ссылка Online (выводится с учетом города) --}}
                             <li>
                                 @if($is_online_active)
@@ -175,7 +339,7 @@
                                             $city_link = ($city->slug === 'almaty') ? home_url('/') : home_url("/{$city->slug}/");
                                         @endphp
                                         <a href="{{ $city_link }}" 
-                                           class="flex justify-between items-center px-5 py-3 text-[#cd1d46] hover:bg-[#cd1d46] hover:text-white transition-colors border-b border-zinc-800 last:border-0 group">
+                                           class="flex justify-between items-center px-5 py-3 text-[#cd1d46] hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-zinc-800 last:border-0 group">
                                             <span class="text-sm tracking-wide uppercase font-medium">{{ $city->name }}</span>
                                             @if($city->count > 0)
                                                 <span class="text-[10px] text-zinc-500 group-hover:text-[#cd1d46] transition-colors">{{ $city->count }}</span>
@@ -199,7 +363,7 @@
                                         $city_link = ($city->slug === 'almaty') ? home_url('/') : home_url("/{$city->slug}/");
                                     @endphp
                                     <a href="{{ $city_link }}" 
-                                       class="flex justify-between items-center px-4 py-2.5 text-[#cd1d46] hover:bg-[#cd1d46] hover:text-white transition-colors border-b border-zinc-800 last:border-0 text-sm">
+                                       class="flex justify-between items-center px-4 py-2.5 text-[#cd1d46] hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-zinc-800 last:border-0 text-sm">
                                         <span class="tracking-wide uppercase font-medium">{{ $city->name }}</span>
                                         @if($city->count > 0)
                                             <span class="text-[10px] text-zinc-500 group-hover:text-[#cd1d46] transition-colors">{{ $city->count }}</span>
@@ -294,6 +458,8 @@
                 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !list.classList.contains('hidden')) toggle(false); });
             }
         };
+        setupDropdown('price-dropdown-btn', 'price-dropdown-list', 'price-dropdown-chevron');
+        setupDropdown('price-menu-dropdown-btn', 'price-menu-dropdown-list', 'price-menu-dropdown-chevron');
         setupDropdown('city-dropdown-btn', 'city-dropdown-list', 'city-chevron');
         setupDropdown('city-dropdown-mobile-btn', 'city-dropdown-mobile-list');
 
