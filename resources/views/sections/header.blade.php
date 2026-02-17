@@ -24,7 +24,7 @@
     add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_slug, $current_request_path) {
         if ($args->theme_location !== 'primary_navigation') return $atts;
 
-        $default_classes = 'text-sm font-medium uppercase tracking-widest text-[#cd1d46] hover:text-white transition-colors';
+        $default_classes = 'text-sm font-medium uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors';
         $active_classes  = 'text-sm font-medium uppercase tracking-widest text-white cursor-default';
 
         if (isset($atts['href'])) {
@@ -72,15 +72,15 @@
     $is_online_active = ($online_path === $current_request_path);
 
     // Классы для ссылок меню
-    $menu_classes_default = 'text-sm font-medium uppercase tracking-widest text-[#cd1d46] hover:text-white transition-colors';
+    $menu_classes_default = 'text-sm font-medium uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors';
     $menu_classes_active  = 'text-sm font-medium uppercase tracking-widest text-white cursor-default';
 
     // Классы для десктопа
-    $link_classes_default = 'text-sm font-medium uppercase tracking-widest text-[#cd1d46] hover:text-white transition-colors flex items-center gap-2';
+    $link_classes_default = 'text-sm font-medium uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors flex items-center gap-2';
     $link_classes_active  = 'text-sm font-medium uppercase tracking-widest text-white cursor-default flex items-center gap-2';
     
     // Классы для мобилки
-    $mobile_classes_default = 'text-lg font-medium uppercase tracking-widest text-[#cd1d46] hover:text-white transition-colors flex justify-center items-center gap-2';
+    $mobile_classes_default = 'text-lg font-medium uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors flex justify-center items-center gap-2';
     $mobile_classes_active  = 'text-lg font-medium uppercase tracking-widest text-white cursor-default flex justify-center items-center gap-2';
 
     // Десктоп-меню: берём top-level пункты и готовим URL/active вручную
@@ -185,15 +185,15 @@
             @if (!$is_mobile)
                 @if (has_nav_menu('primary_navigation'))
                     <nav class="flex flex-1 justify-center px-6" aria-label="Main Navigation">
-                        <ul class="flex items-center gap-6 xl:gap-8 text-sm font-medium uppercase tracking-widest text-[#cd1d46]">
+                        <ul class="flex items-center gap-6 xl:gap-8 text-sm font-medium uppercase tracking-widest text-white">
                             @foreach($desktop_menu_items as $index => $item)
                                 @if($can_group_price_dropdown && $index === 2)
                                     <li class="relative">
                                         <button id="price-dropdown-btn"
-                                                class="{{ $price_dropdown_active ? $menu_classes_active : $menu_classes_default }} flex items-center gap-2 focus:outline-none"
+                                                class="{{ $price_dropdown_active ? $menu_classes_active : $menu_classes_default }} group flex items-center gap-2 focus:outline-none"
                                                 aria-expanded="false">
                                             <span>Доступность</span>
-                                            <svg id="price-dropdown-chevron" class="w-4 h-4 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg id="price-dropdown-chevron" class="w-4 h-4 text-[#cd1d46] group-hover:text-white transition-transform transition-colors duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                             </svg>
                                         </button>
@@ -230,10 +230,10 @@
                                 @if($can_group_price_menu && $index === $price_menu_insert_index)
                                     <li class="relative">
                                         <button id="price-menu-dropdown-btn"
-                                                class="{{ $price_menu_active ? $menu_classes_active : $menu_classes_default }} flex items-center gap-2 focus:outline-none"
+                                                class="{{ $price_menu_active ? $menu_classes_active : $menu_classes_default }} group flex items-center gap-2 focus:outline-none"
                                                 aria-expanded="false">
                                             <span>Цена</span>
-                                            <svg id="price-menu-dropdown-chevron" class="w-4 h-4 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg id="price-menu-dropdown-chevron" class="w-4 h-4 text-[#cd1d46] group-hover:text-white transition-transform transition-colors duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                             </svg>
                                         </button>
@@ -298,13 +298,13 @@
                 @if(!empty($cities) && !is_wp_error($cities))
                     <div>
                         <button id="city-dropdown-mobile-btn" 
-                                class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
+                                class="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
                                 aria-expanded="false">
                             @php
                                 $display_name = $city_obj ? $city_obj->name : 'Almaty'; 
                             @endphp
                             <span>{{ $display_name }}</span>
-                            <svg class="w-4 h-4 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-[#cd1d46] group-hover:text-white transition-transform transition-colors duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
@@ -320,13 +320,13 @@
                     @if(!empty($cities) && !is_wp_error($cities))
                         <div class="relative block">
                             <button id="city-dropdown-btn" 
-                                    class="flex items-center gap-2 text-xs md:text-sm font-bold uppercase tracking-widest hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
+                                    class="group flex items-center gap-2 text-xs md:text-sm font-bold uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
                                     aria-expanded="false">
                                 @php
                                     $display_name = $city_obj ? $city_obj->name : 'Almaty';
                                 @endphp
                                 <span>{{ $display_name }}</span>
-                                <svg id="city-chevron" class="w-4 h-4 transition-transform duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg id="city-chevron" class="w-4 h-4 text-[#cd1d46] group-hover:text-white transition-transform transition-colors duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </button>
@@ -339,10 +339,10 @@
                                             $city_link = ($city->slug === 'almaty') ? home_url('/') : home_url("/{$city->slug}/");
                                         @endphp
                                         <a href="{{ $city_link }}" 
-                                           class="flex justify-between items-center px-5 py-3 text-[#cd1d46] hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-zinc-800 last:border-0 group">
+                                           class="flex justify-between items-center px-5 py-3 text-white hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-zinc-800 last:border-0 group">
                                             <span class="text-sm tracking-wide uppercase font-medium">{{ $city->name }}</span>
                                             @if($city->count > 0)
-                                                <span class="text-[10px] text-zinc-500 group-hover:text-[#cd1d46] transition-colors">{{ $city->count }}</span>
+                                                <span class="text-[10px] text-zinc-500 group-hover:text-white transition-colors">{{ $city->count }}</span>
                                             @endif
                                         </a>
                                     @endforeach
@@ -363,10 +363,10 @@
                                         $city_link = ($city->slug === 'almaty') ? home_url('/') : home_url("/{$city->slug}/");
                                     @endphp
                                     <a href="{{ $city_link }}" 
-                                       class="flex justify-between items-center px-4 py-2.5 text-[#cd1d46] hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-zinc-800 last:border-0 text-sm">
+                                       class="flex justify-between items-center px-4 py-2.5 text-white hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-zinc-800 last:border-0 text-sm">
                                         <span class="tracking-wide uppercase font-medium">{{ $city->name }}</span>
                                         @if($city->count > 0)
-                                            <span class="text-[10px] text-zinc-500 group-hover:text-[#cd1d46] transition-colors">{{ $city->count }}</span>
+                                            <span class="text-[10px] text-zinc-500 group-hover:text-white transition-colors">{{ $city->count }}</span>
                                         @endif
                                     </a>
                                 @endforeach
@@ -418,12 +418,12 @@
 
                 @if(!empty($cities) && !is_wp_error($cities))
                     <div class="flex flex-col gap-4">
-                        <span class="text-lg text-[#cd1d46] font-bold uppercase tracking-widest mb-2">Города</span>
+                        <span class="text-lg text-white font-bold uppercase tracking-widest mb-2">Города</span>
                         @foreach($cities as $city)
                             @php
                                 $city_link = ($city->slug === 'almaty') ? home_url('/') : home_url("/{$city->slug}/");
                             @endphp
-                            <a href="{{ $city_link }}" class="text-md text-gray-300 hover:text-[#cd1d46] uppercase tracking-wider transition-colors">
+                            <a href="{{ $city_link }}" class="text-md text-white hover:text-[#cd1d46] uppercase tracking-wider transition-colors">
                                 {{ $city->name }}
                             </a>
                         @endforeach

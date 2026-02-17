@@ -4,17 +4,18 @@
 @source "../views/";
 @source "../../app/";
 
-/* Глобальные стили для темной темы */
+/* Глобальные стили для светлой темы */
 body {
-  color: white;
+  background-color: #f8fafc;
+  color: #111827;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #ffffff;
+  color: #111827;
 }
 
-p, span, div, li, a {
-  color: white;
+main {
+  color: #1f2937;
 }
 
 /* Исключения для ссылок */
@@ -81,7 +82,7 @@ a:hover {
     Используем класс .prose
   */
   .prose {
-    @apply text-gray-300 leading-relaxed max-w-none;
+    @apply text-gray-700 leading-relaxed max-w-none;
   }
 
   /* --- ЗАГОЛОВКИ --- */
@@ -89,7 +90,7 @@ a:hover {
   .prose h2,
   .prose h3,
   .prose h4 {
-    @apply text-white font-bold uppercase tracking-tight mb-4 mt-8 scroll-mt-24;
+    @apply text-gray-900 font-bold uppercase tracking-tight mb-4 mt-8 scroll-mt-24;
   }
 
   .prose h1 {
@@ -106,7 +107,7 @@ a:hover {
 
   /* --- ПАРАГРАФЫ --- */
   .prose p {
-    @apply mb-4 text-base md:text-lg text-gray-300;
+    @apply mb-4 text-base md:text-lg text-gray-700;
   }
 
   /* --- ССЫЛКИ --- */
@@ -116,11 +117,11 @@ a:hover {
 
   /* --- СПИСКИ (UL / OL) --- */
   .prose ul {
-    @apply list-disc list-outside ml-6 mb-6 space-y-2 text-gray-300;
+    @apply list-disc list-outside ml-6 mb-6 space-y-2 text-gray-700;
   }
 
   .prose ol {
-    @apply list-decimal list-outside ml-6 mb-6 space-y-2 text-gray-300;
+    @apply list-decimal list-outside ml-6 mb-6 space-y-2 text-gray-700;
   }
 
   /* Цвет маркеров (точек и цифр) - желтый */
@@ -130,7 +131,7 @@ a:hover {
 
   /* --- ЦИТАТЫ --- */
   .prose blockquote {
-    @apply border-l-4 border-[#cd1d46] bg-[#0f0f0f] p-6 my-6 rounded-r-lg italic text-gray-300 relative;
+    @apply border-l-4 border-[#cd1d46] bg-gray-100 p-6 my-6 rounded-r-lg italic text-gray-700 relative;
   }
 
   /* Кавычка для цитаты */
@@ -141,7 +142,7 @@ a:hover {
 
   /* --- ТАБЛИЦЫ --- */
   .prose table {
-    @apply w-full text-left border-collapse my-8 overflow-hidden shadow-sm border border-gray-700;
+    @apply w-full text-left border-collapse my-8 overflow-hidden shadow-sm border border-gray-300;
   }
 
   /* Адаптация для мобильных устройств */
@@ -166,19 +167,19 @@ a:hover {
   }
 
   .prose thead {
-    @apply bg-gray-900 text-white uppercase text-sm font-bold;
+    @apply bg-gray-100 text-gray-900 uppercase text-sm font-bold;
   }
 
   .prose th {
-    @apply p-4 font-semibold border-r border-gray-700 last:border-r-0;
+    @apply p-4 font-semibold border-r border-gray-300 last:border-r-0;
   }
 
   .prose td {
-    @apply p-4 border-b border-gray-700 text-sm text-gray-300 border-r border-gray-700 last:border-r-0;
+    @apply p-4 border-b border-gray-300 text-sm text-gray-700 border-r border-gray-300 last:border-r-0;
   }
 
   .prose tr:nth-child(even) {
-    @apply bg-[#0a0a0a];
+    @apply bg-gray-50;
   }
 
   .prose tr:hover {
@@ -215,12 +216,12 @@ a:hover {
 
   /* Обычная ссылка (неактивная) */
   .page-numbers li a {
-    @apply bg-[#0f0f0f] text-gray-300 border-gray-600 hover:bg-gray-700 hover:border-gray-500 hover:text-white shadow-sm;
+    @apply bg-white text-gray-700 border-gray-300 hover:bg-gray-100 hover:border-gray-400 hover:text-gray-900 shadow-sm;
   }
 
   /* Текущая активная страница */
   .page-numbers li span.current {
-    @apply bg-gray-900 text-white border-[#cd1d46] cursor-default shadow-md;
+    @apply bg-gray-100 text-gray-900 border-[#cd1d46] cursor-default shadow-md;
   }
 
   /* Троеточие (...) */
@@ -294,7 +295,7 @@ a:hover {
   }
 
   .footer-nav ul li a {
-    color: #e5e5e5;
+    color: #374151;
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.85rem;
@@ -348,6 +349,147 @@ nav.flex-col ul li.current-menu-item a {
 }
 
         .filter-scroll::-webkit-scrollbar { width: 5px; }
-        .filter-scroll::-webkit-scrollbar-track { background: #000; }
-        .filter-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        .filter-scroll::-webkit-scrollbar-thumb:hover { background: #ca8a04; }
+        .filter-scroll::-webkit-scrollbar-track { background: #f3f4f6; }
+        .filter-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        .filter-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+@layer utilities {
+  .bg-black,
+  .bg-gray-900,
+  .bg-zinc-900,
+  .bg-\[\#141416\],
+  .bg-\[\#111827\],
+  .bg-\[\#0f0f0f\],
+  .bg-\[\#050505\],
+  .bg-\[\#0a0a0a\] {
+    background-color: #ffffff !important;
+  }
+
+  .border-gray-900,
+  .border-gray-800,
+  .border-gray-700,
+  .border-gray-600,
+  .border-zinc-800 {
+    border-color: #d1d5db !important;
+  }
+
+  .text-white {
+    color: #111827 !important;
+  }
+
+  .text-white\/70 {
+    color: rgba(17, 24, 39, 0.7) !important;
+  }
+
+  .text-gray-300 {
+    color: #374151 !important;
+  }
+
+  .text-gray-400,
+  .text-gray-200 {
+    color: #4b5563 !important;
+  }
+
+  .hover\:bg-gray-700:hover {
+    background-color: #e5e7eb !important;
+  }
+
+  .hover\:text-white:hover,
+  .group:hover .group-hover\:text-white {
+    color: #111827 !important;
+  }
+}
+
+@layer components {
+  .bg-\[\#cd1d46\],
+  .bg-\[\#b71833\],
+  .bg-\[\#b01530\],
+  .bg-\[\#0088cc\],
+  .bg-\[\#006699\],
+  .bg-\[\#2AABEE\],
+  .bg-\[\#229ED9\],
+  .bg-\[\#25D366\],
+  .bg-\[\#20bd5a\],
+  .bg-\[\#128C7E\],
+  .bg-red-600,
+  .bg-red-700,
+  .bg-green-500,
+  .bg-green-600,
+  .bg-black\/60,
+  .bg-black\/90,
+  .bg-black\/95 {
+    color: #ffffff !important;
+  }
+
+  .bg-\[\#cd1d46\] *,
+  .bg-\[\#b71833\] *,
+  .bg-\[\#b01530\] *,
+  .bg-\[\#0088cc\] *,
+  .bg-\[\#006699\] *,
+  .bg-\[\#2AABEE\] *,
+  .bg-\[\#229ED9\] *,
+  .bg-\[\#25D366\] *,
+  .bg-\[\#20bd5a\] *,
+  .bg-\[\#128C7E\] *,
+  .bg-red-600 *,
+  .bg-red-700 *,
+  .bg-green-500 *,
+  .bg-green-600 *,
+  .bg-black\/60 *,
+  .bg-black\/90 *,
+  .bg-black\/95 * {
+    color: #ffffff !important;
+  }
+}
+
+@layer components {
+  header.bg-\[\#141416\] {
+    background-color: #141416 !important;
+    color: #ffffff !important;
+  }
+
+  header p,
+  header span,
+  header div,
+  header li,
+  header a {
+    color: inherit;
+  }
+
+  header .bg-black {
+    background-color: #000000 !important;
+  }
+
+  header .bg-zinc-900 {
+    background-color: #18181b !important;
+  }
+
+  header .border-zinc-800 {
+    border-color: #27272a !important;
+  }
+
+  header .text-white,
+  header .text-gray-300 {
+    color: #ffffff !important;
+  }
+
+  header .text-zinc-500 {
+    color: #ffffff !important;
+  }
+
+  header .hover\:text-white:hover,
+  header .group:hover .group-hover\:text-white {
+    color: #ffffff !important;
+  }
+
+}
+
+/* Финальная фиксация цветов хедера вне @layer */
+header.bg-\[\#141416\] {
+  color: #ffffff !important;
+}
+
+header.bg-\[\#141416\] .text-white,
+header.bg-\[\#141416\] .text-gray-300 {
+  color: #ffffff !important;
+}
