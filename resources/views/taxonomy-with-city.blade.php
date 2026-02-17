@@ -94,7 +94,7 @@
         // Meta description будет добавлен основным фильтром в app/filters.php
         
         // Получаем профили для этой услуги в этом городе
-        $profiles_query = new WP_Query([
+        $query_args = [
             'post_type' => 'profile',
             'posts_per_page' => 48,
             'paged' => get_query_var('paged') ?: 1,
@@ -111,7 +111,10 @@
                     'terms' => $current_term->term_id,
                 ],
             ],
-        ]);
+        ];
+
+        $query_args = \App\Services\ProfileQuery::applyRequestFiltersToArgs($query_args, [$taxonomy]);
+        $profiles_query = new WP_Query($query_args);
     @endphp
     
     <div class="container mx-auto px-4 py-8">

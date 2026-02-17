@@ -8,6 +8,96 @@ class ProfileQuery
 {
     // Статическое свойство для хранения результата в памяти
     private static $cachedQuery = null;
+    
+    private const FILTER_TAXONOMIES = [
+        'service',
+        'hair_color',
+        'breast_size',
+        'body_type',
+        'ethnicity',
+        'nationality',
+        'eye_color',
+        'hair_length',
+        'breast_type',
+        'intimate',
+        'piercing',
+        'travel',
+        'smoker',
+        'inoutcall',
+        'what',
+        'parameters',
+        'metadata',
+        'metro',
+        'appearance',
+        'place',
+    ];
+    
+    private const NUMERIC_FILTERS = ['age', 'height', 'weight'];
+
+    public static function applyRequestFiltersToArgs(array $args, array $excludeTaxonomies = []): array
+    {
+        $exclude = array_fill_keys($excludeTaxonomies, true);
+
+        $args['tax_query'] = self::normalizeRelationQuery($args['tax_query'] ?? []);
+        $args['meta_query'] = self::normalizeRelationQuery($args['meta_query'] ?? []);
+
+        foreach (self::FILTER_TAXONOMIES as $slug) {
+            if (isset($exclude[$slug])) {
+                continue;
+            }
+            if (!taxonomy_exists($slug)) {
+                continue;
+            }
+
+            $values = array_filter((array) request()->input('f_' . $slug), static function ($value) {
+                return $value !== null && $value !== '';
+            });
+
+            if (empty($values)) {
+                continue;
+            }
+
+            $args['tax_query'][] = [
+                'taxonomy' => $slug,
+                'field'    => 'slug',
+                'terms'    => array_values($values),
+                'operator' => 'IN',
+            ];
+        }
+
+        foreach (self::NUMERIC_FILTERS as $key) {
+            $min = request()->input($key . '_min');
+            $max = request()->input($key . '_max');
+
+            if ($min !== null && $min !== '') {
+                $args['meta_query'][] = ['key' => $key, 'value' => $min, 'compare' => '>=', 'type' => 'NUMERIC'];
+            }
+            if ($max !== null && $max !== '') {
+                $args['meta_query'][] = ['key' => $key, 'value' => $max, 'compare' => '<=', 'type' => 'NUMERIC'];
+            }
+        }
+
+        $pMin = request()->input('price_min');
+        $pMax = request()->input('price_max');
+
+        if ($pMin !== null && $pMin !== '') {
+            $args['meta_query'][] = ['key' => 'price_price_1h', 'value' => $pMin, 'compare' => '>=', 'type' => 'NUMERIC'];
+        }
+        if ($pMax !== null && $pMax !== '') {
+            $args['meta_query'][] = ['key' => 'price_price_1h', 'value' => $pMax, 'compare' => '<=', 'type' => 'NUMERIC'];
+        }
+
+        return $args;
+    }
+
+    private static function normalizeRelationQuery(array $query): array
+    {
+        if (!isset($query['relation'])) {
+            $query['relation'] = 'AND';
+        }
+
+        return $query;
+    }
 
     /**
      * Получить запрос (Выполняется 1 раз за загрузку страницы)
@@ -33,51 +123,7 @@ class ProfileQuery
             'meta_query'     => ['relation' => 'AND'],
         ];
 
-        $taxonomies = [
-            'service',
-            'hair_color',
-            'breast_size',
-            'body_type',
-            'ethnicity',
-            'nationality',
-            'eye_color',
-            'hair_length',
-            'breast_type',
-            'intimate',
-            'piercing',
-            'travel',
-            'smoker'
-        ];
-
-        foreach ($taxonomies as $slug) {
-            if ($values = request()->input('f_' . $slug)) {
-                $args['tax_query'][] = [
-                    'taxonomy' => $slug,
-                    'field'    => 'slug',
-                    'terms'    => $values,
-                    'operator' => 'IN',
-                ];
-            }
-        }
-
-        // 2. Числовые фильтры
-        $numericFilters = ['age', 'height', 'weight'];
-        foreach ($numericFilters as $key) {
-            if ($min = request()->input($key . '_min')) {
-                $args['meta_query'][] = ['key' => $key, 'value' => $min, 'compare' => '>=', 'type' => 'NUMERIC'];
-            }
-            if ($max = request()->input($key . '_max')) {
-                $args['meta_query'][] = ['key' => $key, 'value' => $max, 'compare' => '<=', 'type' => 'NUMERIC'];
-            }
-        }
-
-        // Цена
-        if ($pMin = request()->input('price_min')) {
-            $args['meta_query'][] = ['key' => 'price_price_1h', 'value' => $pMin, 'compare' => '>=', 'type' => 'NUMERIC'];
-        }
-        if ($pMax = request()->input('price_max')) {
-            $args['meta_query'][] = ['key' => 'price_price_1h', 'value' => $pMax, 'compare' => '<=', 'type' => 'NUMERIC'];
-        }
+        $args = self::applyRequestFiltersToArgs($args);
 
         // 3. Логика шаблонов (Проверяем текущий шаблон страницы)
         $current_template = get_page_template_slug();

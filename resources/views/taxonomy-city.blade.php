@@ -147,12 +147,15 @@
             ];
         }
         
-        $profiles_query = new WP_Query([
+        $query_args = [
             'post_type' => 'profile',
             'posts_per_page' => 48,
             'paged' => get_query_var('paged') ?: 1,
             'tax_query' => $tax_query,
-        ]);
+        ];
+
+        $query_args = \App\Services\ProfileQuery::applyRequestFiltersToArgs($query_args);
+        $profiles_query = new WP_Query($query_args);
     @endphp
     <div class="container mx-auto px-4 py-8">
 

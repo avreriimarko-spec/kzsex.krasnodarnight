@@ -28,6 +28,54 @@ add_action('pre_get_posts', function ($query) {
         ) {
             $query->set('posts_per_page', 48);
         }
+
+        // Применяем GET-фильтры каталога к главному запросу таксономий/архивов профилей
+        $hasCatalogFilters = false;
+        foreach (array_keys($_GET) as $key) {
+            if (
+                in_array($key, ['price_min', 'price_max', 'age_min', 'age_max', 'height_min', 'height_max', 'weight_min', 'weight_max'], true)
+                || str_starts_with($key, 'f_')
+            ) {
+                $hasCatalogFilters = true;
+                break;
+            }
+        }
+
+        if (!$hasCatalogFilters) {
+            return;
+        }
+
+        $postType = $query->get('post_type');
+        $isProfilePostType =
+            $postType === 'profile'
+            || (is_array($postType) && in_array('profile', $postType, true));
+
+        $isCatalogContext =
+            $query->is_post_type_archive('profile')
+            || $query->is_tax()
+            || $isProfilePostType
+            || (bool) get_query_var('city')
+            || (bool) get_query_var('special_page');
+
+        if (!$isCatalogContext) {
+            return;
+        }
+
+        $excludeTaxonomies = [];
+        $currentTaxonomy = $query->get('taxonomy');
+        if (is_string($currentTaxonomy) && $currentTaxonomy !== '') {
+            $excludeTaxonomies[] = $currentTaxonomy;
+        }
+
+        $args = [
+            'tax_query'  => (array) ($query->get('tax_query') ?: []),
+            'meta_query' => (array) ($query->get('meta_query') ?: []),
+        ];
+
+        $args = \App\Services\ProfileQuery::applyRequestFiltersToArgs($args, $excludeTaxonomies);
+
+        $query->set('tax_query', $args['tax_query']);
+        $query->set('meta_query', $args['meta_query']);
     }
 });
 

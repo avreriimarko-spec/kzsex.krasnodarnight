@@ -237,6 +237,8 @@
                     'type'    => 'NUMERIC',
                 ];
             }
+
+            $args = \App\Services\ProfileQuery::applyRequestFiltersToArgs($args);
             
             $profiles_query = new WP_Query($args);
         }
