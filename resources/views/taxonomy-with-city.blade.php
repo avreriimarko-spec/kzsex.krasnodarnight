@@ -118,7 +118,7 @@
 
         {{-- Header --}}
         <header class="prose mb-10 text-center max-w-4xl mx-auto">
-            <h1 class="text-3xl md:text-5xl font-bold text-white uppercase mb-4 tracking-tight">
+            <h1 class="text-3xl md:text-5xl font-bold uppercase mb-4 tracking-tight">
                 {{ $page_title }}
                 @if (is_paged())
                     <span class="text-[#cd1d46]">| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
