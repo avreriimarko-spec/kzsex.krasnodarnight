@@ -111,38 +111,14 @@
             </div>
 
             @if($online_profiles->have_posts())
-                {{-- Верхняя панель с количеством и переключателем --}}
+                {{-- Верхняя панель с количеством --}}
                 <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
                     <h2 class="text-xl md:text-2xl font-bold text-white uppercase tracking-wide">
                         Найдено анкет: {{ $online_profiles->found_posts }}
     </h2>
-
-                    {{-- ПЕРЕКЛЮЧАТЕЛЬ ВИДА --}}
-                    <div class="flex items-center bg-black p-1 border border-[#cd1d46] gap-1">
-                        
-                        {{-- Кнопка Grid (4 квадратика) --}}
-                        <button id="btn-view-grid" type="button" class="p-2 transition-colors text-[#cd1d46] hover:text-white" title="Сетка">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M4 4h7v7H4V4zm11 0h5v7h-5V4zm0 11h5v5h-5v-5zm-11 0h7v5H4v-5z" /> {{-- Имитация 4 блоков --}}
-                            </svg>
-                        </button>
-                        
-                        <div class="w-px h-4 bg-[#cd1d46]"></div>
-
-                        {{-- Кнопка List (2 квадратика) --}}
-                        <button id="btn-view-list" type="button" class="p-2 transition-colors text-[#cd1d46] hover:text-white" title="По 2 в ряд">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M4 6h7v12H4V6zm9 0h7v12h-7V6z" /> {{-- Имитация 2 блоков --}}
-                            </svg>
-                        </button>
-                    </div>
                 </div>
                 
-                {{-- 
-                    ВАРИАНТ 1: ОБЫЧНАЯ СЕТКА (4 в ряд)
-                    id="view-grid"
-                --}}
-                <ul id="view-grid" class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                <ul class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                     @while($online_profiles->have_posts())
                         @php
                             $online_profiles->the_post();
@@ -151,22 +127,6 @@
                         <li><x-profile-card :lcp="$isLcp" /></li>
                     @endwhile
                 </ul>
-
-                @php $online_profiles->rewind_posts(); @endphp
-
-                {{-- 
-                    ВАРИАНТ 2: КАРТОЧКИ ПО СКРИНШОТУ (2 в ряд)
-                    id="view-list"
-                --}}
-                <div id="view-list" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    @while($online_profiles->have_posts())
-                        @php
-                            $online_profiles->the_post();
-                            $isLcp = $online_profiles->current_post === 0 && !is_paged();
-                        @endphp
-                        <x-profile-list-card :lcp="$isLcp" />
-                    @endwhile
-                </div>
 
                 @php
                     wp_reset_postdata();
@@ -264,45 +224,3 @@
         </div>
     </section>
 @endsection
-
-{{-- СКРИПТ ПЕРЕКЛЮЧЕНИЯ ВИДА КАРТОЧЕК --}}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const btnGrid = document.getElementById('btn-view-grid');
-    const btnList = document.getElementById('btn-view-list');
-    const viewGrid = document.getElementById('view-grid');
-    const viewList = document.getElementById('view-list');
-
-    const activeClasses = ['bg-[#cd1d46]', 'text-white', 'shadow-sm'];
-    const inactiveClasses = ['text-[#cd1d46]', 'hover:text-white'];
-
-    function setView(mode) {
-        if (mode === 'grid') {
-            if(viewGrid) viewGrid.classList.remove('hidden');
-            if(viewList) viewList.classList.add('hidden');
-            
-            btnGrid.classList.add(...activeClasses);
-            btnGrid.classList.remove(...inactiveClasses);
-            btnList.classList.remove(...activeClasses);
-            btnList.classList.add(...inactiveClasses);
-        } else {
-            if(viewGrid) viewGrid.classList.add('hidden');
-            if(viewList) viewList.classList.remove('hidden');
-            
-            btnList.classList.add(...activeClasses);
-            btnList.classList.remove(...inactiveClasses);
-            btnGrid.classList.remove(...activeClasses);
-            btnGrid.classList.add(...inactiveClasses);
-        }
-        localStorage.setItem('onlineViewMode', mode);
-    }
-
-    if (btnGrid && btnList) {
-        btnGrid.addEventListener('click', () => setView('grid'));
-        btnList.addEventListener('click', () => setView('list'));
-    }
-
-    const savedMode = localStorage.getItem('onlineViewMode') || 'grid';
-    setView(savedMode);
-});
-</script>

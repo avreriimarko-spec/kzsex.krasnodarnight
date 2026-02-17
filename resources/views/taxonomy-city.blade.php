@@ -220,34 +220,11 @@
                         Найдено анкет: {{ $profiles_query->found_posts }}
     </h2>
 
-                    {{-- ПЕРЕКЛЮЧАТЕЛЬ ВИДА --}}
-                    <div class="flex items-center bg-black p-1 border border-[#cd1d46] gap-1">
-                        
-                        {{-- Кнопка Grid (4 квадратика) --}}
-                        <button id="btn-view-grid" type="button" class="p-2 transition-colors text-[#cd1d46] hover:text-white" title="Сетка">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M4 4h7v7H4V4zm11 0h5v7h-5V4zm0 11h5v5h-5v-5zm-11 0h7v5H4v-5z" />
-                            </svg>
-                        </button>
-                        
-                        <div class="w-px h-4 bg-[#cd1d46]"></div>
-
-                        {{-- Кнопка List (2 квадратика) --}}
-                        <button id="btn-view-list" type="button" class="p-2 transition-colors text-[#cd1d46] hover:text-white" title="По 2 в ряд">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M4 6h7v12H4V6zm9 0h7v12h-7V6z" />
-                            </svg>
-                        </button>
-                    </div>
                 </div>
 
                 @if ($profiles_query->have_posts())
                     
-                    {{-- 
-                        ВАРИАНТ 1: ОБЫЧНАЯ СЕТКА (4 в ряд)
-                        id="view-grid"
-                    --}}
-                    <ul id="view-grid" class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                    <ul class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                         @while ($profiles_query->have_posts())
                             @php
                                 $profiles_query->the_post();
@@ -258,25 +235,9 @@
                         @endwhile
                     </ul>
 
-                    @php $profiles_query->rewind_posts(); @endphp
-
-                    {{-- 
-                        ВАРИАНТ 2: КАРТОЧКИ ПО СКРИНШОТУ (2 в ряд)
-                        id="view-list"
-                    --}}
-                    <div id="view-list" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        @while ($profiles_query->have_posts())
-                            @php 
-                                $profiles_query->the_post(); 
-                                $paged = get_query_var('paged') ?: get_query_var('page') ?: 1;
-                                $isLcp = $profiles_query->current_post === 0 && $paged == 1;
-                            @endphp
-                            <x-profile-list-card :lcp="$isLcp" />
-                        @endwhile
-                        @php
-                            wp_reset_postdata();
-                        @endphp
-                    </div>
+                    @php
+                        wp_reset_postdata();
+                    @endphp
 
                     {{-- Пагинация --}}
                     <div class="mt-12 flex justify-center">
@@ -331,45 +292,4 @@
 
     </div>
 
-    {{-- СКРИПТ ПЕРЕКЛЮЧЕНИЯ --}}
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const btnGrid = document.getElementById('btn-view-grid');
-        const btnList = document.getElementById('btn-view-list');
-        const viewGrid = document.getElementById('view-grid');
-        const viewList = document.getElementById('view-list');
-
-        const activeClasses = ['bg-[#cd1d46]', 'text-white', 'shadow-sm'];
-        const inactiveClasses = ['text-[#cd1d46]', 'hover:text-white'];
-
-        function setView(mode) {
-            if (mode === 'grid') {
-                if(viewGrid) viewGrid.classList.remove('hidden');
-                if(viewList) viewList.classList.add('hidden');
-                
-                btnGrid.classList.add(...activeClasses);
-                btnGrid.classList.remove(...inactiveClasses);
-                btnList.classList.remove(...activeClasses);
-                btnList.classList.add(...inactiveClasses);
-            } else {
-                if(viewGrid) viewGrid.classList.add('hidden');
-                if(viewList) viewList.classList.remove('hidden');
-                
-                btnList.classList.add(...activeClasses);
-                btnList.classList.remove(...inactiveClasses);
-                btnGrid.classList.remove(...activeClasses);
-                btnGrid.classList.add(...inactiveClasses);
-            }
-            localStorage.setItem('catalogViewMode', mode);
-        }
-
-        if (btnGrid && btnList) {
-            btnGrid.addEventListener('click', () => setView('grid'));
-            btnList.addEventListener('click', () => setView('list'));
-        }
-
-        const savedMode = localStorage.getItem('catalogViewMode') || 'grid';
-        setView(savedMode);
-    });
-    </script>
 @endsection
