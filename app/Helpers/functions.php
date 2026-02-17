@@ -65,7 +65,7 @@ if (!function_exists('get_city_seo')) {
 
 /**
  * 7. Получить URL термина (услуги, категории) с учетом города
- * Пример: term_url($service) -> /astana/service/sex-toys/
+ * Пример: term_url($service) -> /balashiha/service/sex-toys/
  */
 if (!function_exists('term_url')) {
     function term_url($term, $city = null): string
@@ -76,7 +76,7 @@ if (!function_exists('term_url')) {
 
 /**
  * 8. Получить SEO данные таксономии с учетом города
- * Пример: get_taxonomy_seo('service', 'sex-toys', 'astana')
+ * Пример: get_taxonomy_seo('service', 'sex-toys', 'balashiha')
  */
 if (!function_exists('get_taxonomy_seo')) {
     function get_taxonomy_seo(string $taxonomy, string $term_slug, string $city_slug): array
@@ -87,7 +87,7 @@ if (!function_exists('get_taxonomy_seo')) {
 
 /**
  * 9. Получить SEO данные страницы с учетом города
- * Пример: get_page_seo(get_the_ID(), 'astana')
+ * Пример: get_page_seo(get_the_ID(), 'balashiha')
  */
 if (!function_exists('get_page_seo')) {
     function get_page_seo(int $page_id, string $city_slug): array
@@ -98,8 +98,8 @@ if (!function_exists('get_page_seo')) {
 
 /**
  * 10. Получить URL с префиксом текущего города
- * Если на главной странице (/), добавляет префикс Алматы
- * Пример: city_prefixed_url('/vip/') -> /almaty/vip/ (с главной), /astana/vip/ (из Астаны)
+ * Если на главной странице (/), добавляет префикс Москва
+ * Пример: city_prefixed_url('/vip/') -> /moskva/vip/ (с главной), /balashiha/vip/ (из Балашихи)
  */
 if (!function_exists('city_prefixed_url')) {
     function city_prefixed_url($path = ''): string
@@ -128,7 +128,7 @@ if (!function_exists('city_prefixed_url')) {
         }
         
         // Для остальных городов добавляем префикс если:
-        // 1. Мы на главной странице (добавляем Алматы)
+        // 1. Мы на главной странице (добавляем Москву)
         // 2. Город уже есть в текущем URL
         // 3. Если путь не начинается с / (корневой путь)
         if ($current_city && ($is_main_page || $has_city_in_url || $path !== '/')) {

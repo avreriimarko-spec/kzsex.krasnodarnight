@@ -447,7 +447,7 @@ class SchemaGenerator
                 'address' => [
                     '@type' => 'PostalAddress',
                     'streetAddress' => $address,
-                    'addressLocality' => 'Алматы',
+                    'addressLocality' => 'Москва',
                     'postalCode' => '050000',
                     'addressCountry' => 'KZ'
                 ]

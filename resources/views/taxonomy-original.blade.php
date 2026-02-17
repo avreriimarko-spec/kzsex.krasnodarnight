@@ -56,7 +56,7 @@
                         $profile_count = $queried_object->count;
                         
                         // Определяем текущий город
-                        $city_name = 'Алматы'; // по умолчанию
+                        $city_name = 'Москва'; // по умолчанию
                         $city_slug = get_query_var('city');
                         if ($city_slug) {
                             $city_term = get_term_by('slug', $city_slug, 'city');

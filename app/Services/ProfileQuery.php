@@ -146,7 +146,7 @@ class ProfileQuery
             $args['meta_query'][] = ['key' => 'price_price_1h', 'value' => 15000, 'compare' => '<=', 'type' => 'NUMERIC'];
         }
 
-        // Главная страница - только анкеты Алматы
+        // Главная страница - только анкеты Москвы
         $front_page_id = get_option('page_on_front');
         $is_front_page = (get_option('show_on_front') === 'page' && $front_page_id && is_front_page());
         

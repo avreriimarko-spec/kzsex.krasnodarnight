@@ -14,7 +14,7 @@ class UrlHelpers
 
     /**
      * Получить URL главной страницы города
-     * Пример: / (для дефолтного), /astana/ (для остальных)
+     * Пример: / (для дефолтного), /balashiha/ (для остальных)
      */
     public static function getCityUrl($city): string
     {
@@ -31,7 +31,7 @@ class UrlHelpers
     
     /**
      * Получить URL профиля с учетом города
-     * Пример: /almaty/profile/anna/ (для Алматы), /astana/profile/anna/ (для других городов)
+     * Пример: /moskva/profile/anna/ (для Москвы), /balashiha/profile/anna/ (для других городов)
      */
     public static function getProfileUrl($profile, $city = null): string
     {
@@ -66,9 +66,9 @@ class UrlHelpers
         }
 
         // 3. Формируем ссылку с учетом города
-        // Для Алматы всегда добавляем префикс almaty
+        // Для Москвы всегда добавляем префикс moskva
         if ($city_slug === self::DEFAULT_CITY_SLUG) {
-            // Для Алматы всегда выводим almaty/profile/slug
+            // Для Москвы всегда выводим moskva/profile/slug
             return home_url("/{$city_slug}/profile/{$profile_slug}/");
         } else {
             // Для остальных городов всегда добавляем префикс города
@@ -78,7 +78,7 @@ class UrlHelpers
     
     /**
      * Получить URL специальной страницы (карта, отзывы, каталог)
-     * Пример: /map/ (дефолт), /astana/map/
+     * Пример: /map/ (дефолт), /balashiha/map/
      */
     public static function getSpecialPageUrl($page_slug, $city = null): string
     {
@@ -101,7 +101,7 @@ class UrlHelpers
             // Всегда без города
             return home_url("/{$page_slug}/");
         } else {
-            // Для остальных страниц для дефолтного города (Алматы) не добавляем префикс
+            // Для остальных страниц для дефолтного города (Москва) не добавляем префикс
             if ($city_slug === self::DEFAULT_CITY_SLUG) {
                 return home_url("/{$page_slug}/");
             } else {
@@ -121,7 +121,7 @@ class UrlHelpers
     
     /**
      * Получить URL термина (услуги, категории) с учетом города
-     * Пример: /astana/service/sex-toys/, /almaty/service/relax/
+     * Пример: /balashiha/service/sex-toys/, /moskva/service/relax/
      */
     public static function getTermUrl($term, $city = null): string
     {
@@ -139,7 +139,7 @@ class UrlHelpers
     
     /**
      * Получить SEO данные таксономии с учетом города
-     * Пример: getTaxonomySeoData('service', 'sex-toys', 'astana')
+     * Пример: getTaxonomySeoData('service', 'sex-toys', 'balashiha')
      */
     public static function getTaxonomySeoData(string $taxonomy, string $term_slug, string $city_slug): array
     {
@@ -183,7 +183,7 @@ class UrlHelpers
     
     /**
      * Получить SEO данные страницы с учетом города
-     * Пример: getPageSeoData($page_id, 'astana')
+     * Пример: getPageSeoData($page_id, 'balashiha')
      */
     public static function getPageSeoData(int $page_id, string $city_slug): array
     {

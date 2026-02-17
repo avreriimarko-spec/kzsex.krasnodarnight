@@ -124,35 +124,35 @@ class ContentServiceProvider extends ServiceProvider
 
             // --- ПРАВИЛА ДЛЯ ВСЕХ ГОРОДОВ (с префиксом) ---
 
-            // Пагинация городов: /almaty/page/2/, /astana/page/3/
+            // Пагинация городов: /moskva/page/2/, /balashiha/page/3/
             add_rewrite_rule(
                 '^([^/]+)/page/([0-9]{1,})/?$',
                 'index.php?city=$matches[1]&paged=$matches[2]',
                 'top'
             );
 
-            // Пагинация страниц внутри городов: /aktobe/prostitutki-na-vyezd/page/2/, /almaty/vip/page/3/
+            // Пагинация страниц внутри городов: /podolsk/prostitutki-na-vyezd/page/2/, /moskva/vip/page/3/
             add_rewrite_rule(
                 '^([^/]+)/([^/]+)/page/([0-9]{1,})/?$',
                 'index.php?city=$matches[1]&pagename=$matches[2]&paged=$matches[3]',
                 'top'
             );
 
-            // Профиль в городе: /astana/profile/anna-123/, /almaty/profile/anna-123/
+            // Профиль в городе: /balashiha/profile/anna-123/, /moskva/profile/anna-123/
             add_rewrite_rule(
                 '^([^/]+)/profile/([^/]+)/?$',
                 'index.php?city=$matches[1]&post_type=profile&name=$matches[2]',
                 'top'
             );
 
-            // Услуги в городе: /astana/service/sex-toys/, /almaty/service/relax/
+            // Услуги в городе: /balashiha/service/sex-toys/, /moskva/service/relax/
             add_rewrite_rule(
                 '^([^/]+)/([^/]+)/([^/]+)/?$',
                 'index.php?city=$matches[1]&taxonomy=$matches[2]&term=$matches[3]',
                 'top'
             );
 
-            // Пагинация таксономий в городе: /almaty/service/group-sex/page/2/, /astana/hair_color/blond/page/3/
+            // Пагинация таксономий в городе: /moskva/service/group-sex/page/2/, /balashiha/hair_color/blond/page/3/
             add_rewrite_rule(
                 '^([^/]+)/([^/]+)/([^/]+)/page/([0-9]{1,})/?$',
                 'index.php?city=$matches[1]&taxonomy=$matches[2]&term=$matches[3]&paged=$matches[4]',
@@ -190,7 +190,7 @@ class ContentServiceProvider extends ServiceProvider
                 );
             }
 
-            // Спец. страницы без города (только для Алматы): /map/, /reviews/
+            // Спец. страницы без города (только для Москвы): /map/, /reviews/
             add_rewrite_rule(
                 '^(map|reviews)/?$',
                 'index.php?special_page=$matches[1]',
@@ -204,14 +204,14 @@ class ContentServiceProvider extends ServiceProvider
                 'top'
             );
 
-            // Страницы с городом (кроме спец. страниц и page): /astana/independent/, /almaty/vip/
+            // Страницы с городом (кроме спец. страниц и page): /balashiha/independent/, /moskva/vip/
             add_rewrite_rule(
                 '^([^/]+)/((?!page|profiles)[^/]+)/?$',
                 'index.php?city=$matches[1]&pagename=$matches[2]',
                 'top'
             );
 
-            // Главная страница города: /astana/, /almaty/
+            // Главная страница города: /balashiha/, /moskva/
             add_rewrite_rule(
                 '^([^/]+)/?$',
                 'index.php?city=$matches[1]',
@@ -255,6 +255,20 @@ class ContentServiceProvider extends ServiceProvider
         // Если кто-то введет /not-a-city/, правило '^([^/]+)/?$' сработает,
         // но мы должны проверить, есть ли такой город. Если нет — отдаем управление WP (ищем страницу).
         add_filter('request', function ($query_vars) {
+            $allowedCitySlugs = CityCatalog::getSlugs();
+
+            if (isset($query_vars['city'])) {
+                $requestedCitySlug = (string) $query_vars['city'];
+                $cityTerm = get_term_by('slug', $requestedCitySlug, 'city');
+
+                // Если термин города есть в БД, но его нет в CityCatalog — считаем URL устаревшим.
+                if ($cityTerm && !in_array($requestedCitySlug, $allowedCitySlugs, true)) {
+                    $query_vars['error'] = 404;
+                    unset($query_vars['city'], $query_vars['special_page']);
+                    return $query_vars;
+                }
+            }
+
             // Блокируем прямые запросы к профилям без города
             if (isset($query_vars['post_type']) && $query_vars['post_type'] === 'profile' && !isset($query_vars['city'])) {
                 // Это запрос к профилю без города - отдаем 404

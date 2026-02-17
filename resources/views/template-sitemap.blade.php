@@ -155,7 +155,7 @@
                         @if (!is_wp_error($cities))
                             @foreach ($cities as $city)
                                 @php
-                                    // Префикс всегда /slug, даже для Алматы
+                                    // Префикс всегда /slug, даже для Москвы
                                     $city_base = '/' . $city->slug;
                                 @endphp
                                 <div>
@@ -202,7 +202,7 @@
                                                     $path = str_replace(home_url(), '', $term_link);
                                                     
                                                     // Формируем ссылку: /city-slug/uslugi/anal/
-                                                    // Всегда добавляем город, включая Алматы
+                                                    // Всегда добавляем город, включая Москву
                                                     $final_link = home_url('/' . $city->slug . $path);
                                                 } else {
                                                     $final_link = '#';

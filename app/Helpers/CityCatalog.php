@@ -49,39 +49,72 @@ class CityCatalog
 
         $catalogHash = md5(wp_json_encode(self::CITIES));
         $storedHash = get_option('kzsex_city_catalog_hash');
-        if ($storedHash === $catalogHash) {
+        $needsSync = ($storedHash !== $catalogHash);
+
+        if ($needsSync) {
+            foreach (self::CITIES as $city) {
+                $name = (string) ($city['name'] ?? '');
+                $slug = (string) ($city['slug'] ?? '');
+                $population = (int) ($city['population'] ?? 0);
+
+                if ($name === '' || $slug === '') {
+                    continue;
+                }
+
+                $term = get_term_by('slug', $slug, 'city');
+                $termId = null;
+
+                if ($term instanceof WP_Term) {
+                    $termId = $term->term_id;
+                    if ($term->name !== $name) {
+                        wp_update_term($termId, 'city', ['name' => $name]);
+                    }
+                } else {
+                    $inserted = wp_insert_term($name, 'city', ['slug' => $slug]);
+                    if (!is_wp_error($inserted)) {
+                        $termId = (int) ($inserted['term_id'] ?? 0);
+                    }
+                }
+
+                if ($termId && function_exists('update_term_meta')) {
+                    update_term_meta($termId, 'city_population', $population);
+                }
+            }
+        }
+
+        self::removeObsoleteTerms();
+
+        if ($needsSync) {
+            update_option('kzsex_city_catalog_hash', $catalogHash, false);
+        }
+    }
+
+    private static function removeObsoleteTerms(): void
+    {
+        if (!function_exists('get_terms') || !function_exists('wp_delete_term')) {
             return;
         }
 
-        foreach (self::CITIES as $city) {
-            $name = (string) ($city['name'] ?? '');
-            $slug = (string) ($city['slug'] ?? '');
-            $population = (int) ($city['population'] ?? 0);
+        $allowedSlugs = array_fill_keys(self::getSlugs(), true);
+        $allCityTerms = get_terms([
+            'taxonomy' => 'city',
+            'hide_empty' => false,
+        ]);
 
-            if ($name === '' || $slug === '') {
+        if (is_wp_error($allCityTerms) || !is_array($allCityTerms)) {
+            return;
+        }
+
+        foreach ($allCityTerms as $term) {
+            if (!$term instanceof WP_Term) {
                 continue;
             }
 
-            $term = get_term_by('slug', $slug, 'city');
-            $termId = null;
-
-            if ($term instanceof WP_Term) {
-                $termId = $term->term_id;
-                if ($term->name !== $name) {
-                    wp_update_term($termId, 'city', ['name' => $name]);
-                }
-            } else {
-                $inserted = wp_insert_term($name, 'city', ['slug' => $slug]);
-                if (!is_wp_error($inserted)) {
-                    $termId = (int) ($inserted['term_id'] ?? 0);
-                }
+            if (isset($allowedSlugs[$term->slug])) {
+                continue;
             }
 
-            if ($termId && function_exists('update_term_meta')) {
-                update_term_meta($termId, 'city_population', $population);
-            }
+            wp_delete_term($term->term_id, 'city');
         }
-
-        update_option('kzsex_city_catalog_hash', $catalogHash, false);
     }
 }
