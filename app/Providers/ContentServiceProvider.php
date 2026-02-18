@@ -12,6 +12,8 @@ class ContentServiceProvider extends ServiceProvider
      */
     protected const TAXONOMIES = [
         'city' => ['slug' => 'city', 'name' => 'Города', 'post_type' => ['profile']],
+        'metro' => ['slug' => 'metro', 'name' => 'Метро', 'post_type' => ['profile']],
+        'district' => ['slug' => 'district', 'name' => 'Районы', 'post_type' => ['profile']],
         'services' => ['slug' => 'service', 'name' => 'Услуги', 'post_type' => ['profile']],
         'hair_color' => ['slug' => 'hair_color', 'name' => 'Цвет волос', 'post_type' => ['profile']],
         'hair_length' => ['slug' => 'hair_length', 'name' => 'Длина волос', 'post_type' => ['profile']],
