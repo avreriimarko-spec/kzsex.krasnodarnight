@@ -77,7 +77,7 @@ class ContentServiceProvider extends ServiceProvider
             $slug = $config['slug'];
 
             // Отключаем стандартный rewrite для city и vip, чтобы избежать конфликтов
-            $rewrite = ($key === 'city' || $key === 'vip') ? false : ['slug' => $slug, 'with_front' => false];
+            $rewrite = ($key === 'city' || $key === 'vip' || $key === 'metro' || $key === 'district') ? false : ['slug' => $slug, 'with_front' => false];
 
             register_taxonomy($config['slug'], $config['post_type'], [
                 'labels' => [
