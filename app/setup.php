@@ -161,6 +161,7 @@ add_action('widgets_init', function () {
 });
 
 require_once __DIR__ . '/Fields/MetroFields.php';
+require_once __DIR__ . '/Fields/DistrictFields.php';
 require_once __DIR__ . '/Fields/ProfileFields.php';
 require_once __DIR__ . '/Fields/PageSeoFields.php';
 require_once __DIR__ . '/Fields/PageFaqFields.php';
