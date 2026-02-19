@@ -12,7 +12,6 @@
         $excluded_slugs = [
             'sample-page',
             'vip', 
-            'cheap',
             'deshevye',
             'individualki', 
             'online', 
@@ -161,7 +160,7 @@
                                 <div>
                                     <h3 class="font-bold text-gray-900 uppercase mb-2 text-sm">{{ $city->name }}</h3>
                                     <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm">
-                                        <li><a href="{{ home_url($city_base . '/cheap/') }}" class="text-gray-600 hover:text-red-600 transition">Дешевые в {{ $city->name }}</a></li>
+                                        <li><a href="{{ home_url($city_base . '/deshevye/') }}" class="text-gray-600 hover:text-red-600 transition">Дешевые в {{ $city->name }}</a></li>
                                         <li><a href="{{ home_url($city_base . '/vip/') }}" class="text-gray-600 hover:text-red-600 transition">VIP в {{ $city->name }}</a></li>
                                         <li><a href="{{ home_url($city_base . '/individualki/') }}" class="text-gray-600 hover:text-red-600 transition">Независимые в {{ $city->name }}</a></li>
                                         <li><a href="{{ home_url($city_base . '/online/') }}" class="text-gray-600 hover:text-red-600 transition">Онлайн в {{ $city->name }}</a></li>

@@ -141,7 +141,7 @@
         !empty($price_item_a['is_active']) || !empty($price_item_b['is_active'])
     );
 
-    // Отдельный dropdown "Цена": только VIP + deshevye (или cheap как fallback)
+    // Отдельный dropdown "Цена": только VIP + deshevye
     $price_menu_vip_item = null;
     $price_menu_deshevye_item = null;
     $price_menu_vip_index = null;
@@ -163,7 +163,7 @@
             continue;
         }
 
-        if ($price_menu_deshevye_item === null && in_array($menu_slug, ['deshevye', 'cheap'], true)) {
+        if ($price_menu_deshevye_item === null && $menu_slug === 'deshevye') {
             $price_menu_deshevye_item = $menu_item;
             $price_menu_deshevye_index = $menu_index;
         }

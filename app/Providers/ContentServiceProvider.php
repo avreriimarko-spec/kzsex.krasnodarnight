@@ -166,7 +166,7 @@ class ContentServiceProvider extends ServiceProvider
 
             // Спец. страницы в городе (включая локализованные алиасы)
             add_rewrite_rule(
-                '^' . $knownCityCapture . '/(map|reviews|catalog|vip|individualki|cheap|deshevye)/?$',
+                '^' . $knownCityCapture . '/(map|reviews|catalog|vip|individualki|deshevye)/?$',
                 'index.php?city=$matches[1]&pagename=$matches[2]',
                 'top'
             );
@@ -175,7 +175,6 @@ class ContentServiceProvider extends ServiceProvider
                 'prostitutki-na-vyezd' => 'outcall',
                 'prostitutki-priem'    => 'incall',
                 'individualki'         => 'independent',
-                'deshevye'             => 'cheap',
                 'otzyvy'               => 'reviews',
                 'online'               => 'online',
             ];
@@ -239,7 +238,7 @@ class ContentServiceProvider extends ServiceProvider
                 if ($current_city) {
                     $target_slug = get_post_field('post_name', get_queried_object_id());
                     if (!$target_slug) {
-                        $target_slug = get_page_by_path('cheap') ? 'cheap' : 'deshevye';
+                        $target_slug = 'deshevye';
                     }
 
                     wp_redirect(home_url("/{$current_city->slug}/{$target_slug}/"), 301);
@@ -360,7 +359,6 @@ class ContentServiceProvider extends ServiceProvider
                 // Ищем шаблон для специальной страницы
                 $special_templates = [
                     'vip' => 'views/template-vip.blade.php',
-                    'cheap' => 'views/template-cheap.blade.php',
                     'deshevye' => 'views/template-cheap.blade.php',
                     'independent' => 'views/template-independent.blade.php',
                     'individualki' => 'views/template-independent.blade.php',

@@ -185,10 +185,7 @@ class ProfileQuery
             $args['tax_query'][] = ['taxonomy' => 'vip', 'field' => 'slug', 'terms' => ['vip'], 'operator' => 'IN'];
         }
 
-        if (
-            is_page_template('template-cheap.blade.php')
-            || in_array(get_query_var('special_page'), ['cheap', 'deshevye'], true)
-        ) {
+        if (is_page_template('template-cheap.blade.php') || get_query_var('special_page') === 'deshevye') {
             // Дешевые анкеты: ограничиваем верхнюю границу цены за 1 час
             $args['meta_query'][] = ['key' => 'price_price_1h', 'value' => 15000, 'compare' => '<=', 'type' => 'NUMERIC'];
         }
