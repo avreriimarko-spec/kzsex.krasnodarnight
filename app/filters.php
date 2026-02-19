@@ -23,8 +23,7 @@ add_action('pre_get_posts', function ($query) {
             ($query->is_home() || $query->is_archive()) && 
             !$query->is_post_type_archive('profile') &&
             !get_query_var('city') &&
-            !get_query_var('special_page') &&
-            !$query->get('taxonomy') // Исключаем все таксономии
+            !get_query_var('special_page')
         ) {
             $query->set('posts_per_page', 48);
         }
@@ -242,3 +241,16 @@ add_action('wp_head', function () {
 
     echo '<link rel="canonical" href="' . esc_url($currentUrl) . '" />' . "\n";
 }, 1);
+
+// Фильтр для исправления ссылок на первую страницу
+add_filter('paginate_links', function($link) {
+    if (!is_string($link) || $link === '') {
+        return $link;
+    }
+
+    // Убираем /page/1/ из ссылок
+    if (strpos($link, '/page/1/') !== false) {
+        $link = str_replace('/page/1/', '/', $link);
+    }
+    return $link;
+});

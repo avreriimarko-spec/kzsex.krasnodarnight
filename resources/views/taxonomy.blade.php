@@ -2,38 +2,45 @@
 
 @section('content')
     @php
-        // Получаем данные для фильтров как в ProfilesCatalog
-        $filter_data = [];
-        $taxonomies = [
-            'service'       => 'Услуги',
-            'hair_color'    => 'Цвет волос',
-            'breast_size'   => 'Размер груди',
-            'body_type'     => 'Телосложение',
-            'ethnicity'     => 'Типаж',
-            'nationality'   => 'Национальность',
-            'eye_color'     => 'Цвет глаз',
-            'hair_length'   => 'Длина волос',
-            'breast_type'   => 'Тип груди',
-            'intimate'      => 'Интимная стрижка',
-            'piercing'      => 'Пирсинг',
-            'travel'        => 'Путешествия',
-            'smoker'        => 'Курение',
-            'inoutcall'     => 'У себя / Выезд'
-        ];
-        
-        foreach ($taxonomies as $slug => $label) {
-            $terms = get_terms([
-                'taxonomy'   => $slug,
-                'hide_empty' => true,
-            ]);
+        $filter_data = get_transient('catalog_filter_data_cache');
 
-            if (!is_wp_error($terms) && !empty($terms)) {
-                $filter_data[$slug] = [
-                    'label' => $label,
-                    'terms' => $terms,
-                ];
+        if ($filter_data === false) {
+            // Получаем данные для фильтров как в ProfilesCatalog
+            $filter_data = [];
+            $taxonomies = [
+                'service'       => 'Услуги',
+                'hair_color'    => 'Цвет волос',
+                'breast_size'   => 'Размер груди',
+                'body_type'     => 'Телосложение',
+                'ethnicity'     => 'Типаж',
+                'nationality'   => 'Национальность',
+                'eye_color'     => 'Цвет глаз',
+                'hair_length'   => 'Длина волос',
+                'breast_type'   => 'Тип груди',
+                'intimate'      => 'Интимная стрижка',
+                'piercing'      => 'Пирсинг',
+                'travel'        => 'Путешествия',
+                'smoker'        => 'Курение',
+                'inoutcall'     => 'У себя / Выезд'
+            ];
+
+            foreach ($taxonomies as $slug => $label) {
+                $terms = get_terms([
+                    'taxonomy'   => $slug,
+                    'hide_empty' => true,
+                ]);
+    
+                if (!is_wp_error($terms) && !empty($terms)) {
+                    $filter_data[$slug] = [
+                        'label' => $label,
+                        'terms' => $terms,
+                    ];
+                }
             }
+
+            set_transient('catalog_filter_data_cache', $filter_data, 12 * HOUR_IN_SECONDS);
         }
+
     @endphp
     <div class="container mx-auto px-4 py-8">
 
@@ -167,16 +174,6 @@
                     @endphp
 
                     <div class="mt-12 flex justify-center">
-                        @php
-                            // Фильтр для исправления ссылок на первую страницу
-                            add_filter('paginate_links', function($link) {
-                                // Убираем /page/1/ из ссылок
-                                if (strpos($link, '/page/1/') !== false) {
-                                    $link = str_replace('/page/1/', '/', $link);
-                                }
-                                return $link;
-                            });
-                        @endphp
                         {!! paginate_links([
                             'base' => str_replace(999999999, '%#%', get_pagenum_link(999999999)),
                             'format' => '?paged=%#%',

@@ -27,10 +27,6 @@ class Profile extends Composer
         $globalTg = get_field('global_tg', 'option');
         $globalWa = get_field('global_wa', 'option');
         
-        // Отладка
-        error_log('Profile contacts: phone=' . $profilePhone . ', tg=' . $profileTg . ', wa=' . $profileWa);
-        error_log('Global contacts: phone=' . $globalPhone . ', tg=' . $globalTg . ', wa=' . $globalWa);
-
         return [
             'details'   => $this->details(),
             'badges'    => $this->badges(),

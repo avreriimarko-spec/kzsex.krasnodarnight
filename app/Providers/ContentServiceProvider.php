@@ -110,6 +110,9 @@ class ContentServiceProvider extends ServiceProvider
             $escapedCitySlugs = array_map(static function ($slug) {
                 return preg_quote((string) $slug, '/');
             }, $citySlugs);
+            $knownCityCapture = !empty($escapedCitySlugs)
+                ? '(' . implode('|', $escapedCitySlugs) . ')'
+                : '(a^)';
             $excludedCitiesPattern = !empty($escapedCitySlugs)
                 ? '(?:' . implode('|', $escapedCitySlugs) . ')(?:/|$)'
                 : 'a^';
@@ -128,42 +131,42 @@ class ContentServiceProvider extends ServiceProvider
 
             // Пагинация городов: /moskva/page/2/, /balashiha/page/3/
             add_rewrite_rule(
-                '^([^/]+)/page/([0-9]{1,})/?$',
+                '^' . $knownCityCapture . '/page/([0-9]{1,})/?$',
                 'index.php?city=$matches[1]&paged=$matches[2]',
                 'top'
             );
 
             // Пагинация страниц внутри городов: /podolsk/prostitutki-na-vyezd/page/2/, /moskva/vip/page/3/
             add_rewrite_rule(
-                '^([^/]+)/([^/]+)/page/([0-9]{1,})/?$',
+                '^' . $knownCityCapture . '/([^/]+)/page/([0-9]{1,})/?$',
                 'index.php?city=$matches[1]&pagename=$matches[2]&paged=$matches[3]',
                 'top'
             );
 
             // Профиль в городе: /balashiha/profile/anna-123/, /moskva/profile/anna-123/
             add_rewrite_rule(
-                '^([^/]+)/profile/([^/]+)/?$',
+                '^' . $knownCityCapture . '/profile/([^/]+)/?$',
                 'index.php?city=$matches[1]&post_type=profile&name=$matches[2]',
                 'top'
             );
 
             // Услуги в городе: /balashiha/service/sex-toys/, /moskva/service/relax/
             add_rewrite_rule(
-                '^([^/]+)/([^/]+)/([^/]+)/?$',
+                '^' . $knownCityCapture . '/([^/]+)/([^/]+)/?$',
                 'index.php?city=$matches[1]&taxonomy=$matches[2]&term=$matches[3]',
                 'top'
             );
 
             // Пагинация таксономий в городе: /moskva/service/group-sex/page/2/, /balashiha/hair_color/blond/page/3/
             add_rewrite_rule(
-                '^([^/]+)/([^/]+)/([^/]+)/page/([0-9]{1,})/?$',
+                '^' . $knownCityCapture . '/([^/]+)/([^/]+)/page/([0-9]{1,})/?$',
                 'index.php?city=$matches[1]&taxonomy=$matches[2]&term=$matches[3]&paged=$matches[4]',
                 'top'
             );
 
             // Спец. страницы в городе (включая локализованные алиасы)
             add_rewrite_rule(
-                '^([^/]+)/(map|reviews|catalog|vip|individualki|cheap|deshevye)/?$',
+                '^' . $knownCityCapture . '/(map|reviews|catalog|vip|individualki|cheap|deshevye)/?$',
                 'index.php?city=$matches[1]&pagename=$matches[2]',
                 'top'
             );
@@ -180,13 +183,13 @@ class ContentServiceProvider extends ServiceProvider
             foreach ($city_special_pages as $slug => $key) {
                 $slug_regex = preg_quote($slug, '/');
                 add_rewrite_rule(
-                    '^([^/]+)/' . $slug_regex . '/?$',
+                    '^' . $knownCityCapture . '/' . $slug_regex . '/?$',
                     'index.php?city=$matches[1]&pagename=' . $slug,
                     'top'
                 );
                 // Поддержка пагинации для этих страниц: /city/slug/page/2/
                 add_rewrite_rule(
-                    '^([^/]+)/' . $slug_regex . '/page/([0-9]{1,})/?$',
+                    '^' . $knownCityCapture . '/' . $slug_regex . '/page/([0-9]{1,})/?$',
                     'index.php?city=$matches[1]&pagename=' . $slug . '&paged=$matches[2]',
                     'top'
                 );
@@ -208,14 +211,14 @@ class ContentServiceProvider extends ServiceProvider
 
             // Страницы с городом (кроме спец. страниц и page): /balashiha/independent/, /moskva/vip/
             add_rewrite_rule(
-                '^([^/]+)/((?!page|profiles)[^/]+)/?$',
+                '^' . $knownCityCapture . '/((?!page|profiles)[^/]+)/?$',
                 'index.php?city=$matches[1]&pagename=$matches[2]',
                 'top'
             );
 
             // Главная страница города: /balashiha/, /moskva/
             add_rewrite_rule(
-                '^([^/]+)/?$',
+                '^' . $knownCityCapture . '/?$',
                 'index.php?city=$matches[1]',
                 'top'
             );
