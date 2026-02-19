@@ -148,7 +148,7 @@ add_filter('rank_math/frontend/title', function ($title) {
 add_action('wp_head', function () {
     // ВАЖНО: Если это пагинация (2, 3 страница...), description НЕ выводим
     if (is_paged()) {
-        return;
+        return false;
     }
 
     $desc = '';
@@ -221,10 +221,20 @@ add_action('wp_head', function () {
         }
     }
 
-    if ($desc) {
-        echo '<meta name="description" content="' . esc_attr($desc) . '" />' . "\n";
-    }
+    return $desc ? $desc : $default_desc;
 }, 1);
+
+// Теперь подключаем нашу функцию к SEO-плагинам через фильтры
+
+// Если используется Rank Math SEO
+add_filter('rank_math/frontend/description', function ($description) {
+    return get_custom_meta_description($description);
+}, 20);
+
+// Если используется Yoast SEO
+add_filter('wpseo_metadesc', function ($description) {
+    return get_custom_meta_description($description);
+}, 20);
 
 /**
  * 3. Логика CANONICAL
