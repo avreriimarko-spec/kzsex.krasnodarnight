@@ -187,6 +187,7 @@
             'parameters'    => 'Параметры',
             'metadata'      => 'Метаданные',
             'metro'         => 'Метро',
+            'district'      => 'Районы',
             'appearance'    => 'Внешность',
             'place'         => 'Место',
         ];
