@@ -28,6 +28,7 @@ class ProfileQuery
         'parameters',
         'metadata',
         'metro',
+        'district',
         'appearance',
         'place',
     ];

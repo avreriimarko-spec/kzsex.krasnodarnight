@@ -36,6 +36,8 @@ class ProfilesCatalog extends Composer
         'what'          => 'Что',
         'parameters'    => 'Параметры',
         'metadata'      => 'Метаданные',
+        'metro'         => 'Метро',
+        'district'      => 'Районы'
     ];
 
     public function with()
