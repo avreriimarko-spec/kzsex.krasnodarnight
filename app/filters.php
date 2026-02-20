@@ -264,3 +264,33 @@ add_filter('paginate_links', function($link) {
     }
     return $link;
 });
+
+/**
+ * AJAX обработчик для подгрузки блога.
+ * Аналог создания /api/blog маршрута во фронтенде.
+ */
+add_action('template_redirect', function () {
+    if (isset($_GET['ajax_blog']) && $_GET['ajax_blog'] === '1') {
+        $paged = isset($_GET['paged']) ? (int)$_GET['paged'] : 1;
+        
+        $args = [
+            'post_type'      => 'blog',
+            'post_status'    => 'publish',
+            'posts_per_page' => 12,
+            'paged'          => $paged,
+        ];
+
+        $q = new \WP_Query($args);
+
+        if ($q->have_posts()) {
+            while ($q->have_posts()) {
+                $q->the_post();
+                // Рендерим только компонент карточки и отдаем готовый HTML
+                echo \Roots\view('components.blog-card', ['post' => get_post()])->render();
+            }
+        }
+        
+        wp_reset_postdata();
+        exit; // Прерываем дальнейшую загрузку WP (не выводим header/footer)
+    }
+});
