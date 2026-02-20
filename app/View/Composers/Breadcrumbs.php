@@ -19,134 +19,87 @@ class Breadcrumbs extends Composer
 
     private function getCrumbs()
     {
-        $crumbs = [];
-
-        // 1. Главная (Всегда первая)
-        $crumbs[] = [
-            'label' => 'Главная',
-            'url'   => home_url('/'),
-            'current' => false,
+        $opt = [
+            'home_label' => 'Главная',
+            'blog_label' => 'Блог',
         ];
 
-        // Получаем ID страницы Блога (для ссылок)
-        $blogPageId = get_option('page_for_posts');
-        $blogTitle  = $blogPageId ? get_the_title($blogPageId) : 'Блог';
-        $blogUrl    = $blogPageId ? get_permalink($blogPageId) : home_url('/blog/');
-
-        // --- ЛОГИКА ПО ТИПАМ СТРАНИЦ ---
-
-        // 2. Главная страница Блога
-        if (is_home()) {
-            $crumbs[] = [
-                'label' => $blogTitle,
-                'url'   => '',
-                'current' => true,
-            ];
+        $blogUrl = get_post_type_archive_link('blog');
+        if (!$blogUrl) {
+            $page = get_page_by_path('blog', OBJECT, 'page');
+            $blogUrl = ($page && !is_wp_error($page)) ? get_permalink($page) : home_url('/blog/');
         }
 
-        // 3. Одиночная статья (Post)
-        elseif (is_singular('post')) {
-            // Ссылка на Блог
-            if ($blogPageId) {
-                $crumbs[] = [
-                    'label' => $blogTitle,
-                    'url'   => $blogUrl,
-                    'current' => false
-                ];
+        $hubSeg = (string) get_query_var('city');
+        $hubTerm = $hubSeg !== '' ? get_term_by('slug', $hubSeg, 'city') : null;
+        $hubName = ($hubTerm && !is_wp_error($hubTerm)) ? $hubTerm->name : '';
+        $hubUrl = ($hubSeg !== '' && $hubName !== '') ? home_url('/' . $hubSeg . '/') : '';
+        $isHubRoot = $hubSeg !== ''
+            && !get_query_var('pagename')
+            && !get_query_var('taxonomy')
+            && !get_query_var('term')
+            && !is_singular();
+
+        $crumbs = [];
+        $crumbs[] = ['label' => $opt['home_label'], 'url' => home_url('/')];
+
+        $addHub = static function (array &$arr) use ($hubSeg, $hubName, $hubUrl, $isHubRoot): void {
+            if (!$hubSeg || $isHubRoot || !$hubName || !$hubUrl) {
+                return;
             }
 
-            // Рубрика (первая)
-            $cats = get_the_category();
-            if ($cats && !is_wp_error($cats)) {
-                $crumbs[] = [
-                    'label' => $cats[0]->name,
-                    'url'   => get_category_link($cats[0]->term_id),
-                    'current' => false
-                ];
-            }
+            $arr[] = ['label' => $hubName, 'url' => $hubUrl];
+        };
 
-            // Название статьи
-            $crumbs[] = [
-                'label' => get_the_title(),
-                'url'   => '',
-                'current' => true,
-            ];
-        }
-
-        // 4. Одиночная Анкета (Profile)
-        elseif (is_singular('profile')) {
-            $crumbs[] = [
-                'label' => get_the_title(),
-                'url'   => '',
-                'current' => true,
-            ];
-        }
-
-        // 5. Обычные страницы (Page)
-        elseif (is_page()) {
-            global $post;
-            if ($post->post_parent) {
-                $parent_id  = $post->post_parent;
-                $breadcrumbs = [];
-                while ($parent_id) {
-                    $page = get_post($parent_id);
-                    $breadcrumbs[] = [
-                        'label' => get_the_title($page->ID),
-                        'url'   => get_permalink($page->ID),
-                        'current' => false
-                    ];
-                    $parent_id = $page->post_parent;
+        if (is_singular('blog')) {
+            $crumbs[] = ['label' => $opt['blog_label'], 'url' => $blogUrl];
+            $crumbs[] = ['label' => get_the_title(), 'url' => ''];
+        } elseif (is_post_type_archive('blog')) {
+            $crumbs[] = ['label' => $opt['blog_label'], 'url' => ''];
+        } else {
+            if (is_page()) {
+                $post = get_post();
+                $anc = $post ? array_reverse(get_post_ancestors($post)) : [];
+                if (!empty($anc)) {
+                    foreach ($anc as $aid) {
+                        $crumbs[] = ['label' => get_the_title($aid), 'url' => get_permalink($aid)];
+                    }
+                    $crumbs[] = ['label' => get_the_title($post), 'url' => ''];
+                } else {
+                    if ($isHubRoot) {
+                        $crumbs[] = ['label' => $hubName ?: get_the_title($post), 'url' => ''];
+                    } else {
+                        $addHub($crumbs);
+                        $crumbs[] = ['label' => get_the_title($post), 'url' => ''];
+                    }
                 }
-                $crumbs = array_merge($crumbs, array_reverse($breadcrumbs));
+            } elseif (is_singular()) {
+                $addHub($crumbs);
+                $crumbs[] = ['label' => get_the_title(), 'url' => ''];
+            } else {
+                $addHub($crumbs);
+                if (is_404()) {
+                    $crumbs[] = ['label' => '404', 'url' => ''];
+                } elseif (is_search()) {
+                    $crumbs[] = ['label' => 'Поиск: ' . get_search_query(), 'url' => ''];
+                } elseif (is_archive()) {
+                    $crumbs[] = ['label' => preg_replace('/^[^:]+: /', '', strip_tags(get_the_archive_title())), 'url' => ''];
+                } elseif (is_home()) {
+                    $crumbs[] = ['label' => strip_tags(single_post_title('', false)), 'url' => ''];
+                } else {
+                    $crumbs[] = ['label' => get_the_title(), 'url' => ''];
+                }
             }
-
-            $crumbs[] = [
-                'label' => get_the_title(),
-                'url'   => '',
-                'current' => true,
-            ];
         }
 
-        // 6. Архивы (Рубрики, Теги, Таксономии)
-        elseif (is_archive()) {
-            // Если это стандартная Рубрика или Тег (часть блога) -> добавляем родителя "Блог"
-            if ((is_category() || is_tag()) && $blogPageId) {
-                $crumbs[] = [
-                    'label' => $blogTitle,
-                    'url'   => $blogUrl,
-                    'current' => false
-                ];
-            }
+        return array_map(static function (array $crumb): array {
+            $url = $crumb['url'] ?? '';
 
-            // Получаем чистый заголовок архива
-            $title = single_term_title('', false);
-            if (!$title) {
-                $title = get_the_archive_title();
-                $title = preg_replace('/^[\w\s]+:\s/iu', '', strip_tags($title));
-            }
-
-            $crumbs[] = [
-                'label' => $title,
-                'url'   => '',
-                'current' => true,
+            return [
+                'label' => (string) ($crumb['label'] ?? ''),
+                'url' => (string) $url,
+                'current' => $url === '',
             ];
-        }
-
-        // 7. Поиск / 404
-        elseif (is_search()) {
-            $crumbs[] = [
-                'label' => 'Поиск: ' . get_search_query(),
-                'url'   => '',
-                'current' => true,
-            ];
-        } elseif (is_404()) {
-            $crumbs[] = [
-                'label' => 'Ошибка 404',
-                'url'   => '',
-                'current' => true,
-            ];
-        }
-
-        return $crumbs;
+        }, $crumbs);
     }
 }

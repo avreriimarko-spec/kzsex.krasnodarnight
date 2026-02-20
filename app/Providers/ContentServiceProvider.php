@@ -69,6 +69,21 @@ class ContentServiceProvider extends ServiceProvider
             'menu_icon' => 'dashicons-heart',
             'show_in_rest' => true,
         ]);
+
+        register_post_type('blog', [
+            'labels' => [
+                'name' => 'Блог',
+                'singular_name' => 'Статья',
+                'menu_name' => 'Блог',
+                'add_new' => 'Добавить статью',
+            ],
+            'public' => true,
+            'has_archive' => false,
+            'rewrite' => ['slug' => 'blog', 'with_front' => false],
+            'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'comments', 'custom-fields', 'page-attributes'],
+            'menu_icon' => 'dashicons-welcome-write-blog',
+            'show_in_rest' => true,
+        ]);
     }
 
     protected function registerTaxonomies(): void

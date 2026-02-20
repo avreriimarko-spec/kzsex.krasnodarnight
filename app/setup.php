@@ -163,6 +163,7 @@ add_action('widgets_init', function () {
 require_once __DIR__ . '/Fields/MetroFields.php';
 require_once __DIR__ . '/Fields/DistrictFields.php';
 require_once __DIR__ . '/Fields/ProfileFields.php';
+require_once __DIR__ . '/Fields/BlogFields.php';
 require_once __DIR__ . '/Fields/PageSeoFields.php';
 require_once __DIR__ . '/Fields/PageFaqFields.php';
 require_once __DIR__ . '/Fields/PageWorkFields.php';
@@ -175,3 +176,54 @@ require_once __DIR__ . '/Fields/PageCitySpecificFields.php';
 require_once __DIR__ . '/Fields/PageCitySpecificFieldsJS.php';
 require_once __DIR__ . '/Fields/TaxonomyCitySpecificFields.php';
 require_once __DIR__ . '/Fields/TaxonomyCitySpecificFieldsJS.php';
+
+/**
+ * Для новых записей блога предустанавливаем шаблон "Статья".
+ */
+add_action('admin_footer-post-new.php', static function (): void {
+    $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+    if (!$screen || $screen->post_type !== 'blog') {
+        return;
+    }
+    ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var select = document.getElementById('page_template');
+        if (!select) return;
+
+        var target = 'template-blog-article.blade.php';
+        var hasTarget = !!select.querySelector('option[value="' + target + '"]');
+        if (!hasTarget) return;
+
+        if (select.value === 'default' || !select.value) {
+            select.value = target;
+            select.dispatchEvent(new Event('change', {bubbles: true}));
+        }
+    });
+    </script>
+    <?php
+});
+
+add_action('save_post_blog', static function (int $postId, \WP_Post $post): void {
+    if (wp_is_post_revision($postId) || wp_is_post_autosave($postId)) {
+        return;
+    }
+
+    if ($post->post_type !== 'blog') {
+        return;
+    }
+
+    $targetTemplate = 'template-blog-article.blade.php';
+    $postedTemplate = isset($_POST['page_template'])
+        ? sanitize_text_field(wp_unslash((string) $_POST['page_template']))
+        : '';
+
+    $currentTemplate = (string) get_post_meta($postId, '_wp_page_template', true);
+    if ($currentTemplate === '') {
+        $currentTemplate = 'default';
+    }
+
+    if (($postedTemplate === '' || $postedTemplate === 'default') && $currentTemplate === 'default') {
+        update_post_meta($postId, '_wp_page_template', $targetTemplate);
+    }
+}, 10, 2);

@@ -294,3 +294,66 @@ add_action('template_redirect', function () {
         exit; // Прерываем дальнейшую загрузку WP (не выводим header/footer)
     }
 });
+
+/**
+ * AJAX обработчик отзывов к статьям блога.
+ */
+$blogReviewHandler = static function () {
+    if (empty($_POST['nonce']) || !wp_verify_nonce((string) $_POST['nonce'], 'blog_review_nonce')) {
+        wp_send_json_error(['message' => 'Неверный токен безопасности. Обновите страницу.'], 400);
+    }
+
+    // Простая honeypot-защита.
+    if (!empty($_POST['website'])) {
+        wp_send_json_error(['message' => 'Спам-блокировка.'], 400);
+    }
+
+    $postId = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
+    if ($postId <= 0 || get_post_type($postId) !== 'blog') {
+        wp_send_json_error(['message' => 'Некорректная статья.'], 400);
+    }
+
+    $name = isset($_POST['name']) ? sanitize_text_field(wp_unslash((string) $_POST['name'])) : '';
+    $email = isset($_POST['email']) ? sanitize_email(wp_unslash((string) $_POST['email'])) : '';
+    $rating = isset($_POST['rating']) ? (int) $_POST['rating'] : 0;
+    $message = isset($_POST['message']) ? trim(wp_kses_post(wp_unslash((string) $_POST['message']))) : '';
+
+    if ($name === '' || $message === '' || $rating < 1 || $rating > 5) {
+        wp_send_json_error(['message' => 'Заполните имя, сообщение и оценку.'], 400);
+    }
+
+    if ($email === '' || !is_email($email)) {
+        wp_send_json_error(['message' => 'Укажите корректный e-mail.'], 400);
+    }
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    $antiFloodKey = 'blog_rev_last_' . md5((string) $ip);
+    $lastRequest = (int) get_transient($antiFloodKey);
+
+    if ($lastRequest && (time() - $lastRequest) < 30) {
+        wp_send_json_error(['message' => 'Слишком часто. Попробуйте чуть позже.'], 429);
+    }
+
+    $commentId = wp_insert_comment(wp_slash([
+        'comment_post_ID' => $postId,
+        'comment_author' => $name,
+        'comment_author_email' => $email,
+        'comment_content' => $message,
+        'comment_type' => '',
+        'comment_approved' => 0,
+        'comment_author_IP' => $ip,
+        'user_id' => get_current_user_id(),
+    ]));
+
+    if (is_wp_error($commentId) || !$commentId) {
+        wp_send_json_error(['message' => 'Не удалось сохранить отзыв.'], 500);
+    }
+
+    update_comment_meta($commentId, '_rating', max(1, min(5, $rating)));
+    set_transient($antiFloodKey, time(), 30);
+
+    wp_send_json_success(['message' => 'Спасибо! Ваш отзыв отправлен на модерацию.']);
+};
+
+add_action('wp_ajax_blog_add_review', $blogReviewHandler);
+add_action('wp_ajax_nopriv_blog_add_review', $blogReviewHandler);
