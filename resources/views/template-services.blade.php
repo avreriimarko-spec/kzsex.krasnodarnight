@@ -36,7 +36,7 @@
 
                 {{-- ВЕРХНЯЯ ПАНЕЛЬ --}}
                 <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
-                    <h2 class="text-xl md:text-2xl font-bold text-white uppercase tracking-wide">
+                    <h2 class="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
                         Найдено услуг: {{ $services && !is_wp_error($services) ? count($services) : 0 }}
                     </h2>
                 </div>
@@ -49,7 +49,7 @@
                                class="group block bg-black border border-[#cd1d46] p-4 text-center hover:bg-[#cd1d46] transition-all duration-300 transform hover:scale-105">
                                 
                                 
-                                <h3 class="text-white font-bold text-sm md:text-base uppercase tracking-wide mb-2 group-hover:text-white">
+                                <h3 class="text-black font-bold text-sm md:text-base uppercase tracking-wide mb-2 group-hover:text-black">
                                     {{ $service->name }}
                                 </h3>
                                 

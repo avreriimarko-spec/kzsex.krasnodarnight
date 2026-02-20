@@ -18,16 +18,16 @@
         
         {{-- ШАПКА МОБИЛЬНАЯ --}}
         <div class="flex items-center justify-between pb-6 mb-2 lg:hidden border-b border-gray-800 shrink-0">
-            <span class="text-xl font-bold text-white uppercase tracking-wider">Фильтры</span>
+            <span class="text-xl font-bold text-black uppercase tracking-wider">Фильтры</span>
             {{-- Кнопка закрытия крупнее для удобства --}}
-            <button type="button" onclick="closeMobileFilter(this)" class="text-[#cd1d46] hover:text-white p-1">
+            <button type="button" onclick="closeMobileFilter(this)" class="text-[#cd1d46] hover:text-black p-1">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
         </div>
 
         {{-- ЗАГОЛОВОК ДЕСКТОПНЫЙ --}}
         <div class="hidden lg:block pb-5 border-b border-gray-800 mb-4">
-            <span class="text-lg font-bold text-white uppercase tracking-widest flex items-center gap-2">
+            <span class="text-lg font-bold text-black uppercase tracking-widest flex items-center gap-2">
                 <svg class="w-5 h-5 text-[#cd1d46]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
                 Фильтры
 </span>
@@ -39,7 +39,7 @@
             
             {{-- 1. ЦЕНА (РАДИО) --}}
             <div>
-                <h3 class="text-base font-bold text-white mb-4 uppercase tracking-wide">Цена</h3>
+                <h3 class="text-base font-bold text-black mb-4 uppercase tracking-wide">Цена</h3>
                 
                 <input type="hidden" name="price_min" value="{{ request('price_min') }}" class="price-min-input">
                 <input type="hidden" name="price_max" value="{{ request('price_max') }}" class="price-max-input">
@@ -68,7 +68,7 @@
                                 <div class="w-3 h-3  bg-[#cd1d46] transition-transform duration-200 transform {{ $isActive ? 'scale-100' : 'scale-0' }} radio-dot"></div>
                             </div>
                             
-                            <span class="text-base text-[#cd1d46] group-hover:text-white transition-colors radio-label {{ $isActive ? 'text-white font-medium' : '' }}">
+                            <span class="text-base text-[#cd1d46] group-hover:text-black transition-colors radio-label {{ $isActive ? 'text-black font-medium' : '' }}">
                                 {{ $range['label'] }}
                             </span>
                         </div>
@@ -80,7 +80,7 @@
 
             {{-- 2. ВОЗРАСТ (РАДИО) --}}
             <div>
-                <h3 class="text-base font-bold text-white mb-4 uppercase tracking-wide">Возраст</h3>
+                <h3 class="text-base font-bold text-black mb-4 uppercase tracking-wide">Возраст</h3>
                 
                 <input type="hidden" name="age_min" value="{{ request('age_min') }}" class="age-min-input">
                 <input type="hidden" name="age_max" value="{{ request('age_max') }}" class="age-max-input">
@@ -105,7 +105,7 @@
                             <div class="w-5 h-5  border-2 border-gray-600 flex items-center justify-center mr-3 group-hover:border-[#cd1d46] transition-colors radio-circle {{ $isActive ? 'border-[#cd1d46]' : '' }}">
                                 <div class="w-3 h-3  bg-[#cd1d46] transition-transform duration-200 transform {{ $isActive ? 'scale-100' : 'scale-0' }} radio-dot"></div>
                             </div>
-                            <span class="text-base text-[#cd1d46] group-hover:text-white transition-colors radio-label {{ $isActive ? 'text-white font-medium' : '' }}">
+                            <span class="text-base text-[#cd1d46] group-hover:text-black transition-colors radio-label {{ $isActive ? 'text-black font-medium' : '' }}">
                                 {{ $range['label'] }}
                             </span>
                         </div>
@@ -126,7 +126,7 @@
                 <div class="filter-group">
                     <button type="button" onclick="toggleFilterSection(this)" class="flex items-center justify-between w-full mb-4 group">
                         {{-- ИСПРАВЛЕНИЕ: h3 заменен на span, так как h3 нельзя вкладывать в button --}}
-                        <span class="text-base font-bold text-white uppercase tracking-wide group-hover:text-[#cd1d46] transition-colors">{{ $data['label'] }}</span>
+                        <span class="text-base font-bold text-black uppercase tracking-wide group-hover:text-[#cd1d46] transition-colors">{{ $data['label'] }}</span>
                         <svg class="w-4 h-4 text-[#cd1d46] transform transition-transform duration-200 filter-arrow {{ $isOpen ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
@@ -144,7 +144,7 @@
                                     <span class="absolute inset-0 m-auto w-2.5 h-2.5  bg-[#cd1d46] opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></span>
                                 </span>
                                 
-                                <span class="text-base text-[#cd1d46] group-hover:text-white transition-colors {{ in_array($term->slug, $selected) ? 'text-white font-medium' : '' }}">
+                                <span class="text-base text-[#cd1d46] group-hover:text-black transition-colors {{ in_array($term->slug, $selected) ? 'text-black font-medium' : '' }}">
                                     {{ $term->name }}
                                 </span>
                             </label>
@@ -163,13 +163,13 @@
         {{-- Вернул высоту кнопке (py-4) и отступ сверху (pt-6) --}}
         <div class="pt-6 mt-auto border-t border-gray-800 bg-[#050505] shrink-0 space-y-4 pb-6 lg:pb-0">
             <button type="button" onclick="this.closest('aside').querySelector('form').submit()"
-                class="w-full bg-[#cd1d46] hover:bg-[#b71833] text-white font-bold uppercase text-sm py-4 rounded tracking-widest transition-transform active:scale-95 shadow-lg shadow-[#cd1d46]/20">
+                class="w-full bg-[#cd1d46] hover:bg-[#b71833] text-black font-bold uppercase text-sm py-4 rounded tracking-widest transition-transform active:scale-95 shadow-lg shadow-[#cd1d46]/20">
                 Применить фильтр
             </button>
             
             @if (request()->query())
                 <a href="{{ url()->current() }}"
-                   class="block w-full text-center text-xs text-[#cd1d46] hover:text-white uppercase tracking-widest transition-colors pb-2">
+                   class="block w-full text-center text-xs text-[#cd1d46] hover:text-black uppercase tracking-widest transition-colors pb-2">
                    × Сбросить всё
                 </a>
             @endif
@@ -222,7 +222,7 @@
             const dot = el.querySelector('.radio-dot');
             dot.classList.remove('scale-100');
             dot.classList.add('scale-0');
-            el.querySelector('.radio-label').classList.remove('text-white', 'font-medium');
+            el.querySelector('.radio-label').classList.remove('text-black', 'font-medium');
         });
 
         if (!isReset) {
@@ -230,7 +230,7 @@
             const activeDot = element.querySelector('.radio-dot');
             activeDot.classList.remove('scale-0');
             activeDot.classList.add('scale-100');
-            element.querySelector('.radio-label').classList.add('text-white', 'font-medium');
+            element.querySelector('.radio-label').classList.add('text-black', 'font-medium');
         }
     }
 

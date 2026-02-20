@@ -109,7 +109,7 @@
             <div class="text-center mb-8">
                 <div class="inline-flex items-center gap-2 bg-[#0f0f0f] border border-[#cd1d46] px-6 py-3">
                     <span class="w-3 h-3 bg-green-500  shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
-                    <span class="text-white font-bold">
+                    <span class="text-black font-bold">
                         {{ $online_profiles->found_posts }} моделей онлайн
                     </span>
                 </div>
@@ -118,12 +118,12 @@
             @if($online_profiles->have_posts())
                 {{-- Верхняя панель с количеством --}}
                 <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
-                    <h2 class="text-xl md:text-2xl font-bold text-white uppercase tracking-wide">
+                    <h2 class="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
                         Найдено анкет: {{ $online_profiles->found_posts }}
     </h2>
                 </div>
                 
-                <ul class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                <ul class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10">
                     @while($online_profiles->have_posts())
                         @php
                             $online_profiles->the_post();
@@ -168,7 +168,7 @@
                                 // Основной диапазон страниц
                                 for ($i = $start_page; $i <= $end_page; $i++) {
                                     if ($i == $current_page) {
-                                        echo '<div class="page-numbers"><span class="bg-[#cd1d46] text-white border-[#cd1d46]">' . $i . '</span></div>';
+                                        echo '<div class="page-numbers"><span class="bg-[#cd1d46] text-black border-[#cd1d46]">' . $i . '</span></div>';
                                     } else {
                                         echo '<div class="page-numbers"><a href="' . get_pagenum_link($i) . '">' . $i . '</a></div>';
                                     }
@@ -202,12 +202,12 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                             </svg>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-4">Сейчас нет онлайн моделей</h3>
+                        <h3 class="text-2xl font-bold text-black mb-4">Сейчас нет онлайн моделей</h3>
                         <p class="text-gray-400 mb-8">
                             В данный момент ни одна модель не доступна для общения в {{ $city_name }}. 
                             Попробуйте зайти позже или посмотрите всех моделей.
                         </p>
-                        <a href="{{ get_home_url() }}" class="inline-flex items-center gap-2 bg-[#cd1d46] text-white hover:!text-white px-6 py-3  font-bold hover:bg-[#b01530] transition-colors">
+                        <a href="{{ get_home_url() }}" class="inline-flex items-center gap-2 bg-[#cd1d46] text-black hover:!text-black px-6 py-3  font-bold hover:bg-[#b01530] transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                             </svg>

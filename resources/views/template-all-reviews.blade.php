@@ -33,7 +33,7 @@
                                      class="w-16 h-16  object-cover flex-shrink-0 border-2 border-[#cd1d46]">
                             @else
                                 <div class="w-16 h-16  bg-[#cd1d46] flex-shrink-0 flex items-center justify-center border-2 border-[#cd1d46]">
-                                    <span class="text-white text-xl font-bold">?</span>
+                                    <span class="text-black text-xl font-bold">?</span>
                                 </div>
                             @endif
                             
@@ -41,7 +41,7 @@
                                 <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
                                     <div class="mb-4 md:mb-0">
                                         <h3 class="font-bold text-lg uppercase tracking-wide">
-                                            <a href="{{ $review['profile_url'] }}" class="text-white hover:text-[#cd1d46] transition-colors">
+                                            <a href="{{ $review['profile_url'] }}" class="text-black hover:text-[#cd1d46] transition-colors">
                                                 {{ $review['profile_title'] }}
                                             </a>
                                         </h3>
@@ -75,7 +75,7 @@
                                                 @endfor
                                             </div>
                                             {{-- Выводим число, например "4.8/5" --}}
-                                            <span class="text-white font-bold text-sm leading-none pt-0.5">
+                                            <span class="text-black font-bold text-sm leading-none pt-0.5">
                                                 {{ number_format($finalRating, 1) }}/5
                                             </span>
                                         </div>
@@ -96,7 +96,7 @@
             
             <div class="mt-8 text-center border-t border-gray-800 pt-6">
                 <p class="text-sm text-gray-500">
-                    Всего отзывов: <span class="text-white font-bold">{{ count($allReviews) }}</span>
+                    Всего отзывов: <span class="text-black font-bold">{{ count($allReviews) }}</span>
                 </p>
             </div>
         @endif

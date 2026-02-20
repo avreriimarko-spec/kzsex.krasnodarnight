@@ -1,158 +1,214 @@
 @props(['post', 'details' => [], 'badges' => [], 'lcp' => false])
 
 @php
-    // --- НАСТРОЙКИ ПРОИЗВОДИТЕЛЬНОСТИ ---
     $loadingAttr = $lcp ? 'eager' : 'lazy';
     $fetchPriorityAttr = $lcp ? 'high' : 'low';
-    $decodingLcp = 'auto';
-    $decodingLazy = 'async';
-    $decodingAttr = $lcp ? $decodingLcp : $decodingLazy;
-    
-    // Получаем город для подписи снизу и для alt
-    $city_terms = get_the_terms(get_the_ID(), 'city');
-    $city_name = !empty($city_terms) && !is_wp_error($city_terms) ? $city_terms[0]->name : 'KZSEX';
-    
-    // Генерируем уникальный alt с учетом города
-    $profile_name = get_the_title();
+    $decodingAttr = $lcp ? 'auto' : 'async';
+
+    $profileId = get_the_ID();
+    $profileName = get_the_title();
+
+    $cityTerms = get_the_terms($profileId, 'city');
+    $cityName = !empty($cityTerms) && !is_wp_error($cityTerms) ? $cityTerms[0]->name : 'Москва';
+
+    $metroTerms = get_the_terms($profileId, 'metro');
+    $metroName = !empty($metroTerms) && !is_wp_error($metroTerms) ? $metroTerms[0]->name : null;
+
     $age = get_field('age');
-    
-    // Проверяем статусы анкеты
-    $is_vip = has_term('vip', 'vip', get_the_ID());
-    $is_independent = has_term('independent', 'independent', get_the_ID());
-    
-    // Определяем префикс согласно логике
-    if ($is_vip && !$is_independent) {
-        $prefix = "Элитная проститутка";
-    } elseif ($is_independent && !$is_vip) {
-        $prefix = "Индивидуалка";
-    } else {
-        // Если ни то ни другое, или оба статуса вместе
-        $prefix = "Проститутка";
-    }
-    
-    $alt_text = "{$prefix} {$city_name} {$profile_name}";
-    if ($age) {
-        $alt_text .= " {$age} лет";
-    }
-    
-    // Добавляем основные параметры
-    $hair_color = get_field('hair_color');
     $height = get_field('height');
     $weight = get_field('weight');
-    
-    if ($hair_color && !is_wp_error($hair_color)) {
-        $hair_color_name = $hair_color->name ?? '';
-        if ($hair_color_name) {
-            $alt_text .= ", {$hair_color_name} волосы";
-        }
-    }
-    
-    if ($height) {
-        $alt_text .= ", рост {$height} см";
-    }
-    
-    if ($weight) {
-        $alt_text .= ", вес {$weight} кг";
-    }
-    
-    // Получаем размер груди
-    $breast_terms = get_the_terms(get_the_ID(), 'breast_size');
+
+    $breastTerms = get_the_terms($profileId, 'breast_size');
     $breast = null;
-    if ($breast_terms && !is_wp_error($breast_terms)) {
-        $breast_name = $breast_terms[0]->name;
-        if (preg_match('/([A-Z])$/', $breast_name, $matches)) {
+    if ($breastTerms && !is_wp_error($breastTerms)) {
+        $breastName = $breastTerms[0]->name;
+        if (preg_match('/([A-Z])$/', $breastName, $matches)) {
             $letter = $matches[1];
             $breastMap = ['A' => '1', 'B' => '2', 'C' => '3', 'D' => '4', 'E' => '5', 'F' => '6', 'G' => '7', 'H' => '8'];
             $breast = $breastMap[$letter] ?? $letter;
+        } elseif (preg_match('/\d+/', $breastName, $matches)) {
+            $breast = $matches[0];
         }
     }
-    
-    // Получаем цену
-    $price = get_field('price');
+
+    $price = get_field('price') ?: [];
+    $currency = strtoupper($price['currency'] ?? 'RUB');
+    $price1h = $price['price_1h_out'] ?? ($price['price_1h'] ?? null);
+    $price2h = $price['price_2h_out'] ?? ($price['price_2h'] ?? ($price1h ? $price1h * 2 : null));
+    $priceNight = $price['price_night_out'] ?? ($price['price_night'] ?? ($price1h ? ($price1h * 5 + ($price2h ?: 0)) : null));
+
+    $inoutcallSlugs = wp_get_post_terms($profileId, 'inoutcall', ['fields' => 'slugs']);
+    $inoutcallSlugs = is_wp_error($inoutcallSlugs) ? [] : $inoutcallSlugs;
+    $isOutcall = in_array('outcall', $inoutcallSlugs, true) || in_array('incall-and-outcall', $inoutcallSlugs, true);
+
+    $profilePhone = get_field('phone');
+    $phoneHref = null;
+    if (!empty($profilePhone)) {
+        $phoneDigits = preg_replace('/\D+/', '', (string) $profilePhone);
+        if ($phoneDigits) {
+            if (strlen($phoneDigits) === 11 && str_starts_with($phoneDigits, '8')) {
+                $phoneDigits = '7' . substr($phoneDigits, 1);
+            }
+            $phoneHref = 'tel:+' . $phoneDigits;
+        }
+    }
+
+    $rawTg = get_field('telegram') ?: get_field('global_tg', 'option');
+    $tgLink = null;
+    if (!empty($rawTg)) {
+        $tgLink = str_contains($rawTg, 'http') ? $rawTg : 'https://t.me/' . ltrim(str_replace('@', '', (string) $rawTg), '/');
+    }
+
+    $rawWa = get_field('whatsapp') ?: get_field('global_wa', 'option');
+    $waLink = null;
+    if (!empty($rawWa)) {
+        if (str_contains($rawWa, 'http')) {
+            $waLink = $rawWa;
+        } else {
+            $waDigits = preg_replace('/\D+/', '', (string) $rawWa);
+            if (!empty($waDigits)) {
+                $waLink = 'https://wa.me/' . $waDigits;
+            }
+        }
+    }
+
+    $isVip = has_term('vip', 'vip', $profileId) || in_array('VIP', $badges, true);
+    $isVerified = has_term('verified', 'verified', $profileId) || in_array('Verified', $badges, true);
+
+    $altText = "Проститутка {$cityName} {$profileName}";
+    if ($age) {
+        $altText .= " {$age} лет";
+    }
+    if ($height) {
+        $altText .= ", рост {$height} см";
+    }
+    if ($weight) {
+        $altText .= ", вес {$weight} кг";
+    }
 @endphp
 
-<article class="group relative flex flex-col h-full">
-
-    {{-- Основная ссылка на весь блок --}}
-    <a href="{{ profile_url(get_the_ID()) }}" class="absolute inset-0 z-30"
-        aria-label="Просмотреть профиль {{ get_the_title() }}"></a>
-
-    {{-- 1. ИЗОБРАЖЕНИЕ (Сверху) --}}
-    <figure class="relative w-full aspect-[3/4] overflow-hidden bg-[#0f0f0f] mb-3">
+<article class="group h-full overflow-hidden rounded-[14px] border border-[#d8d8d8] bg-[#efefef] shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+    <figure class="relative aspect-[3/4] w-full overflow-hidden bg-[#d9d9d9]">
         @if (has_post_thumbnail())
-            @php
-                $imgData = wp_get_attachment_image_src(get_post_thumbnail_id(), 'large'); 
-            @endphp
+            @php $imgData = wp_get_attachment_image_src(get_post_thumbnail_id(), 'profile_card'); @endphp
             @if ($imgData)
-                <img src="{{ $imgData[0] }}" width="{{ $imgData[1] }}" height="{{ $imgData[2] }}"
-                    alt="{{ $alt_text }}"
-                    class="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
-                    loading="{{ $loadingAttr }}" fetchpriority="{{ $fetchPriorityAttr }}"
-                    @if ($decodingAttr) decoding="{{ $decodingAttr }}" @endif>
+                <img src="{{ $imgData[0] }}"
+                    width="{{ $imgData[1] }}"
+                    height="{{ $imgData[2] }}"
+                    alt="{{ $altText }}"
+                    class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+                    loading="{{ $loadingAttr }}"
+                    fetchpriority="{{ $fetchPriorityAttr }}"
+                    decoding="{{ $decodingAttr }}">
             @endif
         @else
-            <div class="flex items-center justify-center h-full text-gray-700 bg-[#0f0f0f]">
-                <span class="text-4xl opacity-20">?</span>
-            </div>
+            <div class="flex h-full items-center justify-center text-4xl text-gray-500">?</div>
         @endif
 
-        {{-- ========================================================== --}}
-        {{-- БЕЙДЖИ (С ЦВЕТАМИ)                                         --}}
-        {{-- ========================================================== --}}
-        <div class="absolute top-4 right-0 z-20 flex flex-col items-end gap-1">
-            @foreach ($badges as $badge)
-                @php
-                    // Определение стилей и текста в зависимости от бейджа
-                    $badgeConfig = match($badge) {
-                        'New'         => ['class' => 'bg-yellow-500 text-black', 'label' => 'Новая'],
-                        'Verified'    => ['class' => 'bg-green-600 text-white',   'label' => 'Проверена'],
-                        'VIP'         => ['class' => 'bg-[#cd1d46] text-white',   'label' => 'ВИП'],
-                        'Independent' => ['class' => 'bg-black/60 text-white',    'label' => 'Индивидуалка'],
-                        default       => ['class' => 'bg-black/60 text-white',    'label' => $badge],
-                    };
-                @endphp
+        <a href="{{ profile_url($profileId) }}" class="absolute inset-0 z-10" aria-label="Просмотреть профиль {{ $profileName }}"></a>
 
-                <div class="{{ $badgeConfig['class'] }} backdrop-blur-sm px-3 py-1 text-[10px] md:text-xs uppercase tracking-widest font-bold shadow-sm">
-                    {{ $badgeConfig['label'] }}
-                </div>
-            @endforeach
+        <div class="absolute left-3 top-3 z-20 flex flex-col items-start gap-2">
+            @if ($isVerified)
+                <span class="rounded-full bg-white px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-wide text-[#232323] shadow">
+                    Проверенная
+                </span>
+            @endif
+            @if ($isVip)
+                <span class="rounded-full bg-[#1f1f26] px-5 py-1.5 text-[11px] font-extrabold uppercase tracking-wide text-white shadow">
+                    VIP
+                </span>
+            @endif
         </div>
-        
-        {{-- Градиент снизу --}}
-        <div class="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
     </figure>
 
-    {{-- 2. ИНФОРМАЦИЯ (Снизу под фото) --}}
-    <div class="relative z-20 px-1">
-        
-        {{-- Имя и статус --}}
-        <div class="flex items-center gap-2 mb-1">
-            <h2 class="font-serif text-lg md:text-2xl text-[#DFC187] uppercase tracking-widest leading-none drop-shadow-sm group-hover:text-white transition-colors">
-                {{ get_the_title() }}
-                @php
-                    $age = get_field('age');
-                    if ($age) {
-                        echo ' <span class="text-base md:text-lg">' . $age . '</span>';
-                    }
-                @endphp
-            </h2>
-            
-            {{-- Онлайн статус --}}
-            @php
-                $is_online = get_field('online');
-            @endphp
-            @if($is_online)
-                <span class="px-2 py-1 bg-green-500 text-white text-[10px] font-bold uppercase">Online</span>
+    <div class="space-y-3 p-4">
+        <div class="flex items-end gap-2 leading-none">
+            <a href="{{ profile_url($profileId) }}" class="">
+                <h2 class="relative z-20 font-serif text-[21px] font-extrabold text-[#1f1f1f] hover:!text-[#1f1f1f]">
+                    {{ $profileName }}
+                </h2>    
+            </a>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] uppercase tracking-wide text-[#777]">
+            <span>г. {{ mb_strtoupper($cityName) }}</span>
+            @if ($metroName)
+                <span class="inline-flex items-center gap-1">
+                    <span class="h-2 w-2 rounded-full bg-[#f0a100]"></span>
+                    м. {{ mb_strtoupper($metroName) }}
+                </span>
             @endif
         </div>
 
-        {{-- Подзаголовок --}}
-        <div class="text-white text-[10px] md:text-xs font-serif uppercase tracking-widest font-medium opacity-90">
-            ВИП Эскорт {{ $city_name }}
-            @if(isset($price['price_1h_out']) && $price['price_1h_out'] > 0)
-                <span class="ml-2 text-green-400">{{ number_format($price['price_1h_out'], 0, '.', ' ') }}₽/ч</span>
+        <div class="grid grid-cols-4 gap-2">
+            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
+                <div class="text-[10px] uppercase tracking-wide text-[#9d9d9d]">Возраст</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">{{ $age ?: '-' }}</div>
+            </div>
+            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
+                <div class="text-[10px] uppercase tracking-wide text-[#9d9d9d]">Рост</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">{{ $height ?: '-' }}</div>
+            </div>
+            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
+                <div class="text-[10px] uppercase tracking-wide text-[#9d9d9d]">Вес</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">{{ $weight ?: '-' }}</div>
+            </div>
+            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
+                <div class="text-[10px] uppercase tracking-wide text-[#9d9d9d]">Грудь</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">{{ $breast ?: '-' }}</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
+                <div class="text-[12px] tracking-wide text-[#9d9d9d]">1 час</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">
+                    {{ $price1h ? number_format((float) $price1h, 0, '.', ' ') . ' ' . $currency : '-' }}
+                </div>
+            </div>
+            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
+                <div class="text-[12px] tracking-wide text-[#9d9d9d]">2 часа</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">
+                    {{ $price2h ? number_format((float) $price2h, 0, '.', ' ') . ' ' . $currency : '-' }}
+                </div>
+            </div>
+            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
+                <div class="text-[12px] tracking-wide text-[#9d9d9d]">ночь</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">
+                    {{ $priceNight ? number_format((float) $priceNight, 0, '.', ' ') . ' ' . $currency : '-' }}
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between border-y border-[#dddddd] py-2 text-[12px] uppercase tracking-wide text-[#6f6f6f]">
+            <span>Выезд</span>
+            <span class="font-extrabold text-[#434343]">{{ $isOutcall ? 'Да' : 'Нет' }}</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+            @if ($phoneHref)
+                <a href="{{ $phoneHref }}" class="relative z-20 rounded-lg bg-[#181920] px-1 py-2 text-center text-[11px] text-white">
+                    Позвонить
+                </a>
+            @else
+                <span class="rounded-lg bg-[#9a9ca8] px-1 py-2 text-center text-[11px] text-white">Позвонить</span>
+            @endif
+
+            @if ($waLink)
+                <a href="{{ $waLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded-lg bg-[#26d366] px-1 py-2 text-center text-[11px] text-white">
+                    WhatsApp
+                </a>
+            @else
+                <span class="rounded-lg bg-[#8fd9ab] px-1 py-2 text-center text-[11px] text-white">WhatsApp</span>
+            @endif
+
+            @if ($tgLink)
+                <a href="{{ $tgLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded-lg bg-[#2aa5e0] px-1 py-2 text-center text-[11px] text-white">
+                    Telegram
+                </a>
+            @else
+                <span class="rounded-lg bg-[#8fbfdd] px-1 py-2 text-center text-[11px] text-white">Telegram</span>
             @endif
         </div>
     </div>
-
 </article>

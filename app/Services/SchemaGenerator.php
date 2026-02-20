@@ -454,7 +454,7 @@ class SchemaGenerator
             ],
             'baseSalary' => [
                 '@type' => 'MonetaryAmount',
-                'currency' => 'KZT',
+                'currency' => 'RUB',
                 'value' => [
                     '@type' => 'QuantitativeValue',
                     'minValue' => 200000,
@@ -858,7 +858,7 @@ class SchemaGenerator
         // 3. Предложения (Offers)
         $priceData = get_field('price', $id);
         $offers = [];
-        $currency = $priceData['currency'] ?? 'KZT';
+        $currency = $priceData['currency'] ?? 'RUB';
 
         // Карта цен: ключ ACF => Название тарифа
         $priceMap = [

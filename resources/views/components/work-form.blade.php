@@ -151,10 +151,10 @@
 
         {{-- КНОПКА --}}
         <button type="submit" data-x-bind:disabled="loading"
-            class="w-full bg-red-600 text-white font-bold uppercase py-4  shadow-lg hover:bg-red-700 hover:shadow-xl transition transform active:scale-[0.99] flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+            class="w-full bg-red-600 text-black font-bold uppercase py-4  shadow-lg hover:bg-red-700 hover:shadow-xl transition transform active:scale-[0.99] flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
             <span data-x-show="!loading">Отправить анкету</span>
             <span data-x-show="loading" style="display: none;" class="flex items-center gap-2">
-                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none"
                     viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                         stroke-width="4"></circle>

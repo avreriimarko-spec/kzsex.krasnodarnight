@@ -7,7 +7,7 @@
 @section('content')
 
     {{-- 1. HERO SECTION (Темный фон) --}}
-    <div class="bg-gray-900 text-white pt-20 pb-24 relative overflow-hidden">
+    <div class="bg-gray-900 text-black pt-20 pb-24 relative overflow-hidden">
         {{-- Декоративный элемент --}}
         <div
             class="absolute top-0 right-0 w-64 h-64 bg-red-600  mix-blend-multiply filter blur-3xl opacity-20 animate-blob">
@@ -15,7 +15,7 @@
 
         <div class="container mx-auto px-4 text-center max-w-4xl relative z-10">
             <span
-                class="inline-block py-1 px-3 rounded bg-red-600 text-white text-xs font-bold uppercase mb-4 tracking-widest">
+                class="inline-block py-1 px-3 rounded bg-red-600 text-black text-xs font-bold uppercase mb-4 tracking-widest">
                 Вакансии
             </span>
             <h1 class="text-4xl md:text-6xl font-bold uppercase mb-6 tracking-tight leading-tight">
@@ -51,7 +51,7 @@
                         <div
                             class="bg-white p-8  shadow-sm border border-gray-100 hover:shadow-xl hover:border-red-100 transition duration-300 group">
                             <div
-                                class="w-12 h-12 bg-red-50 text-red-600  flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:text-white transition-colors">
+                                class="w-12 h-12 bg-red-50 text-red-600  flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:text-black transition-colors">
                                 {{-- Иконка галочки --}}
                                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -79,7 +79,7 @@
 
                     <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h2 class="text-3xl font-bold text-white uppercase mb-6">
+                            <h2 class="text-3xl font-bold text-black uppercase mb-6">
                                 Кого мы ищем?
                             </h2>
                             <p class="text-gray-400 mb-8">
@@ -89,10 +89,10 @@
 
                             <ul class="space-y-4">
                                 @foreach ($requirements as $req)
-                                    <li class="flex items-start text-white">
+                                    <li class="flex items-start text-black">
                                         <span
                                             class="flex-shrink-0 w-6 h-6 bg-green-500  flex items-center justify-center mr-4 mt-0.5">
-                                            <svg class="w-3 h-3 text-white font-bold" fill="none" viewBox="0 0 24 24"
+                                            <svg class="w-3 h-3 text-black font-bold" fill="none" viewBox="0 0 24 24"
                                                 stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
                                                     d="M5 13l4 4L19 7" />
@@ -107,9 +107,9 @@
                         {{-- Блок CTA внутри условий --}}
                         <div class="bg-white/10 backdrop-blur-sm p-8 border border-white/10 text-center">
                             <div class="text-4xl font-bold text-red-500 mb-2">100%</div>
-                            <div class="text-white font-bold uppercase mb-6">Конфиденциальность</div>
+                            <div class="text-black font-bold uppercase mb-6">Конфиденциальность</div>
                             <div class="text-4xl font-bold text-red-500 mb-2">24/7</div>
-                            <div class="text-white font-bold uppercase">Поддержка</div>
+                            <div class="text-black font-bold uppercase">Поддержка</div>
                         </div>
                     </div>
                 </div>

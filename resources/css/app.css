@@ -373,10 +373,6 @@ nav.flex-col ul li.current-menu-item a {
     border-color: #d1d5db !important;
   }
 
-  .text-white {
-    color: #111827 !important;
-  }
-
   .text-white\/70 {
     color: rgba(17, 24, 39, 0.7) !important;
   }

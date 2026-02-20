@@ -188,7 +188,7 @@
                                 </div>
 
                                 <button id="blog-review-submit" type="submit"
-                                    class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-[#e865a0] text-white hover:bg-[#e62967] transition">
+                                    class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-[#e865a0] text-black hover:bg-[#e62967] transition">
                                     Отправить на модерацию
                                 </button>
 

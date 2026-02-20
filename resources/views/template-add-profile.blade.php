@@ -34,7 +34,7 @@
                         id="name" 
                         name="name" 
                         required
-                        class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
+                        class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
                         placeholder="Введите ваше имя"
                     >
                 </div>
@@ -49,7 +49,7 @@
                         id="phone" 
                         name="phone" 
                         required
-                        class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
+                        class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
                         placeholder="+7 (XXX) XXX-XX-XX"
                     >
                 </div>
@@ -84,7 +84,7 @@
                         type="text" 
                         id="username" 
                         name="username" 
-                        class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
+                        class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
                         placeholder="@username"
                     >
                 </div>
@@ -101,7 +101,7 @@
                                 type="time" 
                                 id="work_time_from" 
                                 name="work_time_from" 
-                                class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
+                                class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
                             >
                         </div>
                         <div>
@@ -110,7 +110,7 @@
                                 type="time" 
                                 id="work_time_to" 
                                 name="work_time_to" 
-                                class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
+                                class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
                             >
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                         id="additional_info" 
                         name="additional_info" 
                         rows="4"
-                        class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
+                        class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
                         placeholder="Расскажите немного о себе, ваших услугах и предпочтениях..."
                     ></textarea>
                 </div>
@@ -143,7 +143,7 @@
                     <button 
                         type="submit" 
                         id="submitBtn"
-                        class="w-full md:w-auto px-8 py-4 bg-[#cd1d46] text-white font-bold rounded-lg hover:bg-[#b01a38] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="w-full md:w-auto px-8 py-4 bg-[#cd1d46] text-black font-bold rounded-lg hover:bg-[#b01a38] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <span id="submitText">Отправить заявку</span>
                         <span id="submitLoader" class="hidden">

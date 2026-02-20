@@ -144,7 +144,7 @@
 
                 {{-- СЧЕТЧИК --}}
                 <div class="absolute top-2 left-2 z-10">
-                    <div class="bg-black/60 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded font-bold shadow-sm">
+                    <div class="bg-black/60 backdrop-blur-sm text-black text-[10px] px-2 py-1 rounded font-bold shadow-sm">
                      Фото {{ $photo_count }}
                     </div>
                 </div>
@@ -155,10 +155,10 @@
                         @php
                             $badgeConfig = match($badge) {
                                 'New'         => ['class' => 'bg-yellow-500 text-black', 'label' => 'Новая'],
-                                'Verified'    => ['class' => 'bg-green-600 text-white',   'label' => 'Проверена'],
-                                'VIP'         => ['class' => 'bg-[#cd1d46] text-white',   'label' => 'ВИП'],
-                                'Independent' => ['class' => 'bg-black/60 text-white',    'label' => 'Индивидуалка'],
-                                default       => ['class' => 'bg-black/60 text-white',    'label' => $badge],
+                                'Verified'    => ['class' => 'bg-green-600 text-black',   'label' => 'Проверена'],
+                                'VIP'         => ['class' => 'bg-[#cd1d46] text-black',   'label' => 'ВИП'],
+                                'Independent' => ['class' => 'bg-black/60 text-black',    'label' => 'Индивидуалка'],
+                                default       => ['class' => 'bg-black/60 text-black',    'label' => $badge],
                             };
                         @endphp
                         <span class="{{ $badgeConfig['class'] }} backdrop-blur-sm text-[9px] px-2 py-0.5 uppercase mb-px font-bold shadow-sm">
@@ -176,7 +176,7 @@
                     @if ($contacts['tg'])
                         <a href="{{ $contacts['tg'] }}" 
                            target="_blank" 
-                           class="flex items-center justify-center gap-2 w-full py-1.5 bg-[#2AABEE] text-white hover:bg-[#229ED9] transition-all shadow-sm hover:shadow-md cursor-pointer group/btn"
+                           class="flex items-center justify-center gap-2 w-full py-1.5 bg-[#2AABEE] text-black hover:bg-[#229ED9] transition-all shadow-sm hover:shadow-md cursor-pointer group/btn"
                            aria-label="Telegram">
                             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12.068 12.068 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" /></svg>
                             <span class="text-[10px] font-bold uppercase tracking-wide">Telegram</span>
@@ -187,7 +187,7 @@
                     @if ($contacts['wa'])
                         <a href="{{ $contacts['wa'] }}" 
                            target="_blank" 
-                           class="flex items-center justify-center gap-2 w-full py-1.5 bg-[#25D366] text-white hover:bg-[#20bd5a] transition-all shadow-sm hover:shadow-md cursor-pointer group/btn"
+                           class="flex items-center justify-center gap-2 w-full py-1.5 bg-[#25D366] text-black hover:bg-[#20bd5a] transition-all shadow-sm hover:shadow-md cursor-pointer group/btn"
                            aria-label="WhatsApp">
                             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                             <span class="text-[10px] font-bold uppercase tracking-wide">WhatsApp</span>
@@ -206,19 +206,19 @@
             
             <div class="mb-2 shrink-0">
                 <div class="flex items-center gap-2 mb-1">
-                    <h3 class="text-lg font-serif text-white uppercase tracking-widest leading-none truncate">
+                    <h3 class="text-lg font-serif text-black uppercase tracking-widest leading-none truncate">
                          {{ get_the_title() }}
                     </h3>
                     @php $is_online = get_field('online'); @endphp
                     @if($is_online)
-                        <span class="px-2 py-1 bg-green-500 text-white text-[10px] font-bold uppercase shrink-0">Online</span>
+                        <span class="px-2 py-1 bg-green-500 text-black text-[10px] font-bold uppercase shrink-0">Online</span>
                     @endif
                 </div>
             </div>
 
             {{-- Параметры --}}
             <div class="mb-2 shrink-0">
-                <h4 class="text-white text-base font-serif mb-1 leading-none">Параметры</h4>
+                <h4 class="text-black text-base font-serif mb-1 leading-none">Параметры</h4>
                 <ul class="text-[11px] text-gray-400 space-y-0.5 font-light">
                     <li class="flex justify-between"><span>Возраст:</span> <span class="text-gray-200">{{ $age ? $age . ' лет' : '-' }}</span></li>
                     <li class="flex justify-between"><span>Рост:</span> <span class="text-gray-200">{{ $height ? $height . ' см' : '-' }}</span></li>
@@ -232,7 +232,7 @@
 
             {{-- Цены --}}
             <div class="mb-2 shrink-0">
-                <h4 class="text-white text-base font-serif mb-1 leading-none">Цена</h4>
+                <h4 class="text-black text-base font-serif mb-1 leading-none">Цена</h4>
                 <table class="w-full text-[11px] text-gray-400 border-collapse border border-gray-700">
                     <thead>
                         <tr class="border-b border-gray-700">
@@ -265,7 +265,7 @@
             
             {{-- УСЛУГИ (Остаются в правой колонке) --}}
             <div class="pt-2 border-t border-white/20 mt-2">
-                <h4 class="text-white text-base font-serif mb-1 leading-none">Услуги</h4>
+                <h4 class="text-black text-base font-serif mb-1 leading-none">Услуги</h4>
                 @if(!empty($services_list))
                     <div class="flex flex-wrap gap-1.5">
                         @foreach($services_list as $service)

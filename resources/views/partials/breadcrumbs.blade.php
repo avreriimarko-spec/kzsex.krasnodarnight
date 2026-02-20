@@ -17,7 +17,7 @@
 
                             @if ($crumb['current'])
                                 {{-- Текущая страница (не ссылка) --}}
-                                <span class="text-white font-medium truncate max-w-[150px] md:max-w-xs"
+                                <span class="text-black font-medium truncate max-w-[150px] md:max-w-xs"
                                     aria-current="page">
                                     {{ $crumb['label'] }}
                                 </span>

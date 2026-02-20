@@ -157,13 +157,13 @@
                     
                     {{-- ВЕРХНЯЯ ПАНЕЛЬ --}}
                     <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
-                        <h2 class="text-xl md:text-2xl font-bold text-white uppercase tracking-wide">
+                        <h2 class="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
                             Найдено анкет: {{ $profiles_query->found_posts }}
     </h2>
 
                     </div>
 
-                    <ul class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                    <ul class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10">
                         @while ($profiles_query->have_posts())
                             @php
                                 $profiles_query->the_post();

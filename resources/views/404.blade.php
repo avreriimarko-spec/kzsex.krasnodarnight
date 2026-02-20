@@ -17,7 +17,7 @@
     </div>
 
     {{-- Текст --}}
-    <h1 class="text-2xl md:text-3xl font-semibold text-white">
+    <h1 class="text-2xl md:text-3xl font-semibold text-black">
       Страница не найдена
     </h1>
     <p class="mt-3 text-base text-gray-400">
@@ -28,14 +28,14 @@
     <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
       <a
         href="{{ $home }}"
-        class="inline-flex items-center justify-center bg-red-600 px-5 py-3 text-sm font-semibold !text-white hover:bg-red-700 transition"
+        class="inline-flex items-center justify-center bg-red-600 px-5 py-3 text-sm font-semibold !text-black hover:bg-red-700 transition"
       >
         На главную
       </a>
 
       <a
         href="{{ $sitemap }}"
-        class="inline-flex items-center justify-center border border-white px-5 py-3 text-sm font-semibold text-white transition"
+        class="inline-flex items-center justify-center border border-white px-5 py-3 text-sm font-semibold text-black transition"
       >
         Карта сайта
       </a>

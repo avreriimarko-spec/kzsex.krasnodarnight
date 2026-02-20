@@ -98,7 +98,7 @@ add_action('acf/init', function () {
                         'label' => 'Валюта',
                         'name' => 'currency',
                         'type' => 'text',
-                        'default_value' => 'KZT',
+                        'default_value' => 'RUB',
                     ],
                     [
                         'key' => 'field_price_1h',

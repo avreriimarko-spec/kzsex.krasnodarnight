@@ -28,9 +28,9 @@
             {{-- 
                 prose-invert - инвертирует стандартные цвета Tailwind Typography для темного фона.
                 prose-a:text-[#cd1d46] - красит ссылки в брендовый красный.
-                prose-headings:text-white - заголовки внутри текста белые.
+                prose-headings:text-black - заголовки внутри текста белые.
             --}}
-            <div class="prose prose-lg prose-invert max-w-none text-gray-300 prose-headings:text-white prose-a:text-[#cd1d46] hover:prose-a:text-white prose-strong:text-white prose-blockquote:border-[#cd1d46]">
+            <div class="prose prose-lg prose-invert max-w-none text-gray-300 prose-headings:text-black prose-a:text-[#cd1d46] hover:prose-a:text-black prose-strong:text-black prose-blockquote:border-[#cd1d46]">
                 @if ($main_seo_text = get_field('main_seo_text'))
                     {!! $main_seo_text !!}
                 @else

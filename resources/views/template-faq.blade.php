@@ -30,7 +30,7 @@
                         <details class="group">
                             {{-- Вопрос --}}
                             <summary
-                                class="flex justify-between items-center font-bold cursor-pointer list-none p-6 text-white hover:text-[#cd1d46] transition-colors select-none">
+                                class="flex justify-between items-center font-bold cursor-pointer list-none p-6 text-black hover:text-[#cd1d46] transition-colors select-none">
                                 <span class="text-lg pr-4">{{ $item['question'] }}</span>
                                 
                                 {{-- Иконка с анимацией (цвет #cd1d46) --}}

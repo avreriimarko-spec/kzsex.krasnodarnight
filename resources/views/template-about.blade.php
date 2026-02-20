@@ -56,7 +56,7 @@
 
     {{-- СЕКЦИЯ 3: СТАТИСТИКА (Темная полоса) --}}
     @if ($stats)
-        <div class="bg-black text-white py-16 mb-16">
+        <div class="bg-black text-black py-16 mb-16">
             <div class="container mx-auto px-4">
                 <div class="grid md:grid-cols-4 gap-8 text-center divide-x divide-gray-800">
                     @foreach ($stats as $stat)
@@ -78,7 +78,7 @@
     @if ($features)
         <div class="container mx-auto px-4 pb-20">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold uppercase text-white">Почему выбирают нас</h2>
+                <h2 class="text-3xl font-bold uppercase text-black">Почему выбирают нас</h2>
                 <div class="w-20 h-1 bg-[#cd1d46] mx-auto mt-4 rounded"></div>
             </div>
 
@@ -94,7 +94,7 @@
                             </svg>
                         </div>
 
-                        <h3 class="text-xl font-bold text-white mb-3">
+                        <h3 class="text-xl font-bold text-black mb-3">
                             {{ $item['title'] }}
                         </h3>
                         <p class="text-gray-300 leading-relaxed">
@@ -109,12 +109,12 @@
     {{-- СЕКЦИЯ 5: CTA (Призыв к действию) --}}
     <div class="bg-black py-16 border-t border-[#cd1d46]">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-6 text-white">Готовы найти компанию?</h2>
+            <h2 class="text-3xl font-bold mb-6 text-black">Готовы найти компанию?</h2>
             <p class="text-gray-300 mb-8 max-w-xl mx-auto">
                 В нашем каталоге представлены только проверенные анкеты. Выберите девушку прямо сейчас.
             </p>
             <a href="{{ home_url('/') }}"
-                class="inline-block bg-[#cd1d46] !text-white font-bold uppercase px-8 py-4 shadow-lg hover:bg-[#b71833] transition transform hover:-translate-y-1">
+                class="inline-block bg-[#cd1d46] !text-black font-bold uppercase px-8 py-4 shadow-lg hover:bg-[#b71833] transition transform hover:-translate-y-1">
                 Перейти в каталог
             </a>
         </div>

@@ -299,7 +299,7 @@ class ImportProfiles extends Command
 
         if (isset($d['price'])) {
             $pr = $d['price'];
-            update_field('price_currency', $pr['currency'] ?? 'KZT', $postId);
+            update_field('price_currency', $pr['currency'] ?? 'RUB', $postId);
             $priceGroup = [
                 'price_1h' => $pr['1h_in'] ?? 0,
                 'price_2h' => $pr['2h_in'] ?? 0,

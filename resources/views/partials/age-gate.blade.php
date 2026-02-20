@@ -42,7 +42,7 @@
         <div class="flex flex-col gap-3">
             {{-- Используем data-x-bind вместо data-x-on:click --}}
             <button data-x-bind="confirmBtn"
-                class="w-full bg-red-600 hover:bg-red-700 text-white font-bold uppercase py-4  shadow-lg transition-transform transform hover:scale-[1.02]">
+                class="w-full bg-red-600 hover:bg-red-700 text-black font-bold uppercase py-4  shadow-lg transition-transform transform hover:scale-[1.02]">
                 Мне есть 18 лет
             </button>
 

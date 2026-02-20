@@ -22,9 +22,9 @@
 
         // Классы стилей (Tailwind)
         // Активная ссылка (текущая страница): белый цвет, курсор дефолтный
-        $active_classes = 'text-white cursor-default uppercase tracking-widest transition-colors';
+        $active_classes = 'text-black cursor-default uppercase tracking-widest transition-colors';
         // Обычная ссылка: серый цвет, при наведении белый
-        $default_classes = 'text-gray-300 hover:text-white uppercase tracking-widest transition-colors';
+        $default_classes = 'text-gray-300 hover:text-black uppercase tracking-widest transition-colors';
 
         if (isset($atts['href'])) {
             $original_url = $atts['href'];
@@ -64,7 +64,7 @@
     }, 10, 4);
 @endphp
 
-<footer class="bg-[#0f0f0f] text-white border-t border-gray-900 mt-auto font-serif">
+<footer class="bg-[#0f0f0f] text-black border-t border-gray-900 mt-auto font-serif">
 
     <div class="container mx-auto px-4 md:px-8">
 
@@ -75,7 +75,7 @@
             @if($is_home_page)
                 {{-- Если главная: НЕ ссылка --}}
                 <div class="flex flex-col items-start mb-6 md:mb-0 cursor-default">
-                    <span class="font-serif text-2xl tracking-[0.15em] uppercase text-white font-medium">
+                    <span class="font-serif text-2xl tracking-[0.15em] uppercase text-black font-medium">
                         {{ $siteName ?? get_bloginfo('name') }}
                     </span>
                     <div class="flex items-center w-full mt-1 gap-2">
@@ -89,7 +89,7 @@
             @else
                 {{-- Если другая страница: Ссылка --}}
                 <a href="{{ $logo_url }}" class="flex flex-col items-start mb-6 md:mb-0 group">
-                    <span class="font-serif text-2xl tracking-[0.15em] uppercase text-white font-medium group-hover:text-gray-300 transition-colors">
+                    <span class="font-serif text-2xl tracking-[0.15em] uppercase text-black font-medium group-hover:text-gray-300 transition-colors">
                         {{ $siteName ?? get_bloginfo('name') }}
                     </span>
                     <div class="flex items-center w-full mt-1 gap-2">
@@ -142,9 +142,9 @@
                         @endphp
 
                         @if($is_active)
-                            <span class="text-white cursor-default">{{ $label }}</span>
+                            <span class="text-black cursor-default">{{ $label }}</span>
                         @else
-                            <a href="{{ $url }}" class="hover:text-white transition-colors">{{ $label }}</a>
+                            <a href="{{ $url }}" class="hover:text-black transition-colors">{{ $label }}</a>
                         @endif
                     @endforeach
                 </div>
@@ -155,7 +155,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center py-6 border-b border-gray-800 gap-4">
             
             {{-- Домен сайта --}}
-            <div class="font-serif text-sm md:text-base tracking-[0.15em] uppercase text-white">
+            <div class="font-serif text-sm md:text-base tracking-[0.15em] uppercase text-black">
                 {{ strtoupper($_SERVER['HTTP_HOST'] ?? 'SITE.COM') }}
             </div>
 
@@ -168,7 +168,7 @@
         {{-- 3. НИЖНЯЯ ЧАСТЬ: Дисклеймер --}}
         <div class="py-8">
             <p class="text-[11px] md:text-[12px] leading-relaxed text-gray-400 text-justify font-light opacity-80">
-                <span class="text-white uppercase font-medium mr-1">ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ:</span>
+                <span class="text-black uppercase font-medium mr-1">ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ:</span>
                 Обратите внимание, что данный веб-сайт содержит контент и изображения, не предназначенные для детей. 
                 Если вам не исполнилось 18 лет или вас оскорбляют материалы для взрослых, пожалуйста, покиньте этот ресурс. 
                 Выбирая продолжение просмотра данной страницы, вы освобождаете владельца этого веб-сайта и всех лиц, 
