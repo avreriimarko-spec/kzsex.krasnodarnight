@@ -31,11 +31,11 @@
         }
     }
 
-    $price = get_field('price') ?: [];
+    $price = \App\Services\ProfilePriceCalculator::apply(get_field('price') ?: []);
     $currency = strtoupper($price['currency'] ?? 'RUB');
     $price1h = $price['price_1h_out'] ?? ($price['price_1h'] ?? null);
-    $price2h = $price['price_2h_out'] ?? ($price['price_2h'] ?? ($price1h ? $price1h * 2 : null));
-    $priceNight = $price['price_night_out'] ?? ($price['price_night'] ?? ($price1h ? ($price1h * 5 + ($price2h ?: 0)) : null));
+    $price2h = $price['price_2h_out'] ?? ($price['price_2h'] ?? null);
+    $priceNight = $price['price_night_out'] ?? ($price['price_night'] ?? null);
 
     $inoutcallSlugs = wp_get_post_terms($profileId, 'inoutcall', ['fields' => 'slugs']);
     $inoutcallSlugs = is_wp_error($inoutcallSlugs) ? [] : $inoutcallSlugs;

@@ -2,6 +2,8 @@
 
 namespace App\Fields;
 
+use App\Services\ProfilePriceCalculator;
+
 add_action('acf/init', function () {
     if (!function_exists('acf_add_local_field_group')) {
         return;
@@ -111,12 +113,18 @@ add_action('acf/init', function () {
                         'label' => '2 Часа (Аппарты)',
                         'name' => 'price_2h',
                         'type' => 'number',
+                        'readonly' => 1,
+                        'disabled' => 1,
+                        'instructions' => 'Рассчитывается автоматически от 1 часа.',
                     ],
                     [
                         'key' => 'field_price_night',
                         'label' => 'Ночь (Аппарты)',
                         'name' => 'price_night',
                         'type' => 'number',
+                        'readonly' => 1,
+                        'disabled' => 1,
+                        'instructions' => 'Рассчитывается автоматически от 1 часа (8x).',
                     ],
                     [
                         'key' => 'field_price_1h_out',
@@ -129,36 +137,54 @@ add_action('acf/init', function () {
                         'label' => '2 Часа (Выезд)',
                         'name' => 'price_2h_out',
                         'type' => 'number',
+                        'readonly' => 1,
+                        'disabled' => 1,
+                        'instructions' => 'Рассчитывается автоматически от 1 часа.',
                     ],
                     [
                         'key' => 'field_price_4h',
                         'label' => '4 Часа (Аппарты)',
                         'name' => 'price_4h',
                         'type' => 'number',
+                        'readonly' => 1,
+                        'disabled' => 1,
+                        'instructions' => 'Рассчитывается автоматически от 1 часа.',
                     ],
                     [
                         'key' => 'field_price_day',
                         'label' => 'Сутки (Аппарты)',
                         'name' => 'price_day',
                         'type' => 'number',
+                        'readonly' => 1,
+                        'disabled' => 1,
+                        'instructions' => 'Рассчитывается автоматически от 1 часа (24x).',
                     ],
                     [
                         'key' => 'field_price_4h_out',
                         'label' => '4 Часа (Выезд)',
                         'name' => 'price_4h_out',
                         'type' => 'number',
+                        'readonly' => 1,
+                        'disabled' => 1,
+                        'instructions' => 'Рассчитывается автоматически от 1 часа.',
                     ],
                     [
                         'key' => 'field_price_day_out',
                         'label' => 'Сутки (Выезд)',
                         'name' => 'price_day_out',
                         'type' => 'number',
+                        'readonly' => 1,
+                        'disabled' => 1,
+                        'instructions' => 'Рассчитывается автоматически от 1 часа (24x).',
                     ],
                     [
                         'key' => 'field_price_night_out',
                         'label' => 'Ночь (Выезд)',
                         'name' => 'price_night_out',
                         'type' => 'number',
+                        'readonly' => 1,
+                        'disabled' => 1,
+                        'instructions' => 'Рассчитывается автоматически от 1 часа (8x).',
                     ],
                 ],
             ],
@@ -246,3 +272,19 @@ add_action('acf/init', function () {
         ],
     ]);
 });
+
+add_filter('acf/load_value/name=price', static function ($value) {
+    if (!is_array($value)) {
+        return $value;
+    }
+
+    return ProfilePriceCalculator::apply($value);
+}, 20);
+
+add_filter('acf/update_value/name=price', static function ($value) {
+    if (!is_array($value)) {
+        return $value;
+    }
+
+    return ProfilePriceCalculator::apply($value);
+}, 20);

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Services\ProfileQuery;
+use App\Services\ProfilePriceCalculator;
 
 class SchemaGenerator
 {
@@ -856,7 +857,7 @@ class SchemaGenerator
         }
 
         // 3. Предложения (Offers)
-        $priceData = get_field('price', $id);
+        $priceData = ProfilePriceCalculator::apply((array) get_field('price', $id));
         $offers = [];
         $currency = $priceData['currency'] ?? 'RUB';
 

@@ -354,10 +354,10 @@
                 {{-- ТАРИФЫ --}}
                 @if ($price)
                     @php
-                        // Расчет цен по формуле
+                        $price = \App\Services\ProfilePriceCalculator::apply((array) $price);
                         $price_1h = $price['price_1h_out'] ?? null;
-                        $price_2h = $price_1h ? $price_1h * 2 : null;
-                        $price_night = $price_1h ? ($price_1h * 5 + $price_2h) : null;
+                        $price_2h = $price['price_2h_out'] ?? null;
+                        $price_night = $price['price_night_out'] ?? null;
                     @endphp
                     <section>
                         <h2 class="font-serif text-2xl text-black uppercase tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
