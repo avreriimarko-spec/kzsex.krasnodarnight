@@ -65,7 +65,52 @@
             }
         }
 
-        // 5. ПОЛУЧЕНИЕ БЛОГА
+        // 5. МЕТРО И РАЙОНЫ ПО ГОРОДАМ
+        $city_location_terms = [
+            'metro' => [],
+            'district' => [],
+        ];
+
+        foreach (['metro', 'district'] as $location_taxonomy) {
+            $location_terms = get_terms([
+                'taxonomy' => $location_taxonomy,
+                'hide_empty' => true,
+                'orderby' => 'name',
+                'order' => 'ASC',
+            ]);
+
+            if (is_wp_error($location_terms) || empty($location_terms)) {
+                continue;
+            }
+
+            foreach ($location_terms as $location_term) {
+                $related_city_id = 0;
+
+                if (function_exists('get_field')) {
+                    $related_city = get_field('related_city', $location_taxonomy . '_' . $location_term->term_id);
+
+                    if (is_object($related_city) && isset($related_city->term_id)) {
+                        $related_city_id = (int) $related_city->term_id;
+                    } elseif (is_array($related_city) && isset($related_city['term_id'])) {
+                        $related_city_id = (int) $related_city['term_id'];
+                    } else {
+                        $related_city_id = (int) $related_city;
+                    }
+                }
+
+                if ($related_city_id <= 0) {
+                    continue;
+                }
+
+                if (!isset($city_location_terms[$location_taxonomy][$related_city_id])) {
+                    $city_location_terms[$location_taxonomy][$related_city_id] = [];
+                }
+
+                $city_location_terms[$location_taxonomy][$related_city_id][] = $location_term;
+            }
+        }
+
+        // 6. ПОЛУЧЕНИЕ БЛОГА
         $blog_posts = get_posts([
             'post_type' => 'post',
             'post_status' => 'publish',
@@ -118,12 +163,7 @@
                         @endforeach
                     </ul>
                 </section>
-            </div>
 
-            {{-- === КОЛОНКА 2: ГОРОДА И РАЗДЕЛЫ === --}}
-            <div class="space-y-12">
-                
-                {{-- Список городов --}}
                 <section>
                     <h2 class="text-2xl font-bold text-gray-800 uppercase mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Города
@@ -144,7 +184,12 @@
                         @endif
                     </ul>
                 </section>
+            </div>
 
+            {{-- === КОЛОНКА 2: ГОРОДА И РАЗДЕЛЫ === --}}
+            <div class="space-y-12">
+                
+                {{-- Список городов --}}
                 {{-- Разделы по городам --}}
                 <section>
                     <h2 class="text-xl font-bold text-gray-800 uppercase mb-6 border-b border-gray-200 pb-2">
@@ -168,6 +213,67 @@
                                         <li><a href="{{ home_url($city_base . '/prostitutki-priem/') }}" class="text-gray-600 hover:text-red-600 transition">У себя в {{ $city->name }}</a></li>
                                     </ul>
                                 </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </section>
+
+                {{-- Модели (Анкеты) по городам --}}
+                <section>
+                    <h2 class="text-xl font-bold text-gray-800 uppercase mb-6 border-b border-gray-200 pb-2">
+                        Модели
+                    </h2>
+                    <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
+                        @if (!is_wp_error($cities))
+                            @foreach ($cities as $city)
+                                @php
+                                    // Получаем модели для текущего города (ограничим для производительности)
+                                    $models_query = new WP_Query([
+                                        'post_type' => 'profile',
+                                        'posts_per_page' => 50, // Ограничиваем количество для производительности
+                                        'tax_query' => [
+                                            [
+                                                'taxonomy' => 'city',
+                                                'field' => 'term_id',
+                                                'terms' => $city->term_id,
+                                            ],
+                                        ],
+                                        'post_status' => 'publish',
+                                        'orderby' => 'title',
+                                        'order' => 'ASC',
+                                    ]);
+                                @endphp
+                                
+                                @if ($models_query->have_posts())
+                                    <div>
+                                        <h3 class="font-bold text-gray-900 uppercase mb-2 text-sm">
+                                            {{ $city->name }} 
+                                            @if ($models_query->found_posts > 50)
+                                                (показано 50 из {{ $models_query->found_posts }})
+                                            @else
+                                                ({{ $models_query->found_posts }})
+                                            @endif
+                                        </h3>
+                                        <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm max-h-[200px] overflow-y-auto">
+                                            @while ($models_query->have_posts())
+                                                @php $models_query->the_post(); @endphp
+                                                <li>
+                                                    <a href="{{ profile_url(get_the_ID()) }}" 
+                                                       class="text-gray-600 hover:text-red-600 transition text-xs block truncate">
+                                                        {{ get_the_title() }}
+                                                        @php
+                                                            $age = get_field('age');
+                                                            if ($age) {
+                                                                echo ' <span class="text-gray-400">(' . $age . ')</span>';
+                                                            }
+                                                        @endphp
+                                                    </a>
+                                                </li>
+                                            @endwhile
+                                            @php wp_reset_postdata(); @endphp
+                                        </ul>
+                                    </div>
+                                @endif
                             @endforeach
                         @endif
                     </div>
@@ -249,60 +355,49 @@
                     </section>
                 @endif
 
-                {{-- Модели (Анкеты) по городам --}}
                 <section>
                     <h2 class="text-xl font-bold text-gray-800 uppercase mb-6 border-b border-gray-200 pb-2">
-                        Модели
+                        Метро и районы
                     </h2>
                     <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
                         @if (!is_wp_error($cities))
                             @foreach ($cities as $city)
                                 @php
-                                    // Получаем модели для текущего города (ограничим для производительности)
-                                    $models_query = new WP_Query([
-                                        'post_type' => 'profile',
-                                        'posts_per_page' => 50, // Ограничиваем количество для производительности
-                                        'tax_query' => [
-                                            [
-                                                'taxonomy' => 'city',
-                                                'field' => 'term_id',
-                                                'terms' => $city->term_id,
-                                            ],
-                                        ],
-                                        'post_status' => 'publish',
-                                        'orderby' => 'title',
-                                        'order' => 'ASC',
-                                    ]);
+                                    $metro_terms = $city_location_terms['metro'][$city->term_id] ?? [];
+                                    $district_terms = $city_location_terms['district'][$city->term_id] ?? [];
                                 @endphp
-                                
-                                @if ($models_query->have_posts())
+
+                                @if (!empty($metro_terms) || !empty($district_terms))
                                     <div>
-                                        <h3 class="font-bold text-gray-900 uppercase mb-2 text-sm">
-                                            {{ $city->name }} 
-                                            @if ($models_query->found_posts > 50)
-                                                (показано 50 из {{ $models_query->found_posts }})
-                                            @else
-                                                ({{ $models_query->found_posts }})
-                                            @endif
-                                        </h3>
-                                        <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm max-h-[200px] overflow-y-auto">
-                                            @while ($models_query->have_posts())
-                                                @php $models_query->the_post(); @endphp
-                                                <li>
-                                                    <a href="{{ profile_url(get_the_ID()) }}" 
-                                                       class="text-gray-600 hover:text-red-600 transition text-xs block truncate">
-                                                        {{ get_the_title() }}
-                                                        @php
-                                                            $age = get_field('age');
-                                                            if ($age) {
-                                                                echo ' <span class="text-gray-400">(' . $age . ')</span>';
-                                                            }
-                                                        @endphp
-                                                    </a>
-                                                </li>
-                                            @endwhile
-                                            @php wp_reset_postdata(); @endphp
-                                        </ul>
+                                        <h3 class="font-bold text-gray-900 uppercase mb-2 text-sm">{{ $city->name }}</h3>
+
+                                        @if (!empty($metro_terms))
+                                            <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">Метро</p>
+                                            <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm mb-3">
+                                                @foreach ($metro_terms as $metro_term)
+                                                    <li>
+                                                        <a href="{{ home_url('/' . $city->slug . '/metro/' . $metro_term->slug . '/') }}"
+                                                           class="text-gray-600 hover:text-red-600 transition">
+                                                            {{ $metro_term->name }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+
+                                        @if (!empty($district_terms))
+                                            <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">Районы</p>
+                                            <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm">
+                                                @foreach ($district_terms as $district_term)
+                                                    <li>
+                                                        <a href="{{ home_url('/' . $city->slug . '/district/' . $district_term->slug . '/') }}"
+                                                           class="text-gray-600 hover:text-red-600 transition">
+                                                            {{ $district_term->name }}
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
                                     </div>
                                 @endif
                             @endforeach
