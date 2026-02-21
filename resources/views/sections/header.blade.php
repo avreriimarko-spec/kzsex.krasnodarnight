@@ -455,8 +455,8 @@
                         btn.setAttribute('aria-expanded', 'false');
                     }
                 };
-                btn.addEventListener('click', (e) => { e.stopPropagation(); toggle(list.classList.contains('hidden')); });
-                document.addEventListener('click', (e) => { if (!list.classList.contains('hidden') && !btn.contains(e.target) && !list.contains(e.target)) toggle(false); });
+                btn.addEventListener('click', (e) => { toggle(list.classList.contains('hidden')); console.log('btn'); });
+                document.addEventListener('click', (e) => { if (!list.classList.contains('hidden') && !btn.contains(e.target) && !list.contains(e.target)) toggle(false); console.log('document'); });
                 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !list.classList.contains('hidden')) toggle(false); });
             }
         };
