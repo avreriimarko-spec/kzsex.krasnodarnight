@@ -51,6 +51,7 @@ class ContentServiceProvider extends ServiceProvider
         $this->registerAcfCityFields(); // Регистрация полей ACF
         $this->addTemplateFilter(); // Фильтр для шаблонов таксономий
         $this->addProfileLinkFilter(); // Фильтр для ссылок профилей
+        $this->addServiceTermLinkFilter(); // Фильтр для ссылок услуг
     }
 
     protected function registerPostTypes(): void
@@ -295,6 +296,13 @@ class ContentServiceProvider extends ServiceProvider
                 return $query_vars;
             }
 
+            // Услуги доступны только как вложенные страницы города.
+            // Любой URL вида /service/{term}/ или /service/{term}/page/{n}/ -> 404.
+            if (isset($query_vars['taxonomy']) && $query_vars['taxonomy'] === 'service' && !isset($query_vars['city'])) {
+                $query_vars['error'] = 404;
+                return $query_vars;
+            }
+
             // Блокируем запросы к профилям с неправильным городом
             if (isset($query_vars['post_type']) && $query_vars['post_type'] === 'profile' && isset($query_vars['city'])) {
                 // Получаем профиль по name или post_name
@@ -449,6 +457,17 @@ class ContentServiceProvider extends ServiceProvider
             }
             return $post_link;
         }, 10, 2);
+    }
+
+    protected function addServiceTermLinkFilter(): void
+    {
+        // Услуги всегда должны иметь город в URL, даже если где-то вызывается get_term_link().
+        add_filter('term_link', function ($termlink, $term, $taxonomy) {
+            if ($taxonomy === 'service' && $term instanceof \WP_Term) {
+                return term_url($term);
+            }
+            return $termlink;
+        }, 10, 3);
     }
 
     /**

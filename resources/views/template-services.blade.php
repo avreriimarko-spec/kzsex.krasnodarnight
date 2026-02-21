@@ -45,7 +45,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                     @if($services && !is_wp_error($services))
                         @foreach($services as $service)
-                            <a href="{{ get_term_link($service) }}" 
+                            <a href="{{ term_url($service) }}" 
                                class="group block bg-black border border-[#cd1d46] p-4 text-center hover:bg-[#cd1d46] transition-all duration-300 transform hover:scale-105">
                                 
                                 

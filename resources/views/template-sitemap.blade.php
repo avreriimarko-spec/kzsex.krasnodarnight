@@ -299,19 +299,7 @@
                                     <ul class="space-y-1 pl-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-x-4">
                                         @foreach ($taxonomies['Услуги'] as $term)
                                             @php
-                                                // Получаем стандартную ссылку на услугу
-                                                $term_link = get_term_link($term);
-                                                
-                                                if (!is_wp_error($term_link)) {
-                                                    // Извлекаем относительный путь (например, /uslugi/anal/)
-                                                    $path = str_replace(home_url(), '', $term_link);
-                                                    
-                                                    // Формируем ссылку: /city-slug/uslugi/anal/
-                                                    // Всегда добавляем город, включая Москву
-                                                    $final_link = home_url('/' . $city->slug . $path);
-                                                } else {
-                                                    $final_link = '#';
-                                                }
+                                                $final_link = term_url($term, $city);
                                             @endphp
                                             <li>
                                                 <a href="{{ $final_link }}"
