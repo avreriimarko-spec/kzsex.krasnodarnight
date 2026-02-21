@@ -198,6 +198,7 @@
             .filter-sidebar:focus-within::after {
                 inset: -12px;
                 opacity: 1;
+                box-shadow: 0px 0px 3px red;
             }
         }
     </style>
