@@ -56,6 +56,12 @@ add_action('acf/init', function () {
                 'type' => 'text',
             ],
             [
+                'key' => 'field_max',
+                'label' => 'Max',
+                'name' => 'max',
+                'type' => 'text',
+            ],
+            [
                 'key' => 'field_online',
                 'label' => 'Онлайн (в сети)',
                 'name' => 'online',

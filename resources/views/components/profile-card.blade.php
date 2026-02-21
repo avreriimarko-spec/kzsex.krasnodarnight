@@ -72,6 +72,13 @@
         }
     }
 
+    $rawMax = get_field('max') ?: get_field('max_link') ?: get_field('global_max', 'option') ?: get_field('global_max_link', 'option');
+    $maxLink = null;
+    if (!empty($rawMax)) {
+        $maxRawString = trim((string) $rawMax);
+        $maxLink = str_contains($maxRawString, 'http') ? $maxRawString : 'https://max.ru/' . ltrim($maxRawString, '/@');
+    }
+
     $isVip = has_term('vip', 'vip', $profileId) || in_array('VIP', $badges, true);
     $isVerified = has_term('verified', 'verified', $profileId) || in_array('Verified', $badges, true);
 
@@ -185,7 +192,7 @@
             <span class="font-extrabold text-[#434343]">{{ $isOutcall ? 'Да' : 'Нет' }}</span>
         </div>
 
-        <div class="grid grid-cols-3 gap-2">
+        <div class="grid grid-cols-4 gap-2">
             @if ($phoneHref)
                 <a href="{{ $phoneHref }}" class="relative z-20 rounded bg-[#181920] px-1 py-2 text-center text-[11px] text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white transition-colors duration-200 hover:bg-[#23242d]">
                     Позвонить
@@ -213,6 +220,14 @@
                 </a>
             @else
                 <span class="rounded bg-[#8fbfdd] px-1 py-2 text-center text-[11px] text-white">Telegram</span>
+            @endif
+
+            @if ($maxLink)
+                <a href="{{ $maxLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#1e3a8a] px-1 py-2 text-center text-[11px] font-semibold text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white transition-colors duration-200 hover:bg-[#1e40af]">
+                    Max
+                </a>
+            @else
+                <span class="rounded bg-[#6477a8] px-1 py-2 text-center text-[11px] font-semibold text-white">Max</span>
             @endif
         </div>
     </div>
