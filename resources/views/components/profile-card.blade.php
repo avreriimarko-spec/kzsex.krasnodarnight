@@ -87,8 +87,8 @@
     }
 @endphp
 
-<article class="group h-full overflow-hidden rounded-[14px] border border-[#d8d8d8] bg-[#efefef] shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
-    <figure class="relative aspect-[3/4] w-full overflow-hidden bg-[#d9d9d9]">
+<article class="group h-full overflow-visible rounded-[14px] border border-[#d8d8d8] bg-[#efefef] shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+    <figure class="relative aspect-[3/4] w-full overflow-hidden rounded-t-[14px] bg-[#d9d9d9]">
         @if (has_post_thumbnail())
             @php $imgData = wp_get_attachment_image_src(get_post_thumbnail_id(), 'profile_card'); @endphp
             @if ($imgData)
@@ -187,15 +187,20 @@
 
         <div class="grid grid-cols-3 gap-2">
             @if ($phoneHref)
-                <a href="{{ $phoneHref }}" class="relative z-20 rounded bg-[#181920] px-1 py-2 text-center text-[11px] text-white">
+                <a href="{{ $phoneHref }}" class="relative z-20 rounded bg-[#181920] px-1 py-2 text-center text-[11px] text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white">
                     Позвонить
                 </a>
             @else
-                <span class="rounded bg-[#9a9ca8] px-1 py-2 text-center text-[11px] text-white">Позвонить</span>
+                <span class="group/phone relative rounded bg-[#9a9ca8] px-1 py-2 text-center text-[11px] text-white cursor-not-allowed">
+                    Позвонить
+                    <span class="pointer-events-none absolute left-1/2 bottom-full z-30 mb-2 w-max max-w-[180px] -translate-x-1/2 rounded-md border border-[#2b2c33] bg-[#121319] px-2 py-1 text-[10px] font-medium normal-case tracking-normal text-[#d7d9e0] opacity-0 shadow-lg transition-opacity duration-200 group-hover/phone:opacity-100">
+                        Номер телефона отсутствует
+                    </span>
+                </span>
             @endif
 
             @if ($waLink)
-                <a href="{{ $waLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#26d366] px-1 py-2 text-center text-[11px] text-white">
+                <a href="{{ $waLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#26d366] px-1 py-2 text-center text-[11px] text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white">
                     WhatsApp
                 </a>
             @else
@@ -203,7 +208,7 @@
             @endif
 
             @if ($tgLink)
-                <a href="{{ $tgLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#2aa5e0] px-1 py-2 text-center text-[11px] text-white">
+                <a href="{{ $tgLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#2aa5e0] px-1 py-2 text-center text-[11px] text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white">
                     Telegram
                 </a>
             @else
