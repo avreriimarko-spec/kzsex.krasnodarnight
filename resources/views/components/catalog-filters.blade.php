@@ -12,8 +12,8 @@
 
     {{-- САЙДБАР --}}
     {{-- Ширина w-[320px] для комфортного чтения. Паддинг p-6 (нормальный отступ от краев) --}}
-    <aside class="filter-sidebar fixed inset-y-0 right-0 z-50 w-[320px] bg-black shadow-2xl transform transition-transform duration-300 translate-x-full 
-               lg:translate-x-0 lg:static lg:w-auto lg:border-0 lg:shadow-none lg:sticky lg:top-24 lg:z-40 lg:h-[calc(100vh-6rem)] lg:overflow-hidden 
+    <aside class="filter-sidebar relative fixed inset-y-0 right-0 z-50 w-[320px] bg-black shadow-2xl transform transition-transform duration-300 translate-x-full 
+               lg:translate-x-0 lg:static lg:w-auto lg:border-0 lg:shadow-none lg:sticky lg:top-24 lg:z-40 lg:h-[calc(100vh-6rem)] 
                flex flex-col lg:p-0 p-6">
         
         {{-- ШАПКА МОБИЛЬНАЯ --}}
@@ -30,7 +30,7 @@
             <span class="text-lg font-bold text-black uppercase tracking-widest flex items-center gap-2">
                 <svg class="w-5 h-5 text-[#cd1d46]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
                 Фильтры
-</span>
+            </span>
         </div>
 
         {{-- ФОРМА С ФИЛЬТРАМИ --}}
@@ -176,6 +176,31 @@
         </div>
 
     </aside>
+    <style>
+        .filter-sidebar {
+            isolation: isolate;
+        }
+
+        @media (hover: hover) {
+            .filter-sidebar::after {
+                content: "";
+                position: absolute;
+                inset: 0px;
+                border: 1px solid rgba(205, 29, 70, 0.75);
+                border-radius: .25rem;
+                opacity: 0;
+                pointer-events: none;
+                transition: inset 0.35s ease, opacity 0.35s ease;
+                z-index: 30;
+            }
+
+            .filter-sidebar:hover::after,
+            .filter-sidebar:focus-within::after {
+                inset: -12px;
+                opacity: 1;
+            }
+        }
+    </style>
 </div>
 
 {{-- СКРИПТЫ --}}
