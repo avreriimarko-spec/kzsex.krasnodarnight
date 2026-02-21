@@ -187,27 +187,27 @@
 
         <div class="grid grid-cols-3 gap-2">
             @if ($phoneHref)
-                <a href="{{ $phoneHref }}" class="relative z-20 rounded-lg bg-[#181920] px-1 py-2 text-center text-[11px] text-white">
+                <a href="{{ $phoneHref }}" class="relative z-20 rounded bg-[#181920] px-1 py-2 text-center text-[11px] text-white">
                     Позвонить
                 </a>
             @else
-                <span class="rounded-lg bg-[#9a9ca8] px-1 py-2 text-center text-[11px] text-white">Позвонить</span>
+                <span class="rounded bg-[#9a9ca8] px-1 py-2 text-center text-[11px] text-white">Позвонить</span>
             @endif
 
             @if ($waLink)
-                <a href="{{ $waLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded-lg bg-[#26d366] px-1 py-2 text-center text-[11px] text-white">
+                <a href="{{ $waLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#26d366] px-1 py-2 text-center text-[11px] text-white">
                     WhatsApp
                 </a>
             @else
-                <span class="rounded-lg bg-[#8fd9ab] px-1 py-2 text-center text-[11px] text-white">WhatsApp</span>
+                <span class="rounded bg-[#8fd9ab] px-1 py-2 text-center text-[11px] text-white">WhatsApp</span>
             @endif
 
             @if ($tgLink)
-                <a href="{{ $tgLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded-lg bg-[#2aa5e0] px-1 py-2 text-center text-[11px] text-white">
+                <a href="{{ $tgLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#2aa5e0] px-1 py-2 text-center text-[11px] text-white">
                     Telegram
                 </a>
             @else
-                <span class="rounded-lg bg-[#8fbfdd] px-1 py-2 text-center text-[11px] text-white">Telegram</span>
+                <span class="rounded bg-[#8fbfdd] px-1 py-2 text-center text-[11px] text-white">Telegram</span>
             @endif
         </div>
     </div>
