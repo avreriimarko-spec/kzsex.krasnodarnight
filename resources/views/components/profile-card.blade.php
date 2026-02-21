@@ -187,7 +187,7 @@
 
         <div class="grid grid-cols-3 gap-2">
             @if ($phoneHref)
-                <a href="{{ $phoneHref }}" class="relative z-20 rounded bg-[#181920] px-1 py-2 text-center text-[11px] text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white">
+                <a href="{{ $phoneHref }}" class="relative z-20 rounded bg-[#181920] px-1 py-2 text-center text-[11px] text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white transition-colors duration-200 hover:bg-[#23242d]">
                     Позвонить
                 </a>
             @else
@@ -200,7 +200,7 @@
             @endif
 
             @if ($waLink)
-                <a href="{{ $waLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#26d366] px-1 py-2 text-center text-[11px] text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white">
+                <a href="{{ $waLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#26d366] px-1 py-2 text-center text-[11px] text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white transition-colors duration-200 hover:bg-[#1fba57]">
                     WhatsApp
                 </a>
             @else
@@ -208,7 +208,7 @@
             @endif
 
             @if ($tgLink)
-                <a href="{{ $tgLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#2aa5e0] px-1 py-2 text-center text-[11px] text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white">
+                <a href="{{ $tgLink }}" target="_blank" rel="noopener noreferrer" class="relative z-20 rounded bg-[#2aa5e0] px-1 py-2 text-center text-[11px] text-white !text-white visited:!text-white hover:!text-white focus:!text-white active:!text-white transition-colors duration-200 hover:bg-[#1d8fc6]">
                     Telegram
                 </a>
             @else
