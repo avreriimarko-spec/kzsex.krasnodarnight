@@ -355,46 +355,83 @@
                 @if ($price)
                     @php
                         $price = \App\Services\ProfilePriceCalculator::apply((array) $price);
-                        $price_1h = $price['price_1h_out'] ?? null;
-                        $price_2h = $price['price_2h_out'] ?? null;
-                        $price_night = $price['price_night_out'] ?? null;
+                        $currency = $price['currency'] ?? 'RUB';
+                        $apartmentTariffs = [
+                            ['label' => '1 Час', 'value' => $price['price_1h'] ?? null],
+                            ['label' => '2 Часа', 'value' => $price['price_2h'] ?? null],
+                            ['label' => '4 Часа', 'value' => $price['price_4h'] ?? null],
+                            ['label' => 'Ночь', 'value' => $price['price_night'] ?? null],
+                            ['label' => 'Сутки', 'value' => $price['price_day'] ?? null],
+                        ];
+                        $outcallTariffs = [
+                            ['label' => '1 Час', 'value' => $price['price_1h_out'] ?? null],
+                            ['label' => '2 Часа', 'value' => $price['price_2h_out'] ?? null],
+                            ['label' => '4 Часа', 'value' => $price['price_4h_out'] ?? null],
+                            ['label' => 'Ночь', 'value' => $price['price_night_out'] ?? null],
+                            ['label' => 'Сутки', 'value' => $price['price_day_out'] ?? null],
+                        ];
+                        $showTaxiForApartments = false;
+                        $showTaxiForOutcall = true;
                     @endphp
                     <section>
                         <h2 class="font-serif text-2xl text-black uppercase tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
                             Тарифы
                         </h2>
                         <div class="space-y-4 font-serif text-xs md:text-sm tracking-wide">
-                            <div class="flex items-center justify-between group">
-                                <span class="text-gray-400 font-bold uppercase text-[11px] tracking-widest group-hover:text-black transition-colors">
-                                    1 Час:
-                                </span>
-                                <div class="border border-white/20 bg-white/5  px-6 py-2 text-gray-200 group-hover:border-[#cd1d46] transition-colors">
-                                    {{ $price_1h ?? 'По запросу' }} {{ $price['currency'] }} 
-                                    <span class="text-[9px] text-gray-500 uppercase ml-1">+ Такси</span>
-                                </div>
+                            <div class="inline-flex rounded border border-white/20 overflow-hidden">
+                                <button type="button"
+                                        id="tariff-tab-apartments-btn"
+                                        data-tariff-tab-target="apartments"
+                                        class="tariff-tab-btn bg-[#cd1d46] text-black px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors">
+                                    Аппартаменты
+                                </button>
+                                <button type="button"
+                                        id="tariff-tab-outcall-btn"
+                                        data-tariff-tab-target="outcall"
+                                        class="tariff-tab-btn bg-white/5 text-gray-300 px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors">
+                                    Выезд
+                                </button>
                             </div>
-                            @if($price_2h)
-                            <div class="flex items-center justify-between group">
-                                <span class="text-gray-400 font-bold uppercase text-[11px] tracking-widest group-hover:text-black transition-colors">
-                                    2 Часа:
-                                </span>
-                                <div class="border border-white/20 bg-white/5  px-6 py-2 text-gray-200 group-hover:border-[#cd1d46] transition-colors">
-                                    {{ $price_2h }} {{ $price['currency'] }}
-                                    <span class="text-[9px] text-gray-500 uppercase ml-1">+ Такси</span>
-                                </div>
+
+                            <div id="tariff-tab-apartments" class="space-y-3">
+                                @foreach($apartmentTariffs as $tariff)
+                                    <div class="flex items-center justify-between group">
+                                        <span class="text-gray-400 font-bold uppercase text-[11px] tracking-widest">
+                                            {{ $tariff['label'] }}:
+                                        </span>
+                                        <div class="border border-white/20 bg-white/5 px-6 py-2 text-gray-200">
+                                            @if($tariff['value'])
+                                                {{ number_format((float) $tariff['value'], 0, '.', ' ') }} {{ $currency }}
+                                            @else
+                                                По запросу
+                                            @endif
+                                            @if($showTaxiForApartments)
+                                                <span class="text-[9px] text-gray-500 uppercase ml-1">+ Такси</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-                            @endif
-                            @if($price_night)
-                            <div class="flex items-center justify-between group">
-                                <span class="text-gray-400 font-bold uppercase text-[11px] tracking-widest group-hover:text-black transition-colors">
-                                    Ночь:
-                                </span>
-                                <div class="border border-white/20 bg-white/5  px-6 py-2 text-gray-200 group-hover:border-[#cd1d46] transition-colors">
-                                    {{ $price_night }} {{ $price['currency'] }}
-                                    <span class="text-[9px] text-gray-500 uppercase ml-1">+ Такси</span>
-                                </div>
+
+                            <div id="tariff-tab-outcall" class="space-y-3 hidden">
+                                @foreach($outcallTariffs as $tariff)
+                                    <div class="flex items-center justify-between group">
+                                        <span class="text-gray-400 font-bold uppercase text-[11px] tracking-widest">
+                                            {{ $tariff['label'] }}:
+                                        </span>
+                                        <div class="border border-white/20 bg-white/5 px-6 py-2 text-gray-200">
+                                            @if($tariff['value'])
+                                                {{ number_format((float) $tariff['value'], 0, '.', ' ') }} {{ $currency }}
+                                            @else
+                                                По запросу
+                                            @endif
+                                            @if($showTaxiForOutcall)
+                                                <span class="text-[9px] text-gray-500 uppercase ml-1">+ Такси</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-                            @endif
                         </div>
                     </section>
                 @endif
@@ -943,6 +980,36 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             showMorePhotosBtn.style.display = 'none';
         });
+    }
+
+    // 2.5 Переключатель тарифов (Аппартаменты / Выезд)
+    const tariffTabButtons = document.querySelectorAll('.tariff-tab-btn');
+    const tariffApartments = document.getElementById('tariff-tab-apartments');
+    const tariffOutcall = document.getElementById('tariff-tab-outcall');
+
+    if (tariffTabButtons.length && tariffApartments && tariffOutcall) {
+        const setTariffTab = (target) => {
+            const isApartments = target === 'apartments';
+
+            tariffApartments.classList.toggle('hidden', !isApartments);
+            tariffOutcall.classList.toggle('hidden', isApartments);
+
+            tariffTabButtons.forEach((btn) => {
+                const isActive = btn.dataset.tariffTabTarget === target;
+                btn.classList.toggle('bg-[#cd1d46]', isActive);
+                btn.classList.toggle('text-black', isActive);
+                btn.classList.toggle('bg-white/5', !isActive);
+                btn.classList.toggle('text-gray-300', !isActive);
+            });
+        };
+
+        tariffTabButtons.forEach((btn) => {
+            btn.addEventListener('click', function() {
+                setTariffTab(this.dataset.tariffTabTarget);
+            });
+        });
+
+        setTariffTab('apartments');
     }
 
     // 2. Описание (Читать полностью)
