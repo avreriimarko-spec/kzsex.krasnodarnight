@@ -1,30 +1,27 @@
 @php
-    // 1. Определяем текущий город
-    $city_obj = get_current_city();
-    $current_slug = $city_obj ? $city_obj->slug : \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG;
-
-    // 2. Ссылка для Логотипа (всегда на главную без города)
+    // 1. Ссылка для Логотипа (всегда на главную без города)
     $logo_url = home_url('/');
 
-    // 3. Текущий путь (для проверки активных ссылок)
+    // 2. Текущий путь (для проверки активных ссылок)
     $current_request_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
 
-    // 4. Проверяем, на главной ли мы (для логотипа)
+    // 3. Проверяем, на главной ли мы (для логотипа)
     $logo_path_clean = trim(parse_url($logo_url, PHP_URL_PATH), '/');
     $is_home_page = ($current_request_path === $logo_path_clean);
 
-    // 5. Фильтр для меню футера
-    add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_slug, $current_request_path) {
+    // 4. Фильтр для меню футера
+    add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_request_path) {
         // Применяем только к навигации футера
-        if ($args->theme_location !== 'footer_navigation') {
+        if (($args->theme_location ?? null) !== 'footer_navigation') {
             return $atts;
         }
 
-        // Классы стилей (Tailwind)
-        // Активная ссылка (текущая страница): белый цвет, курсор дефолтный
-        $active_classes = 'text-black cursor-default uppercase tracking-widest transition-colors';
-        // Обычная ссылка: серый цвет, при наведении белый
-        $default_classes = 'text-gray-300 hover:text-black uppercase tracking-widest transition-colors';
+        $is_column_title = ((int) ($item->menu_item_parent ?? 0) === 0);
+        $title_default_class = 'footer-nav-title-link';
+        $title_active_class = 'footer-nav-title-link footer-nav-title-link-active';
+        $link_default_class = 'footer-nav-link';
+        $link_active_class = 'footer-nav-link footer-nav-link-active';
+        $atts['class'] = $is_column_title ? $title_default_class : $link_default_class;
 
         if (isset($atts['href'])) {
             $original_url = $atts['href'];
@@ -54,9 +51,9 @@
             if ($link_path === $current_request_path) {
                 // Если это текущая страница - убираем ссылку
                 unset($atts['href']);
-                $atts['class'] = $active_classes;
+                $atts['class'] = $is_column_title ? $title_active_class : $link_active_class;
             } else {
-                $atts['class'] = $default_classes;
+                $atts['class'] = $is_column_title ? $title_default_class : $link_default_class;
             }
         }
 
@@ -69,12 +66,12 @@
     <div class="container mx-auto px-4 md:px-8">
 
         {{-- 1. ВЕРХНЯЯ ЧАСТЬ: Логотип и Навигация --}}
-        <div class="flex flex-col md:flex-row justify-between items-center py-8 border-b border-gray-800">
+        <div class="pt-8 pb-24 border-b border-gray-800 flex gap-50">
             
             {{-- Логотип --}}
             @if($is_home_page)
                 {{-- Если главная: НЕ ссылка --}}
-                <div class="flex flex-col items-start mb-6 md:mb-0 cursor-default">
+                <div class="flex flex-col items-start cursor-default">
                     <span class="font-serif text-2xl tracking-[0.15em] uppercase text-black font-medium">
                         {{ $siteName ?? get_bloginfo('name') }}
                     </span>
@@ -88,7 +85,7 @@
                 </div>
             @else
                 {{-- Если другая страница: Ссылка --}}
-                <a href="{{ $logo_url }}" class="flex flex-col items-start mb-6 md:mb-0 group">
+                <a href="{{ $logo_url }}" class="flex flex-col items-start group">
                     <span class="font-serif text-2xl tracking-[0.15em] uppercase text-black font-medium group-hover:text-gray-300 transition-colors">
                         {{ $siteName ?? get_bloginfo('name') }}
                     </span>
@@ -104,49 +101,71 @@
 
             {{-- Меню (WP Menu) --}}
             @if (has_nav_menu('footer_navigation'))
-                <nav aria-label="Меню футера">
+                <nav class="footer-nav" aria-label="Меню футера">
                     {!! wp_nav_menu([
                         'theme_location' => 'footer_navigation',
-                        // Убираем стили ссылок отсюда, так как они задаются в фильтре PHP
-                        'menu_class' => 'flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 list-none p-0 m-0 text-xs md:text-sm font-light',
+                        'menu_class' => 'footer-nav-grid',
                         'container' => false,
                         'echo' => false,
-                        'depth' => 1,
+                        'depth' => 2,
                     ]) !!}
                 </nav>
             @else
                 {{-- Фоллбэк (если меню не настроено, но с поддержкой городов) --}}
-                <div class="flex gap-6 text-xs md:text-sm font-light tracking-widest uppercase text-gray-300">
-                    @php
-                        $links = [
-                            '/' => 'Главная',
-                            '/about' => 'О нас',
-                            '/ankety' => 'Анкеты', // Пример слага
-                            '/job' => 'Работа',
-                            '/contacts' => 'Контакты'
-                        ];
-                    @endphp
-                    @foreach($links as $path => $label)
-                        @php
-                            // Формируем ссылку без города для футера
-                            if ($path === '/') {
-                                $url = home_url('/');
-                            } else {
-                                $path_clean = trim($path, '/');
-                                $url = home_url("/{$path_clean}/");
-                            }
-                            
-                            // Проверка активности
-                            $url_path = trim(parse_url($url, PHP_URL_PATH), '/');
-                            $is_active = ($url_path === $current_request_path);
-                        @endphp
+                @php
+                    $fallback_columns = [
+                        [
+                            'title' => 'Каталог',
+                            'links' => [
+                                '/ankety' => 'Анкеты',
+                                '/vip' => 'VIP',
+                                '/verified' => 'Проверенные',
+                            ],
+                        ],
+                        [
+                            'title' => 'Сотрудничество',
+                            'links' => [
+                                '/job' => 'Работа',
+                                '/contacts' => 'Контакты',
+                                '/about' => 'О нас',
+                            ],
+                        ],
+                        [
+                            'title' => 'Помощь',
+                            'links' => [
+                                '/privacy' => 'Политика конфиденциальности',
+                                '/rules' => 'Правила размещения',
+                                '/faq' => 'FAQ',
+                            ],
+                        ],
+                    ];
+                @endphp
 
-                        @if($is_active)
-                            <span class="text-black cursor-default">{{ $label }}</span>
-                        @else
-                            <a href="{{ $url }}" class="hover:text-black transition-colors">{{ $label }}</a>
-                        @endif
-                    @endforeach
+                <div class="footer-nav mt-8">
+                    <ul class="footer-nav-grid">
+                        @foreach($fallback_columns as $column)
+                            <li>
+                                <span class="footer-nav-title-link">{{ $column['title'] }}</span>
+                                <ul class="sub-menu">
+                                    @foreach($column['links'] as $path => $label)
+                                        @php
+                                            $path_clean = trim($path, '/');
+                                            $url = home_url("/{$path_clean}/");
+                                            $url_path = trim(parse_url($url, PHP_URL_PATH), '/');
+                                            $is_active = ($url_path === $current_request_path);
+                                        @endphp
+                                        <li>
+                                            @if($is_active)
+                                                <span class="footer-nav-link footer-nav-link-active">{{ $label }}</span>
+                                            @else
+                                                <a href="{{ $url }}" class="footer-nav-link">{{ $label }}</a>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             @endif
         </div>
