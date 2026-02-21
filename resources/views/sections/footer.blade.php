@@ -4,13 +4,16 @@
 
     // 2. Текущий путь (для проверки активных ссылок)
     $current_request_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
+    $default_city_slug = \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG;
+    $city_obj = get_current_city();
+    $current_city_slug = $city_obj ? $city_obj->slug : $default_city_slug;
 
     // 3. Проверяем, на главной ли мы (для логотипа)
     $logo_path_clean = trim(parse_url($logo_url, PHP_URL_PATH), '/');
     $is_home_page = ($current_request_path === $logo_path_clean);
 
     // 4. Фильтр для меню футера
-    add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_request_path) {
+    add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_request_path, $current_city_slug) {
         // Применяем только к навигации футера
         if (($args->theme_location ?? null) !== 'footer_navigation') {
             return $atts;
@@ -36,6 +39,8 @@
                 
                 if (empty($path)) {
                     $atts['href'] = home_url('/');
+                } elseif ($path === 'uslugi' || $path === 'service' || preg_match('#^[^/]+/(uslugi|service)$#', $path)) {
+                    $atts['href'] = home_url("/{$current_city_slug}/service/");
                 } elseif (in_array($path, $no_city_paths)) {
                     // Эти страницы всегда без города
                     $atts['href'] = home_url("/{$path}/");

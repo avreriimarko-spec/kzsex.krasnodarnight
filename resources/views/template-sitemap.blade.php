@@ -152,10 +152,18 @@
                             @php
                                 if (in_array($page->post_name, $excluded_slugs)) continue;
                                 if ($page->ID == get_option('page_on_front')) continue;
+                                $page_template = get_page_template_slug($page->ID);
+
+                                if (strpos((string) $page_template, 'template-services.blade.php') !== false) {
+                                    $services_city_slug = \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG;
+                                    $page_link = home_url('/' . $services_city_slug . '/service/');
+                                } else {
+                                    $page_link = home_url('/' . $page->post_name . '/');
+                                }
                             @endphp
                             <li>
                                 {{-- Обычные страницы (без вложения города) --}}
-                                <a href="{{ home_url('/' . $page->post_name . '/') }}"
+                                <a href="{{ $page_link }}"
                                     class="text-gray-700 hover:text-red-600 transition">
                                     {{ $page->post_title }}
                                 </a>

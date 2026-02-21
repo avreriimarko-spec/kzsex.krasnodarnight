@@ -44,6 +44,10 @@
                 elseif ($path === 'online') {
                     $atts['href'] = home_url("/{$current_slug}/online/");
                 } 
+                // Список услуг всегда в формате /{city}/service/
+                elseif ($path === 'uslugi' || $path === 'service' || preg_match('#^[^/]+/(uslugi|service)$#', $path)) {
+                    $atts['href'] = home_url("/{$current_slug}/service/");
+                }
                 // Остальные внутренние страницы
                 else {
                     $path_parts = explode('/', $path);
@@ -114,6 +118,8 @@
                         $item_url = ($current_slug === $default_city_slug) ? home_url('/') : home_url("/{$current_slug}/");
                     } elseif ($path === 'online') {
                         $item_url = home_url("/{$current_slug}/online/");
+                    } elseif ($path === 'uslugi' || $path === 'service' || preg_match('#^[^/]+/(uslugi|service)$#', $path)) {
+                        $item_url = home_url("/{$current_slug}/service/");
                     } else {
                         $path_parts = explode('/', $path);
                         if (($path_parts[0] ?? '') !== $current_slug) {
