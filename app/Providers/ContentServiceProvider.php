@@ -51,6 +51,7 @@ class ContentServiceProvider extends ServiceProvider
         $this->registerAcfCityFields(); // Регистрация полей ACF
         $this->addTemplateFilter(); // Фильтр для шаблонов таксономий
         $this->addProfileLinkFilter(); // Фильтр для ссылок профилей
+        $this->addServicePageLinkFilter(); // Фильтр для ссылки страницы услуг
         $this->addServiceTermLinkFilter(); // Фильтр для ссылок услуг
     }
 
@@ -180,6 +181,13 @@ class ContentServiceProvider extends ServiceProvider
                 'top'
             );
 
+            // Список услуг в городе: /moskva/service/, /balashiha/service/
+            add_rewrite_rule(
+                '^' . $knownCityCapture . '/service/?$',
+                'index.php?city=$matches[1]&pagename=uslugi',
+                'top'
+            );
+
             // Спец. страницы в городе (включая локализованные алиасы)
             add_rewrite_rule(
                 '^' . $knownCityCapture . '/(map|reviews|catalog|vip|individualki|deshevye)/?$',
@@ -241,6 +249,20 @@ class ContentServiceProvider extends ServiceProvider
 
         // Редирект VIP и Independent без города на версию с городом
         add_action('template_redirect', function () {
+            // Страница услуг без города недоступна: /uslugi/ -> 404
+            if (is_page_template('template-services.blade.php') && !get_query_var('city')) {
+                global $wp_query;
+                $wp_query->set_404();
+                status_header(404);
+                nocache_headers();
+
+                $template_404 = get_404_template();
+                if ($template_404) {
+                    include $template_404;
+                }
+                exit;
+            }
+
             if (is_page_template('template-vip.blade.php') && !get_query_var('city')) {
                 $current_city = get_current_city();
                 if ($current_city) {
@@ -457,6 +479,26 @@ class ContentServiceProvider extends ServiceProvider
             }
             return $post_link;
         }, 10, 2);
+    }
+
+    protected function addServicePageLinkFilter(): void
+    {
+        // Ссылка страницы с шаблоном "Услуги" всегда должна быть вида /{city}/service/
+        add_filter('page_link', function ($link, $post_id, $sample) {
+            if ($sample) {
+                return $link;
+            }
+
+            $template = (string) get_page_template_slug($post_id);
+            if ($template === '' || strpos($template, 'template-services.blade.php') === false) {
+                return $link;
+            }
+
+            $current_city = get_current_city();
+            $city_slug = $current_city ? $current_city->slug : CityCatalog::DEFAULT_CITY_SLUG;
+
+            return home_url("/{$city_slug}/service/");
+        }, 10, 3);
     }
 
     protected function addServiceTermLinkFilter(): void

@@ -49,15 +49,9 @@
                                class="group block bg-black border border-[#cd1d46] p-4 text-center hover:bg-[#cd1d46] transition-all duration-300 transform hover:scale-105">
                                 
                                 
-                                <h3 class="text-black font-bold text-sm md:text-base uppercase tracking-wide mb-2 group-hover:text-black">
+                                <h3 class="text-black font-bold text-sm md:text-base uppercase tracking-wide group-hover:text-black">
                                     {{ $service->name }}
                                 </h3>
-                                
-                                @if($service->count > 0)
-                                    <p class="text-xs text-gray-400 group-hover:text-gray-200">
-                                        {{ $service->count }} {{ $service->count == 1 ? 'анкета' : ($service->count < 5 ? 'анкеты' : 'анкет') }}
-                                    </p>
-                                @endif
                             </a>
                         @endforeach
                     @else
