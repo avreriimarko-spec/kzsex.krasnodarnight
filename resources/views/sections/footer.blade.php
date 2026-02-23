@@ -71,7 +71,7 @@
     <div class="container mx-auto px-4 md:px-8">
 
         {{-- 1. ВЕРХНЯЯ ЧАСТЬ: Логотип и Навигация --}}
-        <div class="pt-8 pb-24 border-b border-gray-800 flex gap-100">
+        <div class="pt-8 pb-24 border-b border-gray-800 flex gap-65">
             
             {{-- Логотип --}}
             @if($is_home_page)
@@ -171,12 +171,16 @@
 
                 $footer_columns = [
                     [
-                        'title' => 'Сотрудничество',
+                        'title' => 'Страницы',
                         'links' => array_slice($footer_links, 0, 4, true),
                     ],
                     [
+                        'title' => 'Сотрудничество',
+                        'links' => array_slice($footer_links, 4, 8, true),
+                    ],
+                    [
                         'title' => 'Помощь',
-                        'links' => array_slice($footer_links, 4, null, true),
+                        'links' => array_slice($footer_links, 8, null, true),
                     ],
                 ];
             @endphp
