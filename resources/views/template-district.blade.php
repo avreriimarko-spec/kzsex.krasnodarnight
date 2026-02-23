@@ -1,0 +1,67 @@
+{{--
+  Template Name: Районы
+--}}
+@extends('layouts.app')
+
+@section('content')
+    @php
+        // Получаем услуги в начале шаблона
+        $districts = get_terms([
+            'taxonomy' => 'district',
+            'hide_empty' => true,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+    @endphp
+
+    <div class="container mx-auto px-4 py-8">
+
+        {{-- Header --}}
+        <header class="prose mb-10 text-center mx-auto">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 uppercase tracking-tight text-[#cd1d46]">
+                {!! get_field('custom_h1') ?: 'Районы' !!}
+            </h1>
+            @if ($intro = get_field('intro_text'))
+                <p class="leading-relaxed max-w-2xl mx-auto text-gray-300">
+                    {{ $intro }}
+                </p>
+            @endif
+        </header>
+
+        {{-- LAYOUT --}}
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+
+            {{-- 2. КОНТЕНТ --}}
+            <div class="lg:col-span-4">
+
+                {{-- ВЕРХНЯЯ ПАНЕЛЬ --}}
+                <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
+                    <h2 class="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                        Найдено районы: {{ $districts && !is_wp_error($districts) ? count($districts) : 0 }}
+                    </h2>
+                </div>
+
+                {{-- District Grid --}}
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                    @if($districts && !is_wp_error($districts))
+                        @foreach($districts as $district)
+                            <a href="{{ term_url($district) }}" 
+                               class="group block bg-black border border-[#cd1d46] p-4 text-center hover:bg-[#cd1d46] transition-all duration-300 transform hover:scale-105">
+                                
+                                
+                                <h3 class="text-black font-bold text-sm md:text-base uppercase tracking-wide group-hover:text-black">
+                                    {{ $district->name }}
+                                </h3>
+                            </a>
+                        @endforeach
+                    @else
+                        <div class="col-span-full text-center py-12">
+                            <p class="text-gray-400 text-lg">Районы не найдены</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+    </div>
+@endsection
