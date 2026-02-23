@@ -300,14 +300,12 @@ a:hover {
     padding: 0;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2rem;
   }
 
   @media (min-width: 768px) {
     .footer-nav .footer-nav-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      column-gap: 3.5rem;
-      row-gap: .5rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 13rem;
     }
   }
 
@@ -318,15 +316,14 @@ a:hover {
   .footer-nav .footer-nav-title-link,
   .footer-nav .footer-nav-title-link-active {
     display: inline-block;
-    color: #111827;
-    letter-spacing: 0.06em;
+    font-weight: bold;
     text-decoration: none;
     line-height: 1.2;
   }
 
   .footer-nav .footer-nav-grid>li>.sub-menu {
     list-style: none;
-    margin: 1.1rem 0 0;
+    margin: 1rem 0 0;
     padding: 1rem 0 0;
     border-top: 1px solid #d1d5db;
   }

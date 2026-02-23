@@ -71,7 +71,7 @@
     <div class="container mx-auto px-4 md:px-8">
 
         {{-- 1. ВЕРХНЯЯ ЧАСТЬ: Логотип и Навигация --}}
-        <div class="pt-8 pb-24 border-b border-gray-800 flex gap-50">
+        <div class="pt-8 pb-24 border-b border-gray-800 flex gap-100">
             
             {{-- Логотип --}}
             @if($is_home_page)
@@ -104,75 +104,118 @@
                 </a>
             @endif
 
-            {{-- Меню (WP Menu) --}}
-            @if (has_nav_menu('footer_navigation'))
-                <nav class="footer-nav" aria-label="Меню футера">
-                    {!! wp_nav_menu([
-                        'theme_location' => 'footer_navigation',
-                        'menu_class' => 'footer-nav-grid',
-                        'container' => false,
-                        'echo' => false,
-                        'depth' => 2,
-                    ]) !!}
-                </nav>
-            @else
-                {{-- Фоллбэк (если меню не настроено, но с поддержкой городов) --}}
-                @php
-                    $fallback_columns = [
-                        [
-                            'title' => 'Каталог',
-                            'links' => [
-                                '/ankety' => 'Анкеты',
-                                '/vip' => 'VIP',
-                                '/verified' => 'Проверенные',
-                            ],
-                        ],
-                        [
-                            'title' => 'Сотрудничество',
-                            'links' => [
-                                '/job' => 'Работа',
-                                '/contacts' => 'Контакты',
-                                '/about' => 'О нас',
-                            ],
-                        ],
-                        [
-                            'title' => 'Помощь',
-                            'links' => [
-                                '/privacy' => 'Политика конфиденциальности',
-                                '/rules' => 'Правила размещения',
-                                '/faq' => 'FAQ',
-                            ],
-                        ],
-                    ];
-                @endphp
+            {{-- Меню футера: 2 колонки (первые 4 ссылки + остальные) --}}
+            @php
+                $footer_links = [];
 
-                <div class="footer-nav mt-8">
-                    <ul class="footer-nav-grid">
-                        @foreach($fallback_columns as $column)
-                            <li>
-                                <span class="footer-nav-title-link">{{ $column['title'] }}</span>
-                                <ul class="sub-menu">
-                                    @foreach($column['links'] as $path => $label)
-                                        @php
-                                            $path_clean = trim($path, '/');
+                if (has_nav_menu('footer_navigation')) {
+                    $menu_locations = get_nav_menu_locations();
+                    $footer_menu_id = $menu_locations['footer_navigation'] ?? null;
+
+                    if ($footer_menu_id) {
+                        $menu_items = wp_get_nav_menu_items($footer_menu_id);
+
+                        if (is_array($menu_items) && !empty($menu_items)) {
+                            $children_by_parent = [];
+                            foreach ($menu_items as $menu_item) {
+                                $parent_id = (int) ($menu_item->menu_item_parent ?? 0);
+                                $children_by_parent[$parent_id][] = $menu_item;
+                            }
+
+                            foreach ($menu_items as $menu_item) {
+                                $item_id = (int) ($menu_item->ID ?? 0);
+                                $parent_id = (int) ($menu_item->menu_item_parent ?? 0);
+
+                                if ($parent_id !== 0) {
+                                    continue;
+                                }
+
+                                $children = $children_by_parent[$item_id] ?? [];
+
+                                if (!empty($children)) {
+                                    foreach ($children as $child) {
+                                        $child_url = (string) ($child->url ?? '');
+                                        $child_title = trim((string) ($child->title ?? ''));
+
+                                        if ($child_url !== '' && $child_title !== '') {
+                                            $footer_links[$child_url] = $child_title;
+                                        }
+                                    }
+                                    continue;
+                                }
+
+                                $item_url = (string) ($menu_item->url ?? '');
+                                $item_title = trim((string) ($menu_item->title ?? ''));
+
+                                if ($item_url !== '' && $item_title !== '') {
+                                    $footer_links[$item_url] = $item_title;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (empty($footer_links)) {
+                    $footer_links = [
+                        '/ankety' => 'Анкеты',
+                        '/vip' => 'VIP',
+                        '/verified' => 'Проверенные',
+                        '/job' => 'Работа',
+                        '/contacts' => 'Контакты',
+                        '/about' => 'О нас',
+                        '/privacy' => 'Политика конфиденциальности',
+                        '/rules' => 'Правила размещения',
+                        '/faq' => 'FAQ',
+                    ];
+                }
+
+                $footer_columns = [
+                    [
+                        'title' => 'Сотрудничество',
+                        'links' => array_slice($footer_links, 0, 4, true),
+                    ],
+                    [
+                        'title' => 'Помощь',
+                        'links' => array_slice($footer_links, 4, null, true),
+                    ],
+                ];
+            @endphp
+
+            <div class="footer-nav">
+                <ul class="footer-nav-grid">
+                    @foreach($footer_columns as $column)
+                        <li>
+                            <h3 class="footer-nav-title-link">{{ $column['title'] }}</h3>
+                            <ul class="sub-menu">
+                                @foreach($column['links'] as $path_or_url => $label)
+                                    @php
+                                        $url = (string) $path_or_url;
+
+                                        if (
+                                            strpos($url, home_url()) !== 0
+                                            && !preg_match('#^[a-z]+:#i', $url)
+                                            && strpos($url, '//') !== 0
+                                        ) {
+                                            $path_clean = trim($url, '/');
                                             $url = home_url("/{$path_clean}/");
-                                            $url_path = trim(parse_url($url, PHP_URL_PATH), '/');
-                                            $is_active = ($url_path === $current_request_path);
-                                        @endphp
-                                        <li>
-                                            @if($is_active)
-                                                <span class="footer-nav-link footer-nav-link-active">{{ $label }}</span>
-                                            @else
-                                                <a href="{{ $url }}" class="footer-nav-link">{{ $label }}</a>
-                                            @endif
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+                                        }
+
+                                        $url_path = trim(parse_url($url, PHP_URL_PATH), '/');
+                                        $is_active = ($url_path === $current_request_path);
+                                    @endphp
+                                    <li>
+                                        @if($is_active)
+                                            <span class="footer-nav-link footer-nav-link-active">{{ $label }}</span>
+                                        @else
+                                            <a href="{{ $url }}" class="footer-nav-link">{{ $label }}</a>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
 
         {{-- 2. СРЕДНЯЯ ЧАСТЬ: Домен и Копирайт --}}
