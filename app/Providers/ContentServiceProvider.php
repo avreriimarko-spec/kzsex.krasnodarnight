@@ -7,6 +7,14 @@ use App\Helpers\CityCatalog;
 
 class ContentServiceProvider extends ServiceProvider
 {
+    protected const CITY_SCOPED_TAXONOMIES = ['service', 'metro', 'district'];
+
+    protected const CITY_SCOPED_PAGE_TEMPLATES = [
+        'template-services.blade.php' => 'service',
+        'template-metro.blade.php' => 'metro',
+        'template-district.blade.php' => 'district',
+    ];
+
     /**
      * Список таксономий
      */
@@ -51,8 +59,8 @@ class ContentServiceProvider extends ServiceProvider
         $this->registerAcfCityFields(); // Регистрация полей ACF
         $this->addTemplateFilter(); // Фильтр для шаблонов таксономий
         $this->addProfileLinkFilter(); // Фильтр для ссылок профилей
-        $this->addServicePageLinkFilter(); // Фильтр для ссылки страницы услуг
-        $this->addServiceTermLinkFilter(); // Фильтр для ссылок услуг
+        $this->addServicePageLinkFilter(); // Фильтр для ссылок страниц service/metro/district
+        $this->addServiceTermLinkFilter(); // Фильтр для ссылок терминов service/metro/district
     }
 
     protected function registerPostTypes(): void
@@ -249,18 +257,13 @@ class ContentServiceProvider extends ServiceProvider
 
         // Редирект VIP и Independent без города на версию с городом
         add_action('template_redirect', function () {
-            // Страница услуг без города недоступна: /uslugi/ -> 404
-            if (is_page_template('template-services.blade.php') && !get_query_var('city')) {
-                global $wp_query;
-                $wp_query->set_404();
-                status_header(404);
-                nocache_headers();
-
-                $template_404 = get_404_template();
-                if ($template_404) {
-                    include $template_404;
+            // Страницы service/metro/district без префикса города недоступны.
+            if (!get_query_var('city') && is_page()) {
+                $assigned_template = (string) get_page_template_slug(get_queried_object_id());
+                if ($this->resolveCityScopedSlugByTemplate($assigned_template) !== null) {
+                    $this->render404AndExit();
+                    return;
                 }
-                exit;
             }
 
             if (is_page_template('template-vip.blade.php') && !get_query_var('city')) {
@@ -318,9 +321,13 @@ class ContentServiceProvider extends ServiceProvider
                 return $query_vars;
             }
 
-            // Услуги доступны только как вложенные страницы города.
-            // Любой URL вида /service/{term}/ или /service/{term}/page/{n}/ -> 404.
-            if (isset($query_vars['taxonomy']) && $query_vars['taxonomy'] === 'service' && !isset($query_vars['city'])) {
+            // Локационные и service-таксономии доступны только как вложенные страницы города.
+            // Любой URL вида /service|metro|district/{term}/ или /.../page/{n}/ без города -> 404.
+            if (
+                isset($query_vars['taxonomy'])
+                && in_array($query_vars['taxonomy'], self::CITY_SCOPED_TAXONOMIES, true)
+                && !isset($query_vars['city'])
+            ) {
                 $query_vars['error'] = 404;
                 return $query_vars;
             }
@@ -483,33 +490,59 @@ class ContentServiceProvider extends ServiceProvider
 
     protected function addServicePageLinkFilter(): void
     {
-        // Ссылка страницы с шаблоном "Услуги" всегда должна быть вида /{city}/service/
+        // Ссылки страниц service/metro/district всегда должны быть вида /{city}/{slug}/
         add_filter('page_link', function ($link, $post_id, $sample) {
             if ($sample) {
                 return $link;
             }
 
             $template = (string) get_page_template_slug($post_id);
-            if ($template === '' || strpos($template, 'template-services.blade.php') === false) {
+
+            if ($template === '') {
+                return $link;
+            }
+
+            $targetSlug = $this->resolveCityScopedSlugByTemplate($template);
+
+            if ($targetSlug === null) {
                 return $link;
             }
 
             $current_city = get_current_city();
             $city_slug = $current_city ? $current_city->slug : CityCatalog::DEFAULT_CITY_SLUG;
 
-            return home_url("/{$city_slug}/service/");
+            return home_url("/{$city_slug}/{$targetSlug}/");
         }, 10, 3);
+    }
+
+    protected function resolveCityScopedSlugByTemplate(string $template): ?string
+    {
+        foreach (self::CITY_SCOPED_PAGE_TEMPLATES as $templateName => $slug) {
+            if ($template === $templateName || strpos($template, $templateName) !== false) {
+                return $slug;
+            }
+        }
+
+        return null;
     }
 
     protected function addServiceTermLinkFilter(): void
     {
-        // Услуги всегда должны иметь город в URL, даже если где-то вызывается get_term_link().
+        // Service/metro/district всегда должны иметь город в URL, даже если где-то вызывается get_term_link().
         add_filter('term_link', function ($termlink, $term, $taxonomy) {
-            if ($taxonomy === 'service' && $term instanceof \WP_Term) {
+            if (in_array($taxonomy, self::CITY_SCOPED_TAXONOMIES, true) && $term instanceof \WP_Term) {
                 return term_url($term);
             }
             return $termlink;
         }, 10, 3);
+    }
+
+    protected function render404AndExit(): void
+    {
+        global $wp_query;
+        $wp_query->set_404();
+        status_header(404);
+        nocache_headers();
     }
 
     /**

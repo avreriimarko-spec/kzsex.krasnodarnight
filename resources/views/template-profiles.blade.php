@@ -192,8 +192,15 @@
             'place'         => 'Место',
         ];
         
+        $location_taxonomies = location_taxonomies();
+
         foreach ($taxonomies as $slug => $label) {
-            $terms = get_terms(['taxonomy' => $slug, 'hide_empty' => true]);
+            if (array_key_exists($slug, $location_taxonomies)) {
+                $terms = get_location_terms($slug);
+            } else {
+                $terms = get_terms(['taxonomy' => $slug, 'hide_empty' => true]);
+            }
+
             if (!is_wp_error($terms) && !empty($terms)) {
                 $filter_data[$slug] = ['label' => $label, 'terms' => $terms];
             }

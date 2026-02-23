@@ -66,48 +66,11 @@
         }
 
         // 5. МЕТРО И РАЙОНЫ ПО ГОРОДАМ
-        $city_location_terms = [
-            'metro' => [],
-            'district' => [],
-        ];
+        $location_taxonomies = location_taxonomies();
 
-        foreach (['metro', 'district'] as $location_taxonomy) {
-            $location_terms = get_terms([
-                'taxonomy' => $location_taxonomy,
-                'hide_empty' => true,
-                'orderby' => 'name',
-                'order' => 'ASC',
-            ]);
-
-            if (is_wp_error($location_terms) || empty($location_terms)) {
-                continue;
-            }
-
-            foreach ($location_terms as $location_term) {
-                $related_city_id = 0;
-
-                if (function_exists('get_field')) {
-                    $related_city = get_field('related_city', $location_taxonomy . '_' . $location_term->term_id);
-
-                    if (is_object($related_city) && isset($related_city->term_id)) {
-                        $related_city_id = (int) $related_city->term_id;
-                    } elseif (is_array($related_city) && isset($related_city['term_id'])) {
-                        $related_city_id = (int) $related_city['term_id'];
-                    } else {
-                        $related_city_id = (int) $related_city;
-                    }
-                }
-
-                if ($related_city_id <= 0) {
-                    continue;
-                }
-
-                if (!isset($city_location_terms[$location_taxonomy][$related_city_id])) {
-                    $city_location_terms[$location_taxonomy][$related_city_id] = [];
-                }
-
-                $city_location_terms[$location_taxonomy][$related_city_id][] = $location_term;
-            }
+        $city_location_terms = [];
+        foreach (array_keys($location_taxonomies) as $location_taxonomy) {
+            $city_location_terms[$location_taxonomy] = get_location_terms_by_city($location_taxonomy);
         }
 
         // 6. ПОЛУЧЕНИЕ БЛОГА
@@ -359,41 +322,39 @@
                         @if (!is_wp_error($cities))
                             @foreach ($cities as $city)
                                 @php
-                                    $metro_terms = $city_location_terms['metro'][$city->term_id] ?? [];
-                                    $district_terms = $city_location_terms['district'][$city->term_id] ?? [];
+                                    $city_location_groups = [];
+                                    foreach ($location_taxonomies as $location_taxonomy => $location_label) {
+                                        $taxonomy_terms = $city_location_terms[$location_taxonomy][$city->term_id] ?? [];
+
+                                        if (!empty($taxonomy_terms)) {
+                                            $city_location_groups[] = [
+                                                'taxonomy' => $location_taxonomy,
+                                                'label' => $location_label,
+                                                'terms' => $taxonomy_terms,
+                                            ];
+                                        }
+                                    }
                                 @endphp
 
-                                @if (!empty($metro_terms) || !empty($district_terms))
+                                @if (!empty($city_location_groups))
                                     <div>
                                         <h3 class="font-bold text-gray-900 uppercase mb-2 text-sm">{{ $city->name }}</h3>
 
-                                        @if (!empty($metro_terms))
-                                            <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">Метро</p>
-                                            <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm mb-3">
-                                                @foreach ($metro_terms as $metro_term)
+                                        @foreach ($city_location_groups as $city_location_group)
+                                            <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">
+                                                {{ $city_location_group['label'] }}
+                                            </p>
+                                            <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm {{ !$loop->last ? 'mb-3' : '' }}">
+                                                @foreach ($city_location_group['terms'] as $location_term)
                                                     <li>
-                                                        <a href="{{ home_url('/' . $city->slug . '/metro/' . $metro_term->slug . '/') }}"
+                                                        <a href="{{ home_url('/' . $city->slug . '/' . $city_location_group['taxonomy'] . '/' . $location_term->slug . '/') }}"
                                                            class="text-gray-600 hover:text-red-600 transition">
-                                                            {{ $metro_term->name }}
+                                                            {{ $location_term->name }}
                                                         </a>
                                                     </li>
                                                 @endforeach
                                             </ul>
-                                        @endif
-
-                                        @if (!empty($district_terms))
-                                            <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">Районы</p>
-                                            <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm">
-                                                @foreach ($district_terms as $district_term)
-                                                    <li>
-                                                        <a href="{{ home_url('/' . $city->slug . '/district/' . $district_term->slug . '/') }}"
-                                                           class="text-gray-600 hover:text-red-600 transition">
-                                                            {{ $district_term->name }}
-                                                        </a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        @endif
+                                        @endforeach
                                     </div>
                                 @endif
                             @endforeach

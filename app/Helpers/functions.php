@@ -146,3 +146,92 @@ if (!function_exists('city_prefixed_url')) {
         return home_url($path);
     }
 }
+
+/**
+ * 11. Локационные таксономии (метро/районы) и их подписи
+ */
+if (!function_exists('location_taxonomies')) {
+    function location_taxonomies(): array
+    {
+        return [
+            'metro' => 'Метро',
+            'district' => 'Районы',
+        ];
+    }
+}
+
+/**
+ * 12. Получить термины метро/районов (плоский список)
+ */
+if (!function_exists('get_location_terms')) {
+    function get_location_terms(string $location_taxonomy): array
+    {
+        if (!array_key_exists($location_taxonomy, location_taxonomies())) {
+            return [];
+        }
+
+        $terms = get_terms([
+            'taxonomy' => $location_taxonomy,
+            'hide_empty' => true,
+            'orderby' => 'name',
+            'order' => 'ASC',
+        ]);
+
+        if (is_wp_error($terms) || empty($terms)) {
+            return [];
+        }
+
+        return $terms;
+    }
+}
+
+/**
+ * 13. Получить city_id из ACF поля related_city у термина метро/района
+ */
+if (!function_exists('get_related_city_id_for_location_term')) {
+    function get_related_city_id_for_location_term(string $location_taxonomy, $location_term): int
+    {
+        if (!function_exists('get_field') || !isset($location_term->term_id)) {
+            return 0;
+        }
+
+        $related_city = get_field('related_city', $location_taxonomy . '_' . $location_term->term_id);
+
+        if (is_object($related_city) && isset($related_city->term_id)) {
+            return (int) $related_city->term_id;
+        }
+
+        if (is_array($related_city) && isset($related_city['term_id'])) {
+            return (int) $related_city['term_id'];
+        }
+
+        return (int) $related_city;
+    }
+}
+
+/**
+ * 14. Получить термины метро/районов, сгруппированные по ID города
+ */
+if (!function_exists('get_location_terms_by_city')) {
+    function get_location_terms_by_city(string $location_taxonomy): array
+    {
+        $terms_by_city = [];
+        $location_terms = get_location_terms($location_taxonomy);
+
+        foreach ($location_terms as $location_term) {
+            $related_city_id = get_related_city_id_for_location_term($location_taxonomy, $location_term);
+
+            if ($related_city_id <= 0) {
+                continue;
+            }
+
+            if (!isset($terms_by_city[$related_city_id])) {
+                $terms_by_city[$related_city_id] = [];
+            }
+
+            $terms_by_city[$related_city_id][] = $location_term;
+        }
+
+        return $terms_by_city;
+    }
+}
