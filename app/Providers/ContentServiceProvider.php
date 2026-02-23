@@ -21,6 +21,7 @@ class ContentServiceProvider extends ServiceProvider
     protected const TAXONOMIES = [
         'city' => ['slug' => 'city', 'name' => 'Города', 'post_type' => ['profile']],
         'metro' => ['slug' => 'metro', 'name' => 'Метро', 'post_type' => ['profile']],
+        'new' => ['slug' => 'new', 'name' => 'Новые', 'post_type' => ['profile']],
         'district' => ['slug' => 'district', 'name' => 'Районы', 'post_type' => ['profile']],
         'services' => ['slug' => 'service', 'name' => 'Услуги', 'post_type' => ['profile']],
         'hair_color' => ['slug' => 'hair_color', 'name' => 'Цвет волос', 'post_type' => ['profile']],
@@ -294,6 +295,20 @@ class ContentServiceProvider extends ServiceProvider
                     exit;
                 }
             }
+            if (is_page_template('template-new.blade.php') && !get_query_var('city')) {
+                $current_city = get_current_city();
+                if ($current_city) {
+                    wp_redirect(home_url("/{$current_city->slug}/new/"), 301);
+                    exit;
+                }
+            }
+            if (is_page_template('template-verified.blade.php') && !get_query_var('city')) {
+                $current_city = get_current_city();
+                if ($current_city) {
+                    wp_redirect(home_url("/{$current_city->slug}/verified/"), 301);
+                    exit;
+                }
+            }
         });
 
         // Фильтр request: Проверка, существует ли город
@@ -419,6 +434,8 @@ class ContentServiceProvider extends ServiceProvider
                     'online' => 'views/template-online.blade.php',
                     'prostitutki-na-vyezd' => 'views/template-outcall.blade.php',
                     'prostitutki-priem' => 'views/template-incall.blade.php',
+                    'new' => 'views/template-new.blade.php',
+                    'verified' => 'views/template-verified.blade.php',
                 ];
 
                 if (isset($special_templates[$special_page])) {

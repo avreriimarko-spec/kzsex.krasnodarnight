@@ -185,6 +185,14 @@ class ProfileQuery
             $args['tax_query'][] = ['taxonomy' => 'vip', 'field' => 'slug', 'terms' => ['vip'], 'operator' => 'IN'];
         }
 
+        if (is_page_template('template-verified.blade.php') || get_query_var('special_page') === 'verified') {
+            $args['tax_query'][] = ['taxonomy' => 'verified', 'field' => 'slug', 'terms' => ['verified'], 'operator' => 'IN'];
+        }
+
+        if (is_page_template('template-new.blade.php') || get_query_var('special_page') === 'new') {
+            $args['tax_query'][] = ['taxonomy' => 'new', 'field' => 'slug', 'terms' => ['new'], 'operator' => 'IN'];
+        }
+
         if (is_page_template('template-cheap.blade.php') || get_query_var('special_page') === 'deshevye') {
             // Дешевые анкеты: ограничиваем верхнюю границу цены за 1 час
             $args['meta_query'][] = ['key' => 'price_price_1h', 'value' => 15000, 'compare' => '<=', 'type' => 'NUMERIC'];

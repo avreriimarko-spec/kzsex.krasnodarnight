@@ -46,6 +46,12 @@
         } elseif ($special_page === 'incall' || is_page_template('template-incall.blade.php')) {
             $page_type = 'incall';
             $parent_page = get_page_by_path('prostitutki-priem'); // правильный slug для "У себя"
+        } elseif ($special_page === 'new' || is_page_template('template-new.blade.php')) {
+            $page_type = 'new';
+            $parent_page = get_page_by_path('new');
+        } elseif ($special_page === 'verified' || is_page_template('template-verified.blade.php')) {
+            $page_type = 'verified';
+            $parent_page = get_page_by_path('verified');
         }
         
         // Используем ID родительской страницы если нашли
