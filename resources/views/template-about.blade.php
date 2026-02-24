@@ -8,7 +8,7 @@
 
     {{-- СЕКЦИЯ 1: ЗАГОЛОВОК --}}
     <div class="container prose mx-auto px-4 pt-12 pb-8 text-center max-w-4xl">
-        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 uppercase mb-6 tracking-tight">
+        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 capitalize mb-6 tracking-tight">
             {!! get_field('custom_h1') ?: get_the_title() !!}
         </h1>
 
@@ -64,7 +64,7 @@
                             <div class="text-4xl md:text-5xl font-bold text-red-500 mb-2">
                                 {{ $stat['number'] }}
                             </div>
-                            <div class="text-sm md:text-base text-gray-400 uppercase tracking-widest font-bold">
+                            <div class="text-sm md:text-base text-gray-400 capitalize tracking-widest font-bold">
                                 {{ $stat['label'] }}
                             </div>
                         </div>
@@ -78,7 +78,7 @@
     @if ($features)
         <div class="container mx-auto px-4 pb-20">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold uppercase text-black">Почему выбирают нас</h2>
+                <h2 class="text-3xl font-bold capitalize text-black">Почему выбирают нас</h2>
                 <div class="w-20 h-1 bg-[#cd1d46] mx-auto mt-4 rounded"></div>
             </div>
 
@@ -114,7 +114,7 @@
                 В нашем каталоге представлены только проверенные анкеты. Выберите девушку прямо сейчас.
             </p>
             <a href="{{ home_url('/') }}"
-                class="inline-block bg-[#cd1d46] !text-black font-bold uppercase px-8 py-4 shadow-lg hover:bg-[#b71833] transition transform hover:-translate-y-1">
+                class="inline-block bg-[#cd1d46] !text-black font-bold capitalize px-8 py-4 shadow-lg hover:bg-[#b71833] transition transform hover:-translate-y-1">
                 Перейти в каталог
             </a>
         </div>

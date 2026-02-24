@@ -12,7 +12,7 @@
 
                     {{-- Метаданные --}}
                     <div
-                        class="flex items-center justify-center gap-4 text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">
+                        class="flex items-center justify-center gap-4 text-xs font-bold text-gray-500 capitalize tracking-widest mb-4">
                         @php($cats = get_the_category())
                         @if ($cats)
                             <a href="{{ get_category_link($cats[0]->term_id) }}" class="text-red-600 hover:text-red-700">
@@ -73,7 +73,7 @@
                     <div class="text-left">
                         @php($prev = get_previous_post())
                         @if ($prev)
-                            <div class="text-xs text-gray-400 uppercase font-bold mb-1">Предыдущая статья</div>
+                            <div class="text-xs text-gray-400 capitalize font-bold mb-1">Предыдущая статья</div>
                             <a href="{{ get_permalink($prev->ID) }}"
                                 class="text-lg font-bold text-gray-800 hover:text-red-600 transition">
                                 &larr; {{ $prev->post_title }}
@@ -84,7 +84,7 @@
                     <div class="text-right">
                         @php($next = get_next_post())
                         @if ($next)
-                            <div class="text-xs text-gray-400 uppercase font-bold mb-1">Следующая статья</div>
+                            <div class="text-xs text-gray-400 capitalize font-bold mb-1">Следующая статья</div>
                             <a href="{{ get_permalink($next->ID) }}"
                                 class="text-lg font-bold text-gray-800 hover:text-red-600 transition">
                                 {{ $next->post_title }} &rarr;

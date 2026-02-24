@@ -89,7 +89,7 @@
 
         {{-- ЗАГОЛОВОК --}}
         <header class="text-center mb-16">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 uppercase mb-4 tracking-tight">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 capitalize mb-4 tracking-tight">
                 {!! get_field('custom_h1') ?: get_the_title() !!}
             </h1>
             <p class="text-gray-500 text-lg">
@@ -102,7 +102,7 @@
             {{-- === КОЛОНКА 1: ОСНОВНОЕ === --}}
             <div class="space-y-12">
                 <section>
-                    <h2 class="text-2xl font-bold text-gray-800 uppercase mb-6 border-b-2 border-red-600 inline-block pb-1">
+                    <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Основное
                     </h2>
                     <ul class="space-y-2">
@@ -143,7 +143,7 @@
                 </section>
 
                 <section>
-                    <h2 class="text-2xl font-bold text-gray-800 uppercase mb-6 border-b-2 border-red-600 inline-block pb-1">
+                    <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Города
                     </h2>
                     <ul class="space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar pr-2 border-b border-gray-100 pb-4">
@@ -170,7 +170,7 @@
                 {{-- Список городов --}}
                 {{-- Разделы по городам --}}
                 <section>
-                    <h2 class="text-xl font-bold text-gray-800 uppercase mb-6 border-b border-gray-200 pb-2">
+                    <h2 class="text-xl font-bold text-gray-800 capitalize mb-6 border-b border-gray-200 pb-2">
                         Разделы по городам
                     </h2>
                     <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
@@ -181,7 +181,7 @@
                                     $city_base = '/' . $city->slug;
                                 @endphp
                                 <div>
-                                    <h3 class="font-bold text-gray-900 uppercase mb-2 text-sm">{{ $city->name }}</h3>
+                                    <h3 class="font-bold text-gray-900 capitalize mb-2 text-sm">{{ $city->name }}</h3>
                                     <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm">
                                         <li><a href="{{ home_url($city_base . '/deshevye/') }}" class="text-gray-600 hover:text-red-600 transition">Дешевые в {{ $city->name }}</a></li>
                                         <li><a href="{{ home_url($city_base . '/vip/') }}" class="text-gray-600 hover:text-red-600 transition">VIP в {{ $city->name }}</a></li>
@@ -198,7 +198,7 @@
 
                 {{-- Модели (Анкеты) по городам --}}
                 <section>
-                    <h2 class="text-xl font-bold text-gray-800 uppercase mb-6 border-b border-gray-200 pb-2">
+                    <h2 class="text-xl font-bold text-gray-800 capitalize mb-6 border-b border-gray-200 pb-2">
                         Модели
                     </h2>
                     <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
@@ -224,7 +224,7 @@
                                 
                                 @if ($models_query->have_posts())
                                     <div>
-                                        <h3 class="font-bold text-gray-900 uppercase mb-2 text-sm">
+                                        <h3 class="font-bold text-gray-900 capitalize mb-2 text-sm">
                                             {{ $city->name }} 
                                             @if ($models_query->found_posts > 50)
                                                 (показано 50 из {{ $models_query->found_posts }})
@@ -264,14 +264,14 @@
                 {{-- Услуги по городам --}}
                 @if (isset($taxonomies['Услуги']) && !empty($taxonomies['Услуги']) && !is_wp_error($cities))
                     <section>
-                        <h2 class="text-2xl font-bold text-gray-800 uppercase mb-6 border-b-2 border-red-600 inline-block pb-1">
+                        <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
                             Услуги по городам
                         </h2>
                         
                         <div class="max-h-[800px] overflow-y-auto custom-scrollbar pr-2 space-y-8">
                             @foreach ($cities as $city)
                                 <div>
-                                    <h3 class="font-bold text-gray-900 bg-black uppercase mb-3 border-b border-gray-100 pb-1 sticky top-0 z-10">
+                                    <h3 class="font-bold text-gray-900 bg-black capitalize mb-3 border-b border-gray-100 pb-1 sticky top-0 z-10">
                                         {{ $city->name }}
                                     </h3>
                                     <ul class="space-y-1 pl-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-x-4">
@@ -296,7 +296,7 @@
                 {{-- Блог --}}
                 @if ($blog_posts)
                     <section>
-                        <h2 class="text-xl font-bold text-gray-800 uppercase mb-6 border-b border-gray-200 pb-2">
+                        <h2 class="text-xl font-bold text-gray-800 capitalize mb-6 border-b border-gray-200 pb-2">
                             Блог
                         </h2>
                         <ul class="space-y-2">
@@ -322,7 +322,7 @@
                 @endif
 
                 <section>
-                    <h2 class="text-xl font-bold text-gray-800 uppercase mb-6 border-b border-gray-200 pb-2">
+                    <h2 class="text-xl font-bold text-gray-800 capitalize mb-6 border-b border-gray-200 pb-2">
                         Метро и районы
                     </h2>
                     <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
@@ -345,10 +345,10 @@
 
                                 @if (!empty($city_location_groups))
                                     <div>
-                                        <h3 class="font-bold text-gray-900 uppercase mb-2 text-sm">{{ $city->name }}</h3>
+                                        <h3 class="font-bold text-gray-900 capitalize mb-2 text-sm">{{ $city->name }}</h3>
 
                                         @foreach ($city_location_groups as $city_location_group)
-                                            <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">
+                                            <p class="text-xs capitalize tracking-wide text-gray-500 mb-1">
                                                 {{ $city_location_group['label'] }}
                                             </p>
                                             <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm {{ !$loop->last ? 'mb-3' : '' }}">

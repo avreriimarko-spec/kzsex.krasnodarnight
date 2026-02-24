@@ -9,7 +9,7 @@
         
         {{-- Заголовок --}}
         <header class="text-center mb-10">
-            <h1 class="text-3xl md:text-5xl font-bold uppercase mb-4 tracking-tight text-[#cd1d46]">
+            <h1 class="text-3xl md:text-5xl font-bold capitalize mb-4 tracking-tight text-[#cd1d46]">
                 Все отзывы моделей
             </h1>
             <p class="text-gray-400 text-lg">
@@ -40,7 +40,7 @@
                             <div class="flex-1">
                                 <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
                                     <div class="mb-4 md:mb-0">
-                                        <h3 class="font-bold text-lg uppercase tracking-wide">
+                                        <h3 class="font-bold text-lg capitalize tracking-wide">
                                             <a href="{{ $review['profile_url'] }}" class="text-black hover:text-[#cd1d46] transition-colors">
                                                 {{ $review['profile_title'] }}
                                             </a>

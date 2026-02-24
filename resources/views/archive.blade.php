@@ -4,7 +4,7 @@
     <div class="container mx-auto px-4 py-12">
 
         <header class="mb-12 text-center max-w-3xl mx-auto">
-            <div class="text-red-600 font-bold uppercase tracking-widest text-sm mb-2">
+            <div class="text-red-600 font-bold capitalize tracking-widest text-sm mb-2">
                 @if (is_category())
                     Рубрика
                 @elseif(is_tag())
@@ -13,7 +13,7 @@
                     Архив
                 @endif
             </div>
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 uppercase mb-4 tracking-tight">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 capitalize mb-4 tracking-tight">
                 {!! preg_replace('/^[\w\s]+:\s/iu', '', subject: get_the_archive_title()) !!} @if (is_paged())
                     <span class="text-gray-400">| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
                 @endif
@@ -65,7 +65,7 @@
                                 @php(the_excerpt())
                             </div>
                             <a href="{{ get_permalink() }}"
-                                class="inline-flex items-center text-red-600 font-bold uppercase text-xs tracking-wider hover:underline mt-auto">Читать
+                                class="inline-flex items-center text-red-600 font-bold capitalize text-xs tracking-wider hover:underline mt-auto">Читать
                                 далее &rarr;</a>
                         </div>
                     </article>

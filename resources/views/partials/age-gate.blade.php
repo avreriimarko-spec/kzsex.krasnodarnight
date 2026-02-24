@@ -32,7 +32,7 @@
                 <span class="text-3xl font-bold text-red-600">18+</span>
             </div>
 
-            <h2 class="text-2xl font-bold text-gray-900 uppercase mb-2">Ограничение доступа</h2>
+            <h2 class="text-2xl font-bold text-gray-900 capitalize mb-2">Ограничение доступа</h2>
             <p class="text-gray-600 text-sm leading-relaxed">
                 Этот сайт содержит материалы для взрослых. Вы должны быть старше 18 лет, чтобы просматривать его
                 содержимое.
@@ -42,13 +42,13 @@
         <div class="flex flex-col gap-3">
             {{-- Используем data-x-bind вместо data-x-on:click --}}
             <button data-x-bind="confirmBtn"
-                class="w-full bg-red-600 hover:bg-red-700 text-black font-bold uppercase py-4  shadow-lg transition-transform transform hover:scale-[1.02]">
+                class="w-full bg-red-600 hover:bg-red-700 text-black font-bold capitalize py-4  shadow-lg transition-transform transform hover:scale-[1.02]">
                 Мне есть 18 лет
             </button>
 
             {{-- Используем data-x-bind вместо data-x-on:click --}}
             <button data-x-bind="exitBtn"
-                class="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold uppercase py-3  transition-colors">
+                class="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold capitalize py-3  transition-colors">
                 Покинуть сайт
             </button>
         </div>

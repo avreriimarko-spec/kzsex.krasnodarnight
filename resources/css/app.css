@@ -100,7 +100,7 @@ a:hover {
   .prose h2,
   .prose h3,
   .prose h4 {
-    @apply text-gray-100 font-bold uppercase tracking-tight mb-4 mt-8 scroll-mt-24;
+    @apply text-gray-100 font-bold capitalize tracking-tight mb-4 mt-8 scroll-mt-24;
   }
 
   .prose h1 {
@@ -177,7 +177,7 @@ a:hover {
   }
 
   .prose thead {
-    @apply bg-[#171b24] text-gray-100 uppercase text-sm font-bold;
+    @apply bg-[#171b24] text-gray-100 capitalize text-sm font-bold;
   }
 
   .prose th {
@@ -442,7 +442,7 @@ nav.flex-col ul li.current-menu-item a {
   }
 
   .hover\:bg-gray-700:hover {
-    background-color: #1b2331 !important;
+    background-color: #cd1d46 !important;
   }
 
   .hover\:text-white:hover,
@@ -649,6 +649,20 @@ main .text-neutral-900 {
   color: #eef3ff !important;
 }
 
+main .text-\[\#232323\],
+main .text-\[\#2a2a2a\] {
+  color: #eef3ff !important;
+}
+
+main [style*="color:#000"],
+main [style*="color: #000"],
+main [style*="color:#232323"],
+main [style*="color: #232323"],
+main [style*="color:#2a2a2a"],
+main [style*="color: #2a2a2a"] {
+  color: #eef3ff !important;
+}
+
 main .placeholder-gray-500::placeholder,
 main .placeholder-neutral-400::placeholder {
   color: #98a4bc !important;
@@ -657,4 +671,28 @@ main .placeholder-neutral-400::placeholder {
 main .hover\:bg-gray-100:hover,
 main .hover\:bg-gray-200:hover {
   background-color: #1b2331 !important;
+}
+
+/* Текстовые hover-правила палитры */
+main .hover\:text-black:hover,
+main .hover\:text-gray-600:hover,
+main .hover\:text-gray-700:hover,
+main .hover\:text-gray-800:hover,
+main .hover\:text-gray-900:hover,
+main .hover\:text-neutral-700:hover,
+main .hover\:text-neutral-800:hover,
+main .hover\:text-neutral-900:hover,
+main .group:hover .group-hover\:text-black,
+main .group:hover .group-hover\:text-gray-600,
+main .group:hover .group-hover\:text-gray-700,
+main .group:hover .group-hover\:text-gray-800,
+main .group:hover .group-hover\:text-gray-900 {
+  color: #cd1d46 !important;
+}
+
+main .text-\[\#cd1d46\]:hover,
+main .hover\:text-\[\#cd1d46\]:hover,
+main .text-red-600:hover,
+main .hover\:text-red-600:hover {
+  color: #f06282 !important;
 }

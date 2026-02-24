@@ -94,8 +94,8 @@
     }
 @endphp
 
-<article class="group h-full overflow-visible rounded-[14px] border border-[#d8d8d8] bg-[#efefef] shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
-    <figure class="relative aspect-[3/4] w-full overflow-hidden rounded-t-[14px] bg-[#d9d9d9]">
+<article class="group h-full overflow-visible rounded-[14px] border border-[#2a3142] bg-[#0f141e] shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
+    <figure class="relative aspect-[3/4] w-full overflow-hidden rounded-t-[14px] bg-[#141a24]">
         @if (has_post_thumbnail())
             @php $imgData = wp_get_attachment_image_src(get_post_thumbnail_id(), 'profile_card'); @endphp
             @if ($imgData)
@@ -116,12 +116,12 @@
 
         <div class="absolute left-3 top-3 z-20 flex flex-col items-start gap-2">
             @if ($isVerified)
-                <span class="rounded-full bg-white px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-wide text-[#232323] shadow">
+                <span class="rounded-full border border-[#344159] bg-[#1d2534] px-4 py-1.5 text-[11px] font-extrabold capitalize tracking-wide text-[#eef3ff] shadow">
                     Проверенная
                 </span>
             @endif
             @if ($isVip)
-                <span class="rounded-full bg-[#1f1f26] px-5 py-1.5 text-[11px] font-extrabold uppercase tracking-wide text-white shadow">
+                <span class="rounded-full bg-[#1f1f26] px-5 py-1.5 text-[11px] font-extrabold capitalize tracking-wide text-white shadow">
                     VIP
                 </span>
             @endif
@@ -131,13 +131,13 @@
     <div class="space-y-3 p-4">
         <div class="flex items-end gap-2 leading-none">
             <a href="{{ profile_url($profileId) }}" class="">
-                <h2 class="relative z-20 font-serif text-[21px] font-extrabold text-[#1f1f1f] hover:!text-[#1f1f1f]">
+                <h2 class="relative z-20 font-serif text-[21px] font-extrabold text-white hover:!text-[#cd1d46] transition-colors">
                     {{ $profileName }}
                 </h2>    
             </a>
         </div>
 
-        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] uppercase tracking-wide text-[#777]">
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] capitalize tracking-wide text-[#98a4bc]">
             <span>г. {{ mb_strtoupper($cityName) }}</span>
             @if ($metroName)
                 <span class="inline-flex items-center gap-1">
@@ -148,48 +148,48 @@
         </div>
 
         <div class="grid grid-cols-4 gap-2">
-            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
-                <div class="text-[10px] uppercase tracking-wide text-[#9d9d9d]">Возраст</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">{{ $age ?: '-' }}</div>
+            <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
+                <div class="text-[10px] capitalize tracking-wide text-[#8ea0bc]">Возраст</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">{{ $age ?: '-' }}</div>
             </div>
-            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
-                <div class="text-[10px] uppercase tracking-wide text-[#9d9d9d]">Рост</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">{{ $height ?: '-' }}</div>
+            <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
+                <div class="text-[10px] capitalize tracking-wide text-[#8ea0bc]">Рост</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">{{ $height ?: '-' }}</div>
             </div>
-            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
-                <div class="text-[10px] uppercase tracking-wide text-[#9d9d9d]">Вес</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">{{ $weight ?: '-' }}</div>
+            <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
+                <div class="text-[10px] capitalize tracking-wide text-[#8ea0bc]">Вес</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">{{ $weight ?: '-' }}</div>
             </div>
-            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
-                <div class="text-[10px] uppercase tracking-wide text-[#9d9d9d]">Грудь</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">{{ $breast ?: '-' }}</div>
+            <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
+                <div class="text-[10px] capitalize tracking-wide text-[#8ea0bc]">Грудь</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">{{ $breast ?: '-' }}</div>
             </div>
         </div>
 
         <div class="grid grid-cols-3 gap-2">
-            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
-                <div class="text-[12px] tracking-wide text-[#9d9d9d]">1 час</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">
+            <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
+                <div class="text-[12px] tracking-wide text-[#8ea0bc]">1 час</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">
                     {{ $price1h ? number_format((float) $price1h, 0, '.', ' ') . ' ' . $currency : '-' }}
                 </div>
             </div>
-            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
-                <div class="text-[12px] tracking-wide text-[#9d9d9d]">2 часа</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">
+            <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
+                <div class="text-[12px] tracking-wide text-[#8ea0bc]">2 часа</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">
                     {{ $price2h ? number_format((float) $price2h, 0, '.', ' ') . ' ' . $currency : '-' }}
                 </div>
             </div>
-            <div class="rounded-lg border border-[#d7d7d7] bg-[#ececec] px-2 py-2 text-center">
-                <div class="text-[12px] tracking-wide text-[#9d9d9d]">ночь</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#2a2a2a]">
+            <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
+                <div class="text-[12px] tracking-wide text-[#8ea0bc]">ночь</div>
+                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">
                     {{ $priceNight ? number_format((float) $priceNight, 0, '.', ' ') . ' ' . $currency : '-' }}
                 </div>
             </div>
         </div>
 
-        <div class="flex items-center justify-between border-y border-[#dddddd] py-2 text-[12px] uppercase tracking-wide text-[#6f6f6f]">
+        <div class="flex items-center justify-between border-y border-[#2a3142] py-2 text-[12px] capitalize tracking-wide text-[#98a4bc]">
             <span>Выезд</span>
-            <span class="font-extrabold text-[#434343]">{{ $isOutcall ? 'Да' : 'Нет' }}</span>
+            <span class="font-extrabold text-[#eef3ff]">{{ $isOutcall ? 'Да' : 'Нет' }}</span>
         </div>
 
         <div class="grid grid-cols-4 gap-2">

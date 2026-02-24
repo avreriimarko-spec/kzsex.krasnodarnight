@@ -72,13 +72,13 @@
         {{-- ИМЯ И ВОЗРАСТ --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Ваше имя *</label>
+                <label class="block text-xs font-bold capitalize text-gray-700 mb-2">Ваше имя *</label>
                 <input type="text" name="name" required placeholder="Анна"
                     class="w-full bg-gray-50 border border-gray-200  px-4 py-3 focus:outline-none focus:border-red-500 focus:bg-white transition-colors">
             </div>
 
             <div>
-                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Возраст</label>
+                <label class="block text-xs font-bold capitalize text-gray-700 mb-2">Возраст</label>
                 <input type="number" name="age" placeholder="21"
                     class="w-full bg-gray-50 border border-gray-200  px-4 py-3 focus:outline-none focus:border-red-500 focus:bg-white transition-colors">
             </div>
@@ -86,7 +86,7 @@
 
         {{-- ТЕЛЕФОН С ВЫБОРОМ СТРАНЫ --}}
         <div>
-            <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Телефон / Мессенджер *</label>
+            <label class="block text-xs font-bold capitalize text-gray-700 mb-2">Телефон / Мессенджер *</label>
             <div
                 class="flex items-stretch bg-gray-50 border border-gray-200  overflow-hidden focus-within:border-red-500 focus-within:bg-white transition-all shadow-sm">
                 <select data-x-model="selectedCountry"
@@ -105,14 +105,14 @@
 
         {{-- ВОТ ОНО: ПОЛЕ О СЕБЕ --}}
         <div>
-            <label class="block text-xs font-bold uppercase text-gray-700 mb-2">О себе (параметры, опыт)</label>
+            <label class="block text-xs font-bold capitalize text-gray-700 mb-2">О себе (параметры, опыт)</label>
             <textarea name="about" rows="4" placeholder="Рост 170, вес 55..."
                 class="w-full bg-gray-50 border border-gray-200  px-4 py-3 focus:outline-none focus:border-red-500 focus:bg-white transition-colors"></textarea>
         </div>
 
         {{-- ЗАГРУЗКА ФОТО --}}
         <div>
-            <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Фотографии (макс 5 шт)</label>
+            <label class="block text-xs font-bold capitalize text-gray-700 mb-2">Фотографии (макс 5 шт)</label>
             <div
                 class="relative border-2 border-dashed border-gray-300  p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer group">
                 <input type="file" name="photos[]" multiple accept="image/*" data-x-on:change="handleFiles"
@@ -151,7 +151,7 @@
 
         {{-- КНОПКА --}}
         <button type="submit" data-x-bind:disabled="loading"
-            class="w-full bg-red-600 text-black font-bold uppercase py-4  shadow-lg hover:bg-red-700 hover:shadow-xl transition transform active:scale-[0.99] flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
+            class="w-full bg-red-600 text-black font-bold capitalize py-4  shadow-lg hover:bg-red-700 hover:shadow-xl transition transform active:scale-[0.99] flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
             <span data-x-show="!loading">Отправить анкету</span>
             <span data-x-show="loading" style="display: none;" class="flex items-center gap-2">
                 <svg class="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none"

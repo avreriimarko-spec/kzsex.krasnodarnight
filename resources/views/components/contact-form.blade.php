@@ -70,7 +70,7 @@
 
         {{-- Кнопка с биндингом --}}
         <button type="button" data-x-bind="retryBtn"
-            class="text-sm font-bold text-green-400 hover:text-green-300 uppercase tracking-wide border-b border-green-800 hover:border-green-600 transition-colors pb-1">
+            class="text-sm font-bold text-green-400 hover:text-green-300 capitalize tracking-wide border-b border-green-800 hover:border-green-600 transition-colors pb-1">
             Написать еще
         </button>
     </div>
@@ -81,25 +81,25 @@
         <input type="hidden" name="nonce" value="{{ wp_create_nonce('contact_form_action') }}">
 
         <div>
-            <label class="block text-xs font-bold uppercase text-gray-400 mb-2 tracking-wider">Ваше имя</label>
+            <label class="block text-xs font-bold capitalize text-gray-400 mb-2 tracking-wider">Ваше имя</label>
             <input type="text" name="name" required placeholder="Иван"
                 class="w-full bg-gray-900 border border-gray-700 px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all shadow-sm">
         </div>
 
         <div>
-            <label class="block text-xs font-bold uppercase text-gray-400 mb-2 tracking-wider">Номер телефона</label>
+            <label class="block text-xs font-bold capitalize text-gray-400 mb-2 tracking-wider">Номер телефона</label>
             <input type="tel" name="phone" required placeholder="+7 999 123-45-67"
                 class="w-full bg-gray-900 border border-gray-700 px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all shadow-sm">
         </div>
 
         <div>
-            <label class="block text-xs font-bold uppercase text-gray-400 mb-2 tracking-wider">Email</label>
+            <label class="block text-xs font-bold capitalize text-gray-400 mb-2 tracking-wider">Email</label>
             <input type="email" name="email" placeholder="mail@example.com"
                 class="w-full bg-gray-900 border border-gray-700 px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all shadow-sm">
         </div>
 
         <div>
-            <label class="block text-xs font-bold uppercase text-gray-400 mb-2 tracking-wider">Комментарий</label>
+            <label class="block text-xs font-bold capitalize text-gray-400 mb-2 tracking-wider">Комментарий</label>
             <textarea name="message" rows="4" placeholder="Ваш вопрос или комментарий..."
                 class="w-full bg-gray-900 border border-gray-700 px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all shadow-sm resize-none"></textarea>
         </div>
@@ -116,7 +116,7 @@
 
         {{-- КНОПКА ОТПРАВКИ --}}
         <button type="submit" data-x-bind="submitBtn"
-            class="w-full bg-red-600 text-black font-bold uppercase py-4  shadow-lg hover:bg-red-700 hover:shadow-xl transition transform active:scale-[0.99] flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed tracking-wide">
+            class="w-full bg-red-600 text-black font-bold capitalize py-4  shadow-lg hover:bg-red-700 hover:shadow-xl transition transform active:scale-[0.99] flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed tracking-wide">
             <span data-x-show="!loading">Отправить сообщение</span>
 
             <span data-x-show="loading" style="display: none;" class="flex items-center gap-2">

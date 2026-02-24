@@ -61,7 +61,7 @@
 
         <div class="p-5 flex flex-col flex-grow">
             <div class="flex items-center justify-between mb-3">
-                <time datetime="{{ esc_attr($date_iso) }}" class="text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                <time datetime="{{ esc_attr($date_iso) }}" class="text-xs font-medium text-neutral-500 capitalize tracking-wider">
                     {{ esc_html($date_human) }}
                 </time>
             </div>

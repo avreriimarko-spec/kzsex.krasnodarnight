@@ -11,7 +11,7 @@
             
             {{-- Хедер страницы --}}
             <header class="mb-8 border-b border-[#cd1d46]/30 pb-8">
-                <h1 class="text-3xl md:text-5xl font-bold text-[#cd1d46] uppercase tracking-tight mb-4">
+                <h1 class="text-3xl md:text-5xl font-bold text-[#cd1d46] capitalize tracking-tight mb-4">
                     {!! get_field('custom_h1') ?: get_the_title() !!}
                 </h1>
 

@@ -10,7 +10,7 @@
 
         <header class="mb-12 text-center max-w-3xl mx-auto">
             {{-- Заголовок: Если есть кастомный H1, берем его, иначе стандартный --}}
-            <h1 class="text-4xl md:text-5xl font-bold text-white uppercase mb-4 tracking-tight">
+            <h1 class="text-4xl md:text-5xl font-bold text-white capitalize mb-4 tracking-tight">
                 {!! get_field('custom_h1', $blogId) ?: get_the_title($blogId) !!} @if (is_paged())
                     <span class="text-gray-400">| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
                 @endif
@@ -29,12 +29,12 @@
         {{-- Вывод категорий (фильтр) --}}
         <div class="flex flex-wrap justify-center gap-4 mb-12">
             <a href="{{ get_permalink($blogId) }}"
-                class="px-4 py-2  text-sm font-bold uppercase transition {{ is_home() ? 'bg-[#cd1d46] text-black' : 'bg-[#0f0f0f] text-gray-300 hover:bg-gray-700' }}">
+                class="px-4 py-2  text-sm font-bold capitalize transition {{ is_home() ? 'bg-[#cd1d46] text-black' : 'bg-[#0f0f0f] text-gray-300 hover:bg-gray-700' }}">
                 Все
             </a>
             @foreach (get_categories(['hide_empty' => true]) as $cat)
                 <a href="{{ get_category_link($cat->term_id) }}"
-                    class="px-4 py-2  bg-[#0f0f0f] text-gray-300 text-sm font-bold uppercase hover:bg-[#cd1d46] hover:text-black transition">
+                    class="px-4 py-2  bg-[#0f0f0f] text-gray-300 text-sm font-bold capitalize hover:bg-[#cd1d46] hover:text-black transition">
                     {{ $cat->name }}
                 </a>
             @endforeach
@@ -76,7 +76,7 @@
                             @endphp
                             @if ($cats)
                                 <div
-                                    class="absolute top-4 left-4 bg-black/90 backdrop-blur-sm px-3 py-1 text-xs font-bold uppercase text-[#cd1d46]  shadow-sm">
+                                    class="absolute top-4 left-4 bg-black/90 backdrop-blur-sm px-3 py-1 text-xs font-bold capitalize text-[#cd1d46]  shadow-sm">
                                     {{ $cats[0]->name }}
                                 </div>
                             @endif
@@ -100,7 +100,7 @@
                             </div>
 
                             <a href="{{ get_permalink() }}"
-                                class="inline-flex items-center text-[#cd1d46] font-bold uppercase text-xs tracking-wider hover:underline mt-auto">
+                                class="inline-flex items-center text-[#cd1d46] font-bold capitalize text-xs tracking-wider hover:underline mt-auto">
                                 Читать далее &rarr;
                             </a>
                         </div>

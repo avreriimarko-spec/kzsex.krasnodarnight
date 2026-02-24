@@ -93,7 +93,7 @@
             
             {{-- Заголовок страницы --}}
             <header class="text-center mb-12">
-                <h1 class="font-serif text-4xl md:text-6xl text-[#DFC187] uppercase tracking-widest mb-4 drop-shadow-sm">
+                <h1 class="font-serif text-4xl md:text-6xl text-[#DFC187] capitalize tracking-widest mb-4 drop-shadow-sm">
                     {!! $page_h1 !!}
                 </h1>
                 @if (!empty($page_intro))
@@ -118,7 +118,7 @@
             @if($online_profiles->have_posts())
                 {{-- Верхняя панель с количеством --}}
                 <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
-                    <h2 class="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                    <h2 class="text-xl md:text-2xl font-bold text-black capitalize tracking-wide">
                         Найдено анкет: {{ $online_profiles->found_posts }}
     </h2>
                 </div>

@@ -161,7 +161,7 @@
 
         {{-- Header --}}
         <header class="prose mb-10 text-center max-w-4xl mx-auto">
-            <h1 class="text-3xl md:text-5xl font-bold uppercase mb-4 tracking-tight">
+            <h1 class="text-3xl md:text-5xl font-bold capitalize mb-4 tracking-tight">
                 {{ $page_title }}
                 @if (is_paged())
                     <span class="text-[#cd1d46]">| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
@@ -209,7 +209,7 @@
                 {{-- Мобильная кнопка фильтра --}}
                 <div class="lg:hidden mb-6">
                     <button onclick="openMobileFiltersGlobal()"
-                            class="w-full bg-[#cd1d46] hover:bg-[#b71833] text-black font-bold uppercase py-4  shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-3">
+                            class="w-full bg-[#cd1d46] hover:bg-[#b71833] text-black font-bold capitalize py-4  shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                         </svg>
@@ -219,7 +219,7 @@
 
                 {{-- ВЕРХНЯЯ ПАНЕЛЬ --}}
                 <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
-                    <h2 class="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                    <h2 class="text-xl md:text-2xl font-bold text-black capitalize tracking-wide">
                         Найдено анкет: {{ $profiles_query->found_posts }}
     </h2>
 

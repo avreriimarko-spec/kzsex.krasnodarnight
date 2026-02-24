@@ -9,7 +9,7 @@
     <div class="bg-black text-black pt-16 pb-24">
         <div class="container mx-auto px-4 text-center max-w-4xl">
             {{-- Используем стили заголовка как в услугах --}}
-            <h1 class="text-4xl md:text-6xl font-bold uppercase mb-6 tracking-tight text-[#cd1d46]">
+            <h1 class="text-4xl md:text-6xl font-bold capitalize mb-6 tracking-tight text-[#cd1d46]">
                 {!! get_field('custom_h1') ?: get_the_title() !!}
             </h1>
 
@@ -30,7 +30,7 @@
 
                 {{-- Карточка с данными: Фон черный, обводка красная (как в услугах) --}}
                 <div class="bg-black  p-8 border border-[#cd1d46]">
-                    <h2 class="text-2xl font-bold text-black mb-6 uppercase">Свяжитесь с нами</h2>
+                    <h2 class="text-2xl font-bold text-black mb-6 capitalize">Свяжитесь с нами</h2>
 
                     <div class="space-y-4">
                         {{-- Telegram --}}
@@ -46,7 +46,7 @@
                                 </div>
                                 
                                 <div class="overflow-hidden">
-                                    <div class="text-xs font-bold uppercase text-gray-400 group-hover:text-gray-200">Telegram</div>
+                                    <div class="text-xs font-bold capitalize text-gray-400 group-hover:text-gray-200">Telegram</div>
                                     <div class="font-bold text-lg text-black group-hover:text-black truncate">{{ $contacts['tg'] }}</div>
                                 </div>
                             </a>
@@ -64,7 +64,7 @@
                                 </div>
                                 
                                 <div class="overflow-hidden">
-                                    <div class="text-xs font-bold uppercase text-gray-400 group-hover:text-gray-200">WhatsApp</div>
+                                    <div class="text-xs font-bold capitalize text-gray-400 group-hover:text-gray-200">WhatsApp</div>
                                     <div class="font-bold text-lg text-black group-hover:text-black truncate">{{ $contacts['wa'] }}</div>
                                 </div>
                             </a>
@@ -82,7 +82,7 @@
                                 </div>
                                 
                                 <div class="overflow-hidden">
-                                    <div class="text-xs font-bold uppercase text-gray-400 group-hover:text-gray-200">Email</div>
+                                    <div class="text-xs font-bold capitalize text-gray-400 group-hover:text-gray-200">Email</div>
                                     <div class="font-bold text-lg text-black group-hover:text-black truncate">{{ $contacts['email'] }}</div>
                                 </div>
                             </a>
@@ -91,7 +91,7 @@
 
                     @if ($contacts['hours'])
                         <div class="mt-8 pt-6 border-t border-gray-800">
-                            <div class="text-xs font-bold uppercase text-gray-400 mb-1">Режим работы</div>
+                            <div class="text-xs font-bold capitalize text-gray-400 mb-1">Режим работы</div>
                             <div class="font-bold text-black">{{ $contacts['hours'] }}</div>
                         </div>
                     @endif
@@ -102,7 +102,7 @@
             <div class="lg:col-span-7">
                 {{-- Стиль контейнера изменен на черный с красной обводкой --}}
                 <div class="bg-black  p-8 border border-[#cd1d46] h-full">
-                    <h2 class="text-2xl font-bold text-black mb-2 uppercase">Напишите нам</h2>
+                    <h2 class="text-2xl font-bold text-black mb-2 capitalize">Напишите нам</h2>
                     <p class="text-gray-400 mb-8 text-sm">
                         Оставьте заявку, и наш менеджер свяжется с вами в ближайшее время.
                     </p>

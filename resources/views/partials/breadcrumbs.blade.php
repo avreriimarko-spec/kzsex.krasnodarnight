@@ -1,6 +1,6 @@
 @if (!is_front_page())
-    <div class="bg-[#0f0f0f] border-b border-gray-800">
-        <div class="container mx-auto px-4 py-3">
+    <div class="bg-transparent">
+        <div class="mx-auto px-4 py-3 md:w-3/5">
             <nav class="flex text-xs md:text-sm text-gray-400 overflow-x-auto whitespace-nowrap scrollbar-hide"
                 aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-2">
@@ -17,7 +17,7 @@
 
                             @if ($crumb['current'])
                                 {{-- Текущая страница (не ссылка) --}}
-                                <span class="text-black font-medium truncate max-w-[150px] md:max-w-xs"
+                                <span class="text-gray-300 font-medium truncate max-w-[150px] md:max-w-xs"
                                     aria-current="page">
                                     {{ $crumb['label'] }}
                                 </span>
