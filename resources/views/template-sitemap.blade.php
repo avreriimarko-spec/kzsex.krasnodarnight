@@ -15,6 +15,8 @@
             'deshevye',
             'individualki', 
             'online', 
+            'new',
+            'verified',
             'prostitutki-na-vyezd', 
             'prostitutki-priem',    
             'otzyvy', 

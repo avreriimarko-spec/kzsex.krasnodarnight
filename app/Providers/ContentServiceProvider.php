@@ -10,40 +10,46 @@ class ContentServiceProvider extends ServiceProvider
     protected const CITY_SCOPED_TAXONOMIES = ['service', 'metro', 'district'];
 
     protected const CITY_SCOPED_PAGE_TEMPLATES = [
-        'template-services.blade.php' => 'service',
-        'template-metro.blade.php' => 'metro',
-        'template-district.blade.php' => 'district',
+        'template-services.blade.php'    => 'service',
+        'template-metro.blade.php'       => 'metro',
+        'template-district.blade.php'    => 'district',
+        'template-new.blade.php'         => 'new',         // Добавлено
+        'template-verified.blade.php'    => 'verified',    // Добавлено
+        'template-vip.blade.php'         => 'vip',         // Добавлено
+        'template-cheap.blade.php'       => 'deshevye',    // Добавлено
+        'template-independent.blade.php' => 'individualki', // Добавлено
+        'template-online.blade.php'      => 'online',      // Добавлено
     ];
 
     /**
      * Список таксономий
      */
     protected const TAXONOMIES = [
-        'city' => ['slug' => 'city', 'name' => 'Города', 'post_type' => ['profile']],
-        'metro' => ['slug' => 'metro', 'name' => 'Метро', 'post_type' => ['profile']],
-        'new' => ['slug' => 'new', 'name' => 'Новые', 'post_type' => ['profile']],
-        'district' => ['slug' => 'district', 'name' => 'Районы', 'post_type' => ['profile']],
-        'services' => ['slug' => 'service', 'name' => 'Услуги', 'post_type' => ['profile']],
-        'hair_color' => ['slug' => 'hair_color', 'name' => 'Цвет волос', 'post_type' => ['profile']],
-        'hair_length' => ['slug' => 'hair_length', 'name' => 'Длина волос', 'post_type' => ['profile']],
-        'body_type' => ['slug' => 'body_type', 'name' => 'Телосложение', 'post_type' => ['profile']],
-        'ethnicity' => ['slug' => 'ethnicity', 'name' => 'Этнос', 'post_type' => ['profile']],
-        'nationality' => ['slug' => 'nationality', 'name' => 'Национальность', 'post_type' => ['profile']],
-        'languages' => ['slug' => 'language', 'name' => 'Языки', 'post_type' => ['profile']],
-        'breast_size' => ['slug' => 'breast_size', 'name' => 'Размер груди', 'post_type' => ['profile']],
-        'breast_type' => ['slug' => 'breast_type', 'name' => 'Тип груди', 'post_type' => ['profile']],
-        'pubic_hair' => ['slug' => 'pubic_hair', 'name' => 'Интимная стрижка', 'post_type' => ['profile']],
-        'piercing' => ['slug' => 'piercing', 'name' => 'Пирсинг', 'post_type' => ['profile']],
-        'travel' => ['slug' => 'travel', 'name' => 'Путешествия', 'post_type' => ['profile']],
-        'inoutcall' => ['slug' => 'inoutcall', 'name' => 'У Себя / Выезд', 'post_type' => ['profile']],
-        'smoker' => ['slug' => 'smoker', 'name' => 'Курит', 'post_type' => ['profile']],
-        'verified' => ['slug' => 'verified', 'name' => 'Проверенная', 'post_type' => ['profile']],
-        'independent' => ['slug' => 'independent', 'name' => 'Индивидуалка', 'post_type' => ['profile']],
-        'vip' => ['slug' => 'vip', 'name' => 'Вип', 'post_type' => ['profile']],
-        'gender' => ['slug' => 'gender', 'name' => 'Пол', 'post_type' => ['profile']],
-        'orientation' => ['slug' => 'orientation', 'name' => 'Ориентация', 'post_type' => ['profile']],
+        'city'         => ['slug' => 'city', 'name' => 'Города', 'post_type' => ['profile']],
+        'metro'        => ['slug' => 'metro', 'name' => 'Метро', 'post_type' => ['profile']],
+        'new'          => ['slug' => 'new', 'name' => 'Новые', 'post_type' => ['profile']],
+        'district'     => ['slug' => 'district', 'name' => 'Районы', 'post_type' => ['profile']],
+        'services'     => ['slug' => 'service', 'name' => 'Услуги', 'post_type' => ['profile']],
+        'hair_color'   => ['slug' => 'hair_color', 'name' => 'Цвет волос', 'post_type' => ['profile']],
+        'hair_length'  => ['slug' => 'hair_length', 'name' => 'Длина волос', 'post_type' => ['profile']],
+        'body_type'    => ['slug' => 'body_type', 'name' => 'Телосложение', 'post_type' => ['profile']],
+        'ethnicity'    => ['slug' => 'ethnicity', 'name' => 'Этнос', 'post_type' => ['profile']],
+        'nationality'  => ['slug' => 'nationality', 'name' => 'Национальность', 'post_type' => ['profile']],
+        'languages'    => ['slug' => 'language', 'name' => 'Языки', 'post_type' => ['profile']],
+        'breast_size'  => ['slug' => 'breast_size', 'name' => 'Размер груди', 'post_type' => ['profile']],
+        'breast_type'  => ['slug' => 'breast_type', 'name' => 'Тип груди', 'post_type' => ['profile']],
+        'pubic_hair'   => ['slug' => 'pubic_hair', 'name' => 'Интимная стрижка', 'post_type' => ['profile']],
+        'piercing'     => ['slug' => 'piercing', 'name' => 'Пирсинг', 'post_type' => ['profile']],
+        'travel'       => ['slug' => 'travel', 'name' => 'Путешествия', 'post_type' => ['profile']],
+        'inoutcall'    => ['slug' => 'inoutcall', 'name' => 'У Себя / Выезд', 'post_type' => ['profile']],
+        'smoker'       => ['slug' => 'smoker', 'name' => 'Курит', 'post_type' => ['profile']],
+        'verified'     => ['slug' => 'verified', 'name' => 'Проверенная', 'post_type' => ['profile']],
+        'independent'  => ['slug' => 'independent', 'name' => 'Индивидуалка', 'post_type' => ['profile']],
+        'vip'          => ['slug' => 'vip', 'name' => 'Вип', 'post_type' => ['profile']],
+        'gender'       => ['slug' => 'gender', 'name' => 'Пол', 'post_type' => ['profile']],
+        'orientation'  => ['slug' => 'orientation', 'name' => 'Ориентация', 'post_type' => ['profile']],
         'meeting_with' => ['slug' => 'meeting_with', 'name' => 'Встречается с', 'post_type' => ['profile']],
-        'tattoo' => ['slug' => 'tattoo', 'name' => 'Тату', 'post_type' => ['profile']],
+        'tattoo'       => ['slug' => 'tattoo', 'name' => 'Тату', 'post_type' => ['profile']],
     ];
 
     public function register(): void

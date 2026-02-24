@@ -46,8 +46,14 @@
                     // Эти страницы всегда без города
                     $atts['href'] = home_url("/{$path}/");
                 } else {
-                    // Остальные страницы также без города в футере
-                    $atts['href'] = home_url("/{$path}/");
+                    // Для всех остальных страниц (verified, new, vip, online, individualki)
+                    // добавляем текущий город в начало пути
+                    $path_parts = explode('/', $path);
+                    if ($path_parts[0] !== $current_city_slug) {
+                        $atts['href'] = home_url("/{$current_city_slug}/{$path}/");
+                    } else {
+                        $atts['href'] = home_url("/{$path}/");
+                    }
                 }
             }
 
