@@ -39,8 +39,9 @@
                 
                 if (empty($path)) {
                     $atts['href'] = home_url('/');
-                } elseif ($path === 'uslugi' || $path === 'service' || preg_match('#^[^/]+/(uslugi|service)$#', $path)) {
-                    $atts['href'] = home_url("/{$current_city_slug}/service/");
+                } elseif (preg_match('#^[^/]+/(service|metro|district)$#', $path, $matches)) {
+                    $page_slug = $matches[1];
+                    $atts['href'] = home_url("/{$current_city_slug}/{$page_slug}/");
                 } elseif (in_array($path, $no_city_paths)) {
                     // Эти страницы всегда без города
                     $atts['href'] = home_url("/{$path}/");

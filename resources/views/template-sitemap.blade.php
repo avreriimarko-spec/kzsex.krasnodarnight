@@ -117,9 +117,14 @@
                                 if ($page->ID == get_option('page_on_front')) continue;
                                 $page_template = get_page_template_slug($page->ID);
 
+                                $city_slug = \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG;
+                                
                                 if (strpos((string) $page_template, 'template-services.blade.php') !== false) {
-                                    $services_city_slug = \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG;
-                                    $page_link = home_url('/' . $services_city_slug . '/service/');
+                                    $page_link = home_url('/' . $city_slug . '/service/');
+                                } elseif (strpos((string) $page_template, 'template-metro.blade.php') !== false) {
+                                    $page_link = home_url('/' . $city_slug . '/metro/');
+                                } elseif (strpos((string) $page_template, 'template-district.blade.php') !== false) {
+                                    $page_link = home_url('/' . $city_slug . '/district/');
                                 } else {
                                     $page_link = home_url('/' . $page->post_name . '/');
                                 }
