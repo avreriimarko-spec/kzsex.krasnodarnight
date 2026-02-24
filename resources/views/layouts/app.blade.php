@@ -20,7 +20,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body @php(body_class('antialiased font-serif min-h-screen flex flex-col bg-white text-gray-900'))>
+<body @php(body_class('antialiased font-serif min-h-screen flex flex-col bg-[#0e1015] text-gray-100'))>
     @php(wp_body_open())
 
     @include('sections.header')
