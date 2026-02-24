@@ -1,8 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap");
 @import "@fancyapps/ui/dist/fancybox/fancybox.css";
 @import "./profile.css";
 @import "tailwindcss" theme(static);
 @source "../views/";
 @source "../../app/";
+
+@theme {
+  --font-sans: "Golos Text", "Segoe UI", "Noto Sans", sans-serif;
+  --font-serif: "Golos Text", "Segoe UI", "Noto Sans", sans-serif;
+}
 
 /* Глобальные стили для темной темы */
 body {
@@ -533,4 +539,81 @@ header.bg-\[\#141416\] {
 header.bg-\[\#141416\] .text-white,
 header.bg-\[\#141416\] .text-gray-300 {
   color: #ffffff !important;
+}
+
+/* Скроллбар для выпадающих списков городов в хедере */
+#city-dropdown-list .overflow-y-auto,
+#city-dropdown-mobile-list .overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #4a5672 transparent;
+}
+
+#city-dropdown-list .overflow-y-auto::-webkit-scrollbar,
+#city-dropdown-mobile-list .overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+#city-dropdown-list .overflow-y-auto::-webkit-scrollbar-track,
+#city-dropdown-mobile-list .overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#city-dropdown-list .overflow-y-auto::-webkit-scrollbar-thumb,
+#city-dropdown-mobile-list .overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: #4a5672;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+#city-dropdown-list .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+#city-dropdown-mobile-list .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background-color: #cd1d46;
+}
+
+/* Скроллбар и пункты мобильного меню в хедере */
+#mobile-menu {
+  scrollbar-width: thin;
+  scrollbar-color: #4a5672 transparent;
+}
+
+#mobile-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+#mobile-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#mobile-menu::-webkit-scrollbar-thumb {
+  background-color: #4a5672;
+  border-radius: 9999px;
+}
+
+#mobile-menu::-webkit-scrollbar-thumb:hover {
+  background-color: #cd1d46;
+}
+
+#mobile-menu nav > ul > li > a {
+  border: 1px solid rgba(41, 49, 66, 0.7);
+}
+
+/* #mobile-menu nav > ul > li:last-child {
+  border-bottom: 0;
+} */
+
+#mobile-menu nav > ul > li > a,
+#mobile-menu nav > ul > li > span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#mobile-menu nav > ul > li > a:hover {
+  background-color: #cd1d46;
+  color: #ffffff;
 }

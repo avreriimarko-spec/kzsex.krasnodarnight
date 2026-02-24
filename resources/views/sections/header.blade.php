@@ -26,8 +26,8 @@
     add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_slug, $current_request_path, $default_city_slug) {
         if ($args->theme_location !== 'primary_navigation') return $atts;
 
-        $default_classes = 'text-sm font-medium uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors';
-        $active_classes  = 'text-sm font-medium uppercase tracking-widest text-white cursor-default';
+        $default_classes = 'text-sm font-medium capitalize tracking-widest text-white hover:text-[#cd1d46] transition-colors';
+        $active_classes  = 'text-sm font-medium capitalize tracking-widest text-white cursor-default';
 
         if (isset($atts['href'])) {
             $original_url = $atts['href'];
@@ -78,16 +78,16 @@
     $is_online_active = ($online_path === $current_request_path);
 
     // Классы для ссылок меню
-    $menu_classes_default = 'text-sm font-medium uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors';
-    $menu_classes_active  = 'text-sm font-medium uppercase tracking-widest text-white cursor-default';
+    $menu_classes_default = 'text-sm font-medium capitalize tracking-widest text-white hover:text-[#cd1d46] transition-colors';
+    $menu_classes_active  = 'text-sm font-medium capitalize tracking-widest text-white cursor-default';
 
     // Классы для десктопа
-    $link_classes_default = 'text-sm font-medium uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors flex items-center gap-2';
-    $link_classes_active  = 'text-sm font-medium uppercase tracking-widest text-white cursor-default flex items-center gap-2';
+    $link_classes_default = 'text-sm font-medium capitalize tracking-widest text-white hover:text-[#cd1d46] transition-colors flex items-center gap-2';
+    $link_classes_active  = 'text-sm font-medium capitalize tracking-widest text-white cursor-default flex items-center gap-2';
     
     // Классы для мобилки
-    $mobile_classes_default = 'text-lg font-medium uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors flex justify-center items-center gap-2';
-    $mobile_classes_active  = 'text-lg font-medium uppercase tracking-widest text-white cursor-default flex justify-center items-center gap-2';
+    $mobile_classes_default = 'text-lg font-medium capitalize tracking-widest text-white hover:text-[#cd1d46] transition-colors flex justify-center items-center gap-2';
+    $mobile_classes_active  = 'text-lg font-medium capitalize tracking-widest text-white cursor-default flex justify-center items-center gap-2';
 
     // Десктоп-меню: берём top-level пункты и готовим URL/active вручную
     $desktop_menu_items = [];
@@ -185,7 +185,7 @@
 
 @endphp
 
-<header class="bg-[#141416] text-white shadow-md sticky top-0 z-50 w-full font-serif">
+<header class="bg-[#0e101599] backdrop-blur-sm mx-auto rounded-xl lg:border lg:border-[#1f232e] text-white shadow-lg sticky top-0 lg:top-3 z-50 w-full lg:w-9/10 font-serif">
     <div class="container mx-auto px-4 py-1">
         <div class="flex justify-between items-center h-15 relative">
 
@@ -193,7 +193,7 @@
             @if (!$is_mobile)
                 @if (has_nav_menu('primary_navigation'))
                     <nav class="flex flex-1 justify-center px-6" aria-label="Main Navigation">
-                        <ul class="flex items-center gap-6 xl:gap-8 text-sm font-medium uppercase tracking-widest text-white">
+                        <ul class="flex items-center gap-6 xl:gap-8 text-sm font-medium capitalize tracking-widest text-white">
                             @foreach($desktop_menu_items as $index => $item)
                                 @if($can_group_price_dropdown && $index === 2)
                                     <li class="relative">
@@ -207,11 +207,11 @@
                                         </button>
 
                                         <div id="price-dropdown-list"
-                                             class="hidden absolute left-0 top-full mt-4 w-64 bg-zinc-900 border border-zinc-800 shadow-2xl rounded-sm z-[60] overflow-hidden">
+                                             class="hidden absolute left-0 top-full mt-4 w-64 bg-[#0e101599] backdrop-blur-xl border border-[#1f232e] shadow-[0_20px_50px_-25px_rgba(0,0,0,0.95)] rounded-lg z-[60] overflow-hidden">
                                             <ul class="py-1">
                                                 @foreach([$price_item_a, $price_item_b] as $price_item)
                                                     @if($price_item)
-                                                        <li class="border-b border-zinc-800 last:border-0">
+                                                        <li class="border-b border-[#293142]/70 last:border-0">
                                                             @if($price_item['is_active'])
                                                                 <span class="{{ $menu_classes_active }} flex items-center px-5 py-3">
                                                                     {{ $price_item['title'] }}
@@ -247,10 +247,10 @@
                                         </button>
 
                                         <div id="price-menu-dropdown-list"
-                                             class="hidden absolute left-0 top-full mt-4 w-64 bg-zinc-900 border border-zinc-800 shadow-2xl rounded-sm z-[60] overflow-hidden">
+                                             class="hidden absolute left-0 top-full mt-4 w-64 bg-[#0e101599] backdrop-blur-xl border border-[#1f232e] shadow-[0_20px_50px_-25px_rgba(0,0,0,0.95)] rounded-lg z-[60] overflow-hidden">
                                             <ul class="py-1">
                                                 @foreach($price_menu_items as $price_menu_item)
-                                                    <li class="border-b border-zinc-800 last:border-0">
+                                                    <li class="border-b border-[#293142]/70 last:border-0">
                                                         @if($price_menu_item['is_active'])
                                                             <span class="{{ $menu_classes_active }} flex items-center px-5 py-3">
                                                                 {{ $price_menu_item['title'] }}
@@ -306,7 +306,7 @@
                 @if(!empty($cities) && !is_wp_error($cities))
                     <div>
                         <button id="city-dropdown-mobile-btn" 
-                                class="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
+                                class="group flex items-center gap-2 text-xs font-bold capitalize tracking-widest text-white hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
                                 aria-expanded="false">
                             @php
                                 $display_name = $city_obj ? $city_obj->name : $default_city_name; 
@@ -328,7 +328,7 @@
                     @if(!empty($cities) && !is_wp_error($cities))
                         <div class="relative block">
                             <button id="city-dropdown-btn" 
-                                    class="group flex items-center gap-2 text-xs md:text-sm font-bold uppercase tracking-widest text-white hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
+                                    class="group flex items-center gap-2 text-xs md:text-sm font-bold capitalize tracking-widest text-white hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
                                     aria-expanded="false">
                                 @php
                                     $display_name = $city_obj ? $city_obj->name : $default_city_name;
@@ -340,17 +340,17 @@
                             </button>
 
                             <div id="city-dropdown-list" 
-                                 class="hidden absolute right-0 top-full mt-4 w-64 bg-zinc-900 border border-zinc-800 shadow-2xl rounded-sm z-[60] overflow-hidden">
-                                <div class="max-h-[300px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+                                 class="hidden absolute right-0 top-full mt-4 w-64 bg-[#0e101599] backdrop-blur-xl border border-[#1f232e] shadow-[0_20px_50px_-25px_rgba(0,0,0,0.95)] rounded-lg z-[60] overflow-hidden">
+                                <div class="max-h-[300px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-[#3b455d] scrollbar-track-transparent">
                                     @foreach($cities as $city)
                                         @php
                                             $city_link = ($city->slug === $default_city_slug) ? home_url('/') : home_url("/{$city->slug}/");
                                         @endphp
                                         <a href="{{ $city_link }}" 
-                                           class="flex justify-between items-center px-5 py-3 text-white hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-zinc-800 last:border-0 group">
-                                            <span class="text-sm tracking-wide uppercase font-medium">{{ $city->name }}</span>
+                                           class="flex justify-between items-center px-5 py-3 text-white hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-[#293142]/70 last:border-0 group">
+                                            <span class="text-sm tracking-wide capitalize font-medium">{{ $city->name }}</span>
                                             @if($city->count > 0)
-                                                <span class="text-[10px] text-zinc-500 group-hover:text-white transition-colors">{{ $city->count }}</span>
+                                                <span class="text-[10px] text-[#98a4bc] group-hover:text-white transition-colors">{{ $city->count }}</span>
                                             @endif
                                         </a>
                                     @endforeach
@@ -364,17 +364,17 @@
                 @if($is_mobile)
                     @if(!empty($cities) && !is_wp_error($cities))
                         <div id="city-dropdown-mobile-list" 
-                             class="hidden absolute right-4 top-full mt-2 w-56 bg-zinc-900 border border-zinc-800 shadow-2xl rounded-sm z-[60] overflow-hidden">
-                            <div class="max-h-[250px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+                             class="hidden absolute left-0 top-full w-56 bg-[#0e101599] backdrop-blur-xl border border-[#1f232e] shadow-[0_20px_50px_-25px_rgba(0,0,0,0.95)] rounded-lg z-[60] overflow-hidden">
+                            <div class="max-h-[250px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-[#3b455d] scrollbar-track-transparent">
                                 @foreach($cities as $city)
                                     @php
                                         $city_link = ($city->slug === $default_city_slug) ? home_url('/') : home_url("/{$city->slug}/");
                                     @endphp
                                     <a href="{{ $city_link }}" 
-                                       class="flex justify-between items-center px-4 py-2.5 text-white hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-zinc-800 last:border-0 text-sm">
-                                        <span class="tracking-wide uppercase font-medium">{{ $city->name }}</span>
+                                       class="flex justify-between items-center px-4 py-2.5 text-white hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-[#293142]/70 last:border-0 text-sm">
+                                        <span class="tracking-wide capitalize font-medium">{{ $city->name }}</span>
                                         @if($city->count > 0)
-                                            <span class="text-[10px] text-zinc-500 group-hover:text-white transition-colors">{{ $city->count }}</span>
+                                            <span class="text-[10px] text-[#98a4bc] group-hover:text-white transition-colors">{{ $city->count }}</span>
                                         @endif
                                     </a>
                                 @endforeach
@@ -393,11 +393,11 @@
 
     {{-- МОБИЛЬНОЕ МЕНЮ --}}
     @if($is_mobile)
-        <div id="mobile-menu" class="hidden absolute top-24 left-0 w-full bg-black border-t border-zinc-800 shadow-xl pb-8 max-h-[calc(100vh-6rem)] overflow-y-auto">
+        <div id="mobile-menu" class="hidden absolute left-0 w-full bg-[#0f141ef2] backdrop-blur-xl border-t border-[#2a3142] shadow-[0_24px_55px_-30px_rgba(0,0,0,0.95)] pb-8 max-h-[calc(100vh-6rem)] overflow-y-auto">
             <nav class="container mx-auto px-4 py-6 flex flex-col gap-6 text-center">
                 
                 @if (has_nav_menu('primary_navigation'))
-                    <ul class="flex flex-col gap-6 text-lg font-medium uppercase tracking-widest">
+                    <ul class="flex flex-col gap-2 text-lg font-medium capitalize tracking-widest bg-[#0f141ee6] rounded-lg p-2">
                         {!! wp_nav_menu([
                             'theme_location' => 'primary_navigation',
                             'menu_class' => 'flex flex-col gap-6',
@@ -422,21 +422,6 @@
                     </ul>
                 @endif
 
-                <hr class="border-zinc-800 w-1/3 mx-auto">
-
-                @if(!empty($cities) && !is_wp_error($cities))
-                    <div class="flex flex-col gap-4">
-                        <span class="text-lg text-white font-bold uppercase tracking-widest mb-2">Города</span>
-                        @foreach($cities as $city)
-                            @php
-                                $city_link = ($city->slug === $default_city_slug) ? home_url('/') : home_url("/{$city->slug}/");
-                            @endphp
-                            <a href="{{ $city_link }}" class="text-md text-white hover:text-[#cd1d46] uppercase tracking-wider transition-colors">
-                                {{ $city->name }}
-                            </a>
-                        @endforeach
-                    </div>
-                @endif
             </nav>
         </div>
     @endif
