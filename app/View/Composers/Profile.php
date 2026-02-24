@@ -52,7 +52,7 @@ class Profile extends Composer
     public function details()
     {
         return [
-            // 'age'    => get_field('age'),
+            // 'age'    => get_field('age'), // чтобы не появлялся в параметрах
             'height' => get_field('height'),
             'weight' => get_field('weight'),
         ];
