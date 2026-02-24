@@ -265,7 +265,7 @@
 
         {{-- Header --}}
         <header class="prose mb-10 text-center max-w-4xl mx-auto">
-            <h1 class="text-3xl md:text-5xl font-bold mb-4 uppercase tracking-tight">
+            <h1 class="text-xl xl:text-3xl font-bold mb-8 mt-0 text-center px-1 md:px-0 capitalize">
                 {!! $final_data['h1'] !!}
                 @if (is_paged())
                     <span class="text-[#cd1d46]">| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
@@ -274,7 +274,7 @@
             
             {{-- Intro текст (Description) --}}
             @if (!is_paged() && !empty($final_data['intro']))
-                <div class="leading-relaxed max-w-2xl mx-auto text-gray-300">
+                <div class="leading-relaxed max-w-2xl mx-auto">
                     {!! $final_data['intro'] !!}
                 </div>
             @endif
@@ -304,7 +304,7 @@
 
                 {{-- ВЕРХНЯЯ ПАНЕЛЬ --}}
                 <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
-                    <h2 class="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">
+                    <h2 class="text-xl md:text-2xl font-bold text-white uppercase tracking-wide">
                         Найдено анкет: {{ $profiles_query->found_posts }}
                     </h2>
 

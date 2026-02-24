@@ -10,7 +10,7 @@
 
         <header class="mb-12 text-center max-w-3xl mx-auto">
             {{-- Заголовок: Если есть кастомный H1, берем его, иначе стандартный --}}
-            <h1 class="text-4xl md:text-5xl font-bold text-black uppercase mb-4 tracking-tight">
+            <h1 class="text-4xl md:text-5xl font-bold text-white uppercase mb-4 tracking-tight">
                 {!! get_field('custom_h1', $blogId) ?: get_the_title($blogId) !!} @if (is_paged())
                     <span class="text-gray-400">| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
                 @endif
@@ -89,7 +89,7 @@
                             </div>
 
                             <h2
-                                class="text-xl font-bold text-black mb-3 leading-tight group-hover:text-[#cd1d46] transition-colors">
+                                class="text-xl font-bold text-white mb-3 leading-tight group-hover:text-[#cd1d46] transition-colors">
                                 <a href="{{ get_permalink() }}">{!! get_the_title() !!}</a>
                             </h2>
 

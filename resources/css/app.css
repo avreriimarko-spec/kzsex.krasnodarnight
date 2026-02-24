@@ -91,6 +91,10 @@ a:hover {
     @apply text-gray-300 leading-relaxed max-w-none;
   }
 
+  .prose div p {
+    @apply text-center text-gray-300 mb-8 max-w-3xl mx-auto px-1 md:px-0;
+  }
+
   /* --- ЗАГОЛОВКИ --- */
   .prose h1,
   .prose h2,
@@ -100,7 +104,7 @@ a:hover {
   }
 
   .prose h1 {
-    @apply text-3xl md:text-4xl border-b-2 border-[#cd1d46] inline-block pb-1 pr-4;
+    @apply text-3xl md:text-4xl inline-block pb-1 pr-4;
   }
 
   .prose h2 {
@@ -413,7 +417,7 @@ nav.flex-col ul li.current-menu-item a {
   .bg-\[\#0f0f0f\],
   .bg-\[\#050505\],
   .bg-\[\#0a0a0a\] {
-    background-color: #ffffff !important;
+    background-color: #0f141e !important;
   }
 
   .border-gray-900,
@@ -421,29 +425,29 @@ nav.flex-col ul li.current-menu-item a {
   .border-gray-700,
   .border-gray-600,
   .border-zinc-800 {
-    border-color: #d1d5db !important;
+    border-color: #2a3142 !important;
   }
 
   .text-white\/70 {
-    color: rgba(17, 24, 39, 0.7) !important;
+    color: rgba(201, 210, 227, 0.78) !important;
   }
 
   .text-gray-300 {
-    color: #374151 !important;
+    color: #d4dcec !important;
   }
 
   .text-gray-400,
   .text-gray-200 {
-    color: #4b5563 !important;
+    color: #9aa9c2 !important;
   }
 
   .hover\:bg-gray-700:hover {
-    background-color: #e5e7eb !important;
+    background-color: #1b2331 !important;
   }
 
   .hover\:text-white:hover,
   .group:hover .group-hover\:text-white {
-    color: #111827 !important;
+    color: #ffffff !important;
   }
 }
 
@@ -616,4 +620,41 @@ header.bg-\[\#141416\] .text-gray-300 {
 #mobile-menu nav > ul > li > a:hover {
   background-color: #cd1d46;
   color: #ffffff;
+}
+
+/* Приведение светлых блоков в main к тёмной палитре хедера */
+main .bg-white,
+main .bg-gray-50,
+main .bg-gray-100,
+main .bg-neutral-50,
+main .bg-neutral-100 {
+  background-color: #0f141e !important;
+}
+
+main .border-gray-100,
+main .border-gray-200,
+main .border-gray-300,
+main .border-neutral-200,
+main .border-neutral-300 {
+  border-color: #2a3142 !important;
+}
+
+main .text-black,
+main .text-gray-700,
+main .text-gray-800,
+main .text-gray-900,
+main .text-neutral-700,
+main .text-neutral-800,
+main .text-neutral-900 {
+  color: #eef3ff !important;
+}
+
+main .placeholder-gray-500::placeholder,
+main .placeholder-neutral-400::placeholder {
+  color: #98a4bc !important;
+}
+
+main .hover\:bg-gray-100:hover,
+main .hover\:bg-gray-200:hover {
+  background-color: #1b2331 !important;
 }
