@@ -117,7 +117,7 @@
 
             @if($online_profiles->have_posts())
                 {{-- Верхняя панель с количеством --}}
-                <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
+                <div class="flex flex-wrap items-center justify-between mb-6 pb-4 gap-4">
                     <h2 class="text-xl md:text-2xl font-bold text-black capitalize tracking-wide">
                         Найдено анкет: {{ $online_profiles->found_posts }}
     </h2>

@@ -417,7 +417,7 @@ nav.flex-col ul li.current-menu-item a {
   .bg-\[\#0f0f0f\],
   .bg-\[\#050505\],
   .bg-\[\#0a0a0a\] {
-    background-color: #0f141e !important;
+    background-color: #0e1015 !important;
   }
 
   .border-gray-900,
@@ -628,7 +628,7 @@ main .bg-gray-50,
 main .bg-gray-100,
 main .bg-neutral-50,
 main .bg-neutral-100 {
-  background-color: #0f141e !important;
+  background-color: #0e1015 !important;
 }
 
 main .border-gray-100,

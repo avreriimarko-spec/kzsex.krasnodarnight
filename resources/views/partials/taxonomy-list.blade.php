@@ -25,7 +25,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         <div class="lg:col-span-4">
             {{-- ВЕРХНЯЯ ПАНЕЛЬ --}}
-            <div class="flex flex-wrap items-center justify-between mb-6 border-b border-[#cd1d46] pb-4 gap-4">
+            <div class="flex flex-wrap items-center justify-between mb-6 pb-4 gap-4">
                 <h2 class="text-xl md:text-2xl font-bold text-black capitalize tracking-wide">
                     {{ $found_label }}: {{ $terms && !is_wp_error($terms) ? count($terms) : 0 }}
                 </h2>

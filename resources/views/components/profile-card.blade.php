@@ -94,7 +94,7 @@
     }
 @endphp
 
-<article class="group h-full overflow-visible rounded-[14px] border border-[#2a3142] bg-[#0f141e] shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
+<article class="group h-full overflow-visible rounded-[14px] border border-[#2a3142] bg-[#0e1015] shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
     <figure class="relative aspect-[3/4] w-full overflow-hidden rounded-t-[14px] bg-[#141a24]">
         @if (has_post_thumbnail())
             @php $imgData = wp_get_attachment_image_src(get_post_thumbnail_id(), 'profile_card'); @endphp
@@ -211,7 +211,12 @@
                     WhatsApp
                 </a>
             @else
-                <span class="rounded bg-[#8fd9ab] px-1 py-2 text-center text-[11px] text-white">WhatsApp</span>
+                <span class="group/wa relative rounded bg-[#8fd9ab] px-1 py-2 text-center text-[11px] text-white cursor-not-allowed">
+                    WhatsApp
+                    <span class="pointer-events-none absolute left-1/2 bottom-full z-30 mb-2 w-max max-w-[180px] -translate-x-1/2 rounded-md border border-[#2b2c33] bg-[#121319] px-2 py-1 text-[10px] font-medium normal-case tracking-normal text-[#d7d9e0] opacity-0 shadow-lg transition-opacity duration-200 group-hover/wa:opacity-100">
+                        WhatsApp отсутствует
+                    </span>
+                </span>
             @endif
 
             @if ($tgLink)
@@ -219,7 +224,12 @@
                     Telegram
                 </a>
             @else
-                <span class="rounded bg-[#8fbfdd] px-1 py-2 text-center text-[11px] text-white">Telegram</span>
+                <span class="group/tg relative rounded bg-[#8fbfdd] px-1 py-2 text-center text-[11px] text-white cursor-not-allowed">
+                    Telegram
+                    <span class="pointer-events-none absolute left-1/2 bottom-full z-30 mb-2 w-max max-w-[180px] -translate-x-1/2 rounded-md border border-[#2b2c33] bg-[#121319] px-2 py-1 text-[10px] font-medium normal-case tracking-normal text-[#d7d9e0] opacity-0 shadow-lg transition-opacity duration-200 group-hover/tg:opacity-100">
+                        Telegram отсутствует
+                    </span>
+                </span>
             @endif
 
             @if ($maxLink)
@@ -227,7 +237,12 @@
                     Max
                 </a>
             @else
-                <span class="rounded bg-[#6477a8] px-1 py-2 text-center text-[11px] font-semibold text-white">Max</span>
+                <span class="group/max relative rounded bg-[#6477a8] px-1 py-2 text-center text-[11px] font-semibold text-white cursor-not-allowed">
+                    Max
+                    <span class="pointer-events-none absolute left-1/2 bottom-full z-30 mb-2 w-max max-w-[180px] -translate-x-1/2 rounded-md border border-[#2b2c33] bg-[#121319] px-2 py-1 text-[10px] font-medium normal-case tracking-normal text-[#d7d9e0] opacity-0 shadow-lg transition-opacity duration-200 group-hover/max:opacity-100">
+                        Max отсутствует
+                    </span>
+                </span>
             @endif
         </div>
     </div>

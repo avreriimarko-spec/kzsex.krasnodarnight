@@ -393,11 +393,11 @@
 
     {{-- МОБИЛЬНОЕ МЕНЮ --}}
     @if($is_mobile)
-        <div id="mobile-menu" class="hidden absolute left-0 w-full bg-[#0f141ef2] backdrop-blur-xl border-t border-[#2a3142] shadow-[0_24px_55px_-30px_rgba(0,0,0,0.95)] pb-8 max-h-[calc(100vh-6rem)] overflow-y-auto">
+        <div id="mobile-menu" class="hidden absolute left-0 w-full bg-[#0e1015f2] backdrop-blur-xl border-t border-[#2a3142] shadow-[0_24px_55px_-30px_rgba(0,0,0,0.95)] pb-8 max-h-[calc(100vh-6rem)] overflow-y-auto">
             <nav class="container mx-auto px-4 py-6 flex flex-col gap-6 text-center">
                 
                 @if (has_nav_menu('primary_navigation'))
-                    <ul class="flex flex-col gap-2 text-lg font-medium capitalize tracking-widest bg-[#0f141ee6] rounded-lg p-2">
+                    <ul class="flex flex-col gap-2 text-lg font-medium capitalize tracking-widest bg-[#0e1015e6] rounded-lg p-2">
                         {!! wp_nav_menu([
                             'theme_location' => 'primary_navigation',
                             'menu_class' => 'flex flex-col gap-6',
