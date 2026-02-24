@@ -30,10 +30,14 @@ class Breadcrumbs extends Composer
             $blogUrl = ($page && !is_wp_error($page)) ? get_permalink($page) : home_url('/blog/');
         }
 
-        $hubSeg = (string) get_query_var('city');
-        $hubTerm = $hubSeg !== '' ? get_term_by('slug', $hubSeg, 'city') : null;
-        $hubName = ($hubTerm && !is_wp_error($hubTerm)) ? $hubTerm->name : '';
-        $hubUrl = ($hubSeg !== '' && $hubName !== '') ? home_url('/' . $hubSeg . '/') : '';
+        // 1. Используем существующий хелпер для получения текущего города
+        $currentCity = \App\Helpers\UrlHelpers::getCurrentCity();
+        $hubName = $currentCity ? $currentCity->name : '';
+        $hubUrl = $currentCity ? \App\Helpers\UrlHelpers::getCityUrl($currentCity) : '';
+        $hubSeg = $currentCity ? $currentCity->slug : '';
+
+        // 2. Флаги для предотвращения дублирования
+        $isCityTax = is_tax('city'); // Находимся ли мы на странице архива города
         $isHubRoot = $hubSeg !== ''
             && !get_query_var('pagename')
             && !get_query_var('taxonomy')
@@ -43,8 +47,8 @@ class Breadcrumbs extends Composer
         $crumbs = [];
         $crumbs[] = ['label' => $opt['home_label'], 'url' => home_url('/')];
 
-        $addHub = static function (array &$arr) use ($hubSeg, $hubName, $hubUrl, $isHubRoot): void {
-            if (!$hubSeg || $isHubRoot || !$hubName || !$hubUrl) {
+        $addHub = static function (array &$arr) use ($hubSeg, $hubName, $hubUrl, $isHubRoot, $isCityTax): void {
+            if (!$hubSeg || $isHubRoot || !$hubName || !$hubUrl || $isCityTax) {
                 return;
             }
 
@@ -59,35 +63,34 @@ class Breadcrumbs extends Composer
         } else {
             if (is_page()) {
                 $post = get_post();
-                $anc = $post ? array_reverse(get_post_ancestors($post)) : [];
-                if (!empty($anc)) {
+                if ($isHubRoot) {
+                    // Если это главная страница города, выводим только название без ссылки
+                    $crumbs[] = ['label' => $hubName ?: get_the_title($post), 'url' => ''];
+                } else {
+                    $addHub($crumbs);
+                    $anc = $post ? array_reverse(get_post_ancestors($post)) : [];
                     foreach ($anc as $aid) {
                         $crumbs[] = ['label' => get_the_title($aid), 'url' => get_permalink($aid)];
                     }
                     $crumbs[] = ['label' => get_the_title($post), 'url' => ''];
-                } else {
-                    if ($isHubRoot) {
-                        $crumbs[] = ['label' => $hubName ?: get_the_title($post), 'url' => ''];
-                    } else {
-                        $addHub($crumbs);
-                        $crumbs[] = ['label' => get_the_title($post), 'url' => ''];
-                    }
                 }
             } elseif (is_singular()) {
                 $addHub($crumbs);
                 $crumbs[] = ['label' => get_the_title(), 'url' => ''];
             } else {
-                $addHub($crumbs);
-                if (is_404()) {
-                    $crumbs[] = ['label' => '404', 'url' => ''];
-                } elseif (is_search()) {
-                    $crumbs[] = ['label' => 'Поиск: ' . get_search_query(), 'url' => ''];
-                } elseif (is_archive()) {
-                    $crumbs[] = ['label' => preg_replace('/^[^:]+: /', '', strip_tags(get_the_archive_title())), 'url' => ''];
-                } elseif (is_home()) {
-                    $crumbs[] = ['label' => strip_tags(single_post_title('', false)), 'url' => ''];
+                if ($isCityTax) {
+                // Если мы на странице города, то просто выводим его имя (текущая крошка)
+                $crumbs[] = ['label' => $hubName, 'url' => ''];
                 } else {
-                    $crumbs[] = ['label' => get_the_title(), 'url' => ''];
+                    // На других архивах (услуги и т.д.) сначала добавляем город-родитель
+                    $addHub($crumbs);
+                    if (is_404()) {
+                        $crumbs[] = ['label' => '404', 'url' => ''];
+                    } elseif (is_search()) {
+                        $crumbs[] = ['label' => 'Поиск: ' . get_search_query(), 'url' => ''];
+                    } elseif (is_archive()) {
+                        $crumbs[] = ['label' => preg_replace('/^[^:]+: /', '', strip_tags(get_the_archive_title())), 'url' => ''];
+                    }
                 }
             }
         }
