@@ -52,27 +52,56 @@ class Profile extends Composer
     public function details()
     {
         return [
-            'age'    => get_field('age'),
+            // 'age'    => get_field('age'),
             'height' => get_field('height'),
             'weight' => get_field('weight'),
         ];
     }
 
+    private function getTraitItems($taxonomy)
+    {
+        $terms = get_the_terms(get_the_ID(), $taxonomy);
+        if (!$terms || is_wp_error($terms)) return [];
+
+        $items = [];
+        foreach ($terms as $term) {
+            $name = $term->name;
+            
+            // Сохраняем логику преобразования размера груди (A -> 1 и т.д.)
+            if ($taxonomy === 'breast_size') {
+                if (preg_match('/([A-Z])$/', $name, $matches)) {
+                    $letter = $matches[1];
+                    $breastMap = [
+                        'A' => '1', 'B' => '2', 'C' => '3', 'D' => '4', 
+                        'E' => '5', 'F' => '6', 'G' => '7', 'H' => '8'
+                    ];
+                    $name = $breastMap[$letter] ?? $letter;
+                }
+            }
+
+            $items[] = [
+                'name' => $name,
+                'url'  => \App\Helpers\UrlHelpers::getTermUrl($term), // Генерируем URL каталога с фильтром
+            ];
+        }
+        return $items;
+    }
+
     public function traits()
     {
         return array_filter([
-            'Цвет волос'    => $this->getFirstTermName('hair_color'),
-            'Длина волос'   => $this->getFirstTermName('hair_length'),
-            'Грудь'         => $this->getFirstTermName('breast_size'),
-            'Город'         => $this->getFirstTermName('city'),
-            'Тип груди'     => $this->getFirstTermName('breast_type'),
-            'Телосложение'  => $this->getFirstTermName('body_type'),
-            'Национальность' => $this->getFirstTermName('nationality'),
-            'Глаза'         => $this->getFirstTermName('eye_color'),
-            'Интим. стрижка' => $this->getFirstTermName('pubic_hair'),
-            'Пирсинг'       => $this->getTermsList('piercing'),
-            'Курит'         => $this->getFirstTermName('smoker'),
-            'Выезд/Аппарт.' => $this->getFirstTermName('inoutcall'),
+            'Цвет волос'     => $this->getTraitItems('hair_color'),
+            'Длина волос'    => $this->getTraitItems('hair_length'),
+            'Грудь'          => $this->getTraitItems('breast_size'),
+            'Город'          => $this->getTraitItems('city'),
+            'Тип груди'      => $this->getTraitItems('breast_type'),
+            'Телосложение'   => $this->getTraitItems('body_type'),
+            'Национальность' => $this->getTraitItems('nationality'),
+            'Глаза'          => $this->getTraitItems('eye_color'),
+            'Интим. стрижка' => $this->getTraitItems('pubic_hair'),
+            'Пирсинг'        => $this->getTraitItems('piercing'),
+            'Курит'          => $this->getTraitItems('smoker'),
+            'Выезд/Аппарт.'  => $this->getTraitItems('inoutcall'),
         ]);
     }
 

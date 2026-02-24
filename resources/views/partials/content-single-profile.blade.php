@@ -338,7 +338,7 @@
                             </div>
                         @endif
 
-                        @foreach ($traits as $label => $value)
+                        {{-- @foreach ($traits as $label => $value)
                             <div class="flex items-center justify-between group">
                                 <span class="text-gray-400 font-bold uppercase w-1/3 text-[11px] tracking-widest group-hover:text-black transition-colors">
                                     {{ $labelMap[$label] ?? $label }}:
@@ -347,6 +347,23 @@
                                     {{ $value }}
                                 </div>
                             </div>
+                        @endforeach --}}
+                        @foreach ($traits as $label => $items)
+                            @if(!empty($items))
+                                <div class="flex items-center justify-between group">
+                                    <span class="text-gray-400 font-bold uppercase w-1/3 text-[11px] tracking-widest group-hover:text-black transition-colors">
+                                        {{ $labelMap[$label] ?? $label }}:
+                                    </span>
+                                    <div class="flex flex-wrap justify-end gap-2">
+                                        @foreach($items as $item)
+                                            <a href="{{ $item['url'] }}" 
+                                            class="border border-white/20 bg-white/5 px-5 py-1.5 min-w-[90px] text-center text-gray-200 hover:border-[#cd1d46] hover:bg-[#cd1d46]/10 hover:text-white transition-all duration-300">
+                                                {{ $item['name'] }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
                         @endforeach
                     </div>
                 </section>
