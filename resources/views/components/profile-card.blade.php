@@ -116,12 +116,12 @@
 
         <div class="absolute left-3 top-3 z-20 flex flex-col items-start gap-2">
             @if ($isVerified)
-                <span class="rounded-full border border-[#344159] bg-[#1d2534] px-4 py-1.5 text-[11px] font-extrabold capitalize tracking-wide text-[#eef3ff] shadow">
+                <span class="rounded-full bg-gradient-to-r from-[#f5f7fa] via-[#c3cfe2] to-[#aab7c9] px-4 py-1.5 text-[11px] font-bold tracking-wide text-[#0e1015] shadow-[0_6px_16px_rgba(0,0,0,0.35)]">
                     Проверенная
                 </span>
             @endif
             @if ($isVip)
-                <span class="rounded-full bg-[#1f1f26] px-5 py-1.5 text-[11px] font-extrabold capitalize tracking-wide text-white shadow">
+                <span class="rounded-full bg-gradient-to-r from-[#ffd86f] via-[#ffb347] to-[#ff8f1f] px-5 py-1.5 text-[11px] font-bold tracking-wide text-[#0e1015] shadow-[0_6px_16px_rgba(0,0,0,0.35)]">
                     VIP
                 </span>
             @endif
