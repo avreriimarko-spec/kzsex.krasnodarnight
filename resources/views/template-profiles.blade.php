@@ -312,7 +312,7 @@
 
                 @if ($profiles_query->have_posts())
                     
-                    <ul class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <ul class="grid list-none grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         @while ($profiles_query->have_posts())
                             @php
                                 $profiles_query->the_post();

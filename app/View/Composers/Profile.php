@@ -107,11 +107,25 @@ class Profile extends Composer
 
     public function badges()
     {
+        $profileId = get_the_ID();
         $badges = [];
-        if (has_term('vip', 'vip', get_the_ID())) $badges[] = 'VIP';
-        if (has_term('verified', 'verified', get_the_ID())) $badges[] = 'Verified';
-        if (has_term('independent', 'independent', get_the_ID())) $badges[] = 'Independent';
-        if (strtotime(get_the_date()) > strtotime('-7 days')) $badges[] = 'New';
+        if (has_term('vip', 'vip', $profileId)) $badges[] = 'VIP';
+
+        // Используем unix timestamp поста: корректно работает при любой локали даты.
+        $postTimestamp = (int) get_the_date('U', $profileId);
+        $weekAgo = current_time('timestamp') - (7 * DAY_IN_SECONDS);
+        $isNewByDate = $postTimestamp > $weekAgo;
+
+        // Дополнительно считаем "Новая" по специальной таксономии/категории.
+        $isNewByTaxonomy = has_term('', 'new', $profileId) || has_term(['new', 'новые', 'novye'], 'category', $profileId);
+
+        if ($isNewByDate || $isNewByTaxonomy) {
+            $badges[] = 'New';
+        }
+
+        if (has_term('verified', 'verified', $profileId)) $badges[] = 'Verified';
+        if (has_term('independent', 'independent', $profileId)) $badges[] = 'Independent';
+
         return $badges;
     }
 

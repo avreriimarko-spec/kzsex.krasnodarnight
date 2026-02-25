@@ -12,7 +12,14 @@
     $cityName = !empty($cityTerms) && !is_wp_error($cityTerms) ? $cityTerms[0]->name : 'Москва';
 
     $metroTerms = get_the_terms($profileId, 'metro');
-    $metroName = !empty($metroTerms) && !is_wp_error($metroTerms) ? $metroTerms[0]->name : null;
+    $metroNames = (!empty($metroTerms) && !is_wp_error($metroTerms))
+        ? array_values(array_unique(wp_list_pluck($metroTerms, 'name')))
+        : [];
+
+    $districtTerms = get_the_terms($profileId, 'district');
+    $districtNames = (!empty($districtTerms) && !is_wp_error($districtTerms))
+        ? array_values(array_unique(wp_list_pluck($districtTerms, 'name')))
+        : [];
 
     $age = get_field('age');
     $height = get_field('height');
@@ -100,27 +107,23 @@
     }
 @endphp
 
-<article class="group h-full overflow-hidden rounded-[22px] border border-[#2a3142] p-4 shadow-[0_12px_34px_rgba(0,0,0,0.45)]">
+<article class="group h-full overflow-hidden rounded-[22px] border border-[#2a3142] p-3 sm:p-4 shadow-[0_12px_34px_rgba(0,0,0,0.45)]">
     <div class="mb-3 flex items-start justify-between gap-3">
         <div class="min-w-0">
             <a href="{{ profile_url($profileId) }}">
-                <h2 class="truncate font-serif text-[21px] font-bold leading-none text-[#eef3ff] transition-colors hover:!text-[#cd1d46]">
+                <h2 class="font-serif text-[19px] sm:text-[21px] font-bold leading-tight text-[#eef3ff] transition-colors hover:!text-[#cd1d46]">
                     {{ $profileName }}
                 </h2>
             </a>
 
-            <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-[#9aa8c2]">
-                @if ($metroName)
-                    <span>Метро {{ $metroName }}</span>
-                @else
-                    <span>г. {{ $cityName }}</span>
-                @endif
+            <div class="mt-2 space-y-1 text-[13px] leading-tight text-[#9aa8c2]">
+                <div>г. {{ $cityName }}</div>
             </div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_75px]">
-        <figure class="relative aspect-[3/4] w-full overflow-hidden rounded-[26px] border border-[#2a3142] bg-[#141a24]">
+        <figure class="relative aspect-[4/5] sm:aspect-[3/4] w-full overflow-hidden rounded-[24px] sm:rounded-[26px] border border-[#2a3142] bg-[#141a24]">
             @if (has_post_thumbnail())
                 @php $imgData = wp_get_attachment_image_src(get_post_thumbnail_id(), 'profile_card'); @endphp
                 @if ($imgData)
@@ -154,37 +157,46 @@
         </figure>
 
         <div class="grid grid-cols-2 gap-2 sm:grid-cols-1">
-            <div class="rounded-[18px] border border-[#2a3142] bg-[#151b25] p-2 text-center">
-                <div class="text-[13px] text-[#8ea0bc]">Вес</div>
-                <div class="mt-1 rounded-[12px] bg-[#1c2432] px-2 py-2 text-[13px] font-bold leading-none text-[#eef3ff]">
+            <div class="rounded-[16px] sm:rounded-[18px] border border-[#2a3142] bg-[#151b25] p-2 text-center">
+                <div class="text-[12px] sm:text-[13px] text-[#8ea0bc]">Вес</div>
+                <div class="mt-1 rounded-[10px] sm:rounded-[12px] bg-[#1c2432] px-2 py-2 text-[12px] sm:text-[13px] font-bold leading-none text-[#eef3ff]">
                     {{ $weight ?: '-' }}
                 </div>
             </div>
 
-            <div class="rounded-[18px] border border-[#2a3142] bg-[#151b25] p-2 text-center">
-                <div class="text-[13px] text-[#8ea0bc]">Грудь</div>
-                <div class="mt-1 rounded-[12px] bg-[#1c2432] px-2 py-2 text-[13px] font-bold leading-none text-[#eef3ff]">
+            <div class="rounded-[16px] sm:rounded-[18px] border border-[#2a3142] bg-[#151b25] p-2 text-center">
+                <div class="text-[12px] sm:text-[13px] text-[#8ea0bc]">Грудь</div>
+                <div class="mt-1 rounded-[10px] sm:rounded-[12px] bg-[#1c2432] px-2 py-2 text-[12px] sm:text-[13px] font-bold leading-none text-[#eef3ff]">
                     {{ $breast ?: '-' }}
                 </div>
             </div>
 
-            <div class="rounded-[18px] border border-[#2a3142] bg-[#151b25] p-2 text-center">
-                <div class="text-[13px] text-[#8ea0bc]">Рост</div>
-                <div class="mt-1 rounded-[12px] bg-[#1c2432] px-2 py-2 text-[13px] font-bold leading-none text-[#eef3ff]">
+            <div class="rounded-[16px] sm:rounded-[18px] border border-[#2a3142] bg-[#151b25] p-2 text-center">
+                <div class="text-[12px] sm:text-[13px] text-[#8ea0bc]">Рост</div>
+                <div class="mt-1 rounded-[10px] sm:rounded-[12px] bg-[#1c2432] px-2 py-2 text-[12px] sm:text-[13px] font-bold leading-none text-[#eef3ff]">
                     {{ $height ?: '-' }}
                 </div>
             </div>
 
-            <div class="rounded-[18px] border border-[#2a3142] bg-[#151b25] p-2 text-center">
-                <div class="text-[13px] text-[#8ea0bc]">Возраст</div>
-                <div class="mt-1 rounded-[12px] bg-[#1c2432] px-2 py-2 text-[13px] font-bold leading-none text-[#eef3ff]">
+            <div class="rounded-[16px] sm:rounded-[18px] border border-[#2a3142] bg-[#151b25] p-2 text-center">
+                <div class="text-[12px] sm:text-[13px] text-[#8ea0bc]">Возраст</div>
+                <div class="mt-1 rounded-[10px] sm:rounded-[12px] bg-[#1c2432] px-2 py-2 text-[12px] sm:text-[13px] font-bold leading-none text-[#eef3ff]">
                     {{ $age ?: '-' }}
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="mt-3 flex items-center gap-2">
+    <div class="mt-2 space-y-1 text-[13px] leading-tight text-[#9aa8c2]">
+        @if (!empty($metroNames))
+            <div>Метро: {{ implode(', ', $metroNames) }}</div>
+        @endif
+        @if (!empty($districtNames))
+            <div>Районы: {{ implode(', ', $districtNames) }}</div>
+        @endif
+    </div>
+
+    <div class="mt-3 flex flex-wrap items-center gap-2">
         @if ($phoneCopyValue && $phoneDisplay)
             <button type="button"
                 data-x-data="{
@@ -269,8 +281,8 @@
         @endif
     </div>
 
-    <div class="mt-3 rounded-[20px] border border-[#2a3142] bg-[#151b25] px-4 py-3">
-        <div class="grid grid-cols-2 gap-x-5 gap-y-3 text-[13px] leading-none text-[#9aa8c2]">
+    <div class="mt-3 rounded-[20px] border border-[#2a3142] bg-[#151b25] px-3 sm:px-4 py-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3 text-[13px] leading-none text-[#9aa8c2]">
             <div class="flex items-center justify-between gap-2">
                 <span>1 час</span>
                 <span class="font-bold text-[#ff2f7b]">

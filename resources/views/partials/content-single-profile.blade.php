@@ -6,6 +6,17 @@
     // Получаем город
     $city_terms = get_the_terms(get_the_ID(), 'city');
     $city_name = !empty($city_terms) && !is_wp_error($city_terms) ? $city_terms[0]->name : '';
+
+    // Получаем списки метро и районов
+    $metro_terms = get_the_terms(get_the_ID(), 'metro');
+    $metro_names = (!empty($metro_terms) && !is_wp_error($metro_terms))
+        ? array_values(array_unique(wp_list_pluck($metro_terms, 'name')))
+        : [];
+
+    $district_terms = get_the_terms(get_the_ID(), 'district');
+    $district_names = (!empty($district_terms) && !is_wp_error($district_terms))
+        ? array_values(array_unique(wp_list_pluck($district_terms, 'name')))
+        : [];
     
     // Получаем размер груди
     $breast_size = get_field('breast_size');
@@ -196,62 +207,102 @@
 
     // --- ЛОГИКА ОТЗЫВОВ ---
     $reviewsCount = is_array($reviews) ? count($reviews) : 0;
+
+    // Текст возраста для заголовка
+    $profileAgeText = '';
+    if ($age) {
+        $last_digit = $age % 10;
+        $last_two_digits = $age % 100;
+
+        if ($last_two_digits >= 11 && $last_two_digits <= 14) {
+            $profileAgeText = $age . ' лет';
+        } elseif ($last_digit === 1) {
+            $profileAgeText = $age . ' год';
+        } elseif ($last_digit >= 2 && $last_digit <= 4) {
+            $profileAgeText = $age . ' года';
+        } else {
+            $profileAgeText = $age . ' лет';
+        }
+    }
 @endphp
 
 <article <?php post_class('bg-black min-h-screen text-black font-serif selection:bg-[#cd1d46] selection:text-black'); ?>>
 
     <div class="container mx-auto px-4 py-8 md:py-12">
         
-        {{-- ЗАГОЛОВОК (ИМЯ) МОБИЛЬНЫЙ --}}
-        <div class="lg:hidden mb-6 text-center">
-@if ( wp_is_mobile() )
-            <h1 class="font-serif text-2xl text-[#DFC187] capitalize tracking-[0.2em] mb-1 leading-none drop-shadow-sm">
+        {{-- ШАПКА АНКЕТЫ --}}
+        <div class="px-5 py-4 md:px-6">
+            <h1 class="font-serif text-2xl md:text-3xl text-[#DFC187] capitalize tracking-wide leading-tight">
                 {{ get_the_title() }}
-                @php
-                    $age = get_field('age');
-                    if ($age) {
-                        // Определяем правильное склонение
-                        $last_digit = $age % 10;
-                        $last_two_digits = $age % 100;
-                        
-                        if ($last_two_digits >= 11 && $last_two_digits <= 14) {
-                            $age_text = $age . ' лет';
-                        } elseif ($last_digit === 1) {
-                            $age_text = $age . ' год';
-                        } elseif ($last_digit >= 2 && $last_digit <= 4) {
-                            $age_text = $age . ' года';
-                        } else {
-                            $age_text = $age . ' лет';
-                        }
-                        
-                        echo ' <span class="text-lg">' . $age_text . '</span>';
-                    }
-                    // Добавляем город к H1
-                    $city_terms = get_the_terms(get_the_ID(), 'city');
-                    $city_name = !empty($city_terms) && !is_wp_error($city_terms) ? $city_terms[0]->name : '';
-                    if ($city_name) {
-                        echo ' <span class="text-base text-gray-300">' . $city_name . '</span>';
-                    }
-                @endphp
+                @if (!empty($profileAgeText))
+                    <span class="text-xl md:text-2xl">{{ $profileAgeText }}</span>
+                @endif
+                @if (!empty($city_name))
+                    <span class="text-lg md:text-xl text-gray-300">{{ $city_name }}</span>
+                @endif
             </h1>
-@endif
+
+            @if (!empty($badges))
+                <div class="mt-3 flex flex-wrap items-center gap-2">
+                    @foreach ($badges as $badge)
+                        @php
+                            $badgeConfig = match($badge) {
+                                'Verified' => [
+                                    'label' => 'Проверенная',
+                                    'class' => 'rounded-full bg-gradient-to-r from-[#f5f7fa] via-[#c3cfe2] to-[#aab7c9] px-4 py-1.5 text-[11px] font-bold tracking-wide text-[#0e1015] shadow-[0_6px_16px_rgba(0,0,0,0.35)]',
+                                ],
+                                'VIP' => [
+                                    'label' => 'VIP',
+                                    'class' => 'rounded-full bg-gradient-to-r from-[#ffd86f] via-[#ffb347] to-[#ff8f1f] px-5 py-1.5 text-[11px] font-bold tracking-wide text-[#0e1015] shadow-[0_6px_16px_rgba(0,0,0,0.35)]',
+                                ],
+                                'New' => [
+                                    'label' => 'Новая',
+                                    'class' => 'rounded-full bg-gradient-to-r from-[#f08a9d] via-[#e24466] to-[#a51233] px-4 py-1.5 text-[11px] font-bold tracking-wide text-[#e9f1ff] shadow-[0_6px_16px_rgba(0,0,0,0.35)]',
+                                ],
+                                'Independent' => [
+                                    'label' => 'Индивидуалка',
+                                    'class' => 'rounded-full bg-gradient-to-r from-[#1a2332] via-[#273955] to-[#314a6e] px-4 py-1.5 text-[11px] font-bold tracking-wide text-[#e9f1ff] shadow-[0_6px_16px_rgba(0,0,0,0.35)]',
+                                ],
+                                default => [
+                                    'label' => $badge,
+                                    'class' => 'rounded-full bg-gradient-to-r from-[#d8e0ef] via-[#b8c4d9] to-[#8fa0bf] px-4 py-1.5 text-[11px] font-bold tracking-wide text-[#0e1015] shadow-[0_6px_16px_rgba(0,0,0,0.35)]',
+                                ],
+                            };
+                        @endphp
+                        <span class="{{ $badgeConfig['class'] }}">
+                            {{ $badgeConfig['label'] }}
+                        </span>
+                    @endforeach
+                </div>
+            @endif
+
+            @if (!empty($metro_names) || !empty($district_names))
+                <div class="mt-3 space-y-1 text-sm text-gray-300">
+                    @if (!empty($metro_names))
+                        <div>Метро: {{ implode(', ', $metro_names) }}</div>
+                    @endif
+                    @if (!empty($district_names))
+                        <div>Районы: {{ implode(', ', $district_names) }}</div>
+                    @endif
+                </div>
+            @endif
         </div>
 
         {{-- ОСНОВНАЯ СЕТКА --}}
-        <div class="flex flex-col lg:grid lg:grid-cols-12 gap-10 items-start mb-20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-20">
 
             {{-- ========================================================================
                  БЛОК 1: ФОТОГРАФИИ
                  ======================================================================== --}}
-            <div class="w-full order-1 lg:col-span-8 lg:col-start-5 lg:row-start-1 space-y-4">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="photo-gallery-container">
+            <div class="w-full order-1 lg:col-span-8 lg:col-start-1 space-y-8">
+                <section class="rounded-2xl border border-white/10 p-3 md:p-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4" id="photo-gallery-container">
                     @foreach ($allPhotos as $index => $photo)
                         @php
                             $visibilityClass = ($index >= 3) ? 'hidden md:block mobile-hidden-photo' : '';
                         @endphp
 
-                        <div class="md:col-span-1 {{ $visibilityClass }} relative group overflow-hidden">
+                        <div class="md:col-span-1 {{ $visibilityClass }} relative group overflow-hidden rounded-2xl border border-white/10">
                             <a href="{{ $photo['full'] }}" 
                                data-fancybox="gallery" 
                                class="block w-full aspect-[3/4] bg-[#0f0f0f] group">
@@ -260,12 +311,6 @@
                                      alt="{{ $photo['alt'] }}" 
                                      class="w-full h-full object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-110 opacity-90 group-hover:opacity-100 grayscale-[10%] group-hover:grayscale-0">
                                 
-                                {{-- БЕЙДЖ VIP НА ГЛАВНОМ ФОТО --}}
-                                @if ($photo['type'] === 'main' && in_array('VIP', $badges))
-                                    <div class="absolute top-4 right-4 bg-[#cd1d46] backdrop-blur-md border border-white/10 px-4 py-1.5 text-[10px] capitalize tracking-[0.2em] text-black font-bold z-10 shadow-[0_0_15px_rgba(205,29,70,0.5)]">
-                                        VIP
-                                    </div>
-                                @endif
                             </a>
                         </div>
                     @endforeach
@@ -273,66 +318,31 @@
 
                 {{-- КНОПКА "ПОКАЗАТЬ ВСЕ ФОТО" --}}
                 @if ($totalPhotos > 3)
-                    <button id="show-more-photos" class="w-full md:hidden border border-white/30 py-4 text-xs font-bold capitalize tracking-[0.2em] hover:bg-[#cd1d46] hover:border-[#cd1d46] hover:text-black transition-colors">
+                    <button id="show-more-photos" class="mt-3 w-full md:hidden border border-white/30 py-4 text-xs font-bold capitalize tracking-[0.2em] hover:bg-[#cd1d46] hover:border-[#cd1d46] hover:text-black transition-colors">
                         Показать все фото ({{ $totalPhotos }})
                     </button>
                 @endif
+                </section>
             </div>
 
 
             {{-- ========================================================================
                  БЛОК 2: САЙДБАР (ЛЕВАЯ КОЛОНКА)
                  ======================================================================== --}}
-            <aside class="w-full order-2 lg:order-1 lg:col-span-4 lg:col-start-1 lg:row-start-1 lg:row-span-full lg:sticky lg:top-24 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto scrollbar-hide space-y-12">
-
-                {{-- ИМЯ (Десктоп) --}}
-                <div class="hidden lg:block">
-                    @if ( ! wp_is_mobile() )
-                    <h1 class="font-serif text-2xl xl:text-3xl text-[#DFC187] font-[500] tracking-[0.15em] mb-3 leading-none drop-shadow-sm">
-                        {{ get_the_title() }}
-                        @php
-                            $age = get_field('age');
-                            if ($age) {
-                                // Определяем правильное склонение
-                                $last_digit = $age % 10;
-                                $last_two_digits = $age % 100;
-                                
-                                if ($last_two_digits >= 11 && $last_two_digits <= 14) {
-                                    $age_text = $age . ' лет';
-                                } elseif ($last_digit === 1) {
-                                    $age_text = $age . ' год';
-                                } elseif ($last_digit >= 2 && $last_digit <= 4) {
-                                    $age_text = $age . ' года';
-                                } else {
-                                    $age_text = $age . ' лет';
-                                }
-                                
-                                echo ' <span class="text-2xl xl:text-3xl ">' . $age_text . '</span>';
-                            }
-                            // Добавляем город к H1
-                            $city_terms = get_the_terms(get_the_ID(), 'city');
-                            $city_name = !empty($city_terms) && !is_wp_error($city_terms) ? $city_terms[0]->name : '';
-                            if ($city_name) {
-                                echo ' <span class="text-2xl xl:text-3xl ">' . $city_name . '</span>';
-                            }
-                        @endphp
-                    </h1>
-                    @endif
-                    <div class="h-px w-16 bg-[#cd1d46]/50 mb-4"></div>
-                </div>
+            <aside class="w-full order-3 lg:order-2 lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:sticky lg:top-24 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto scrollbar-hide flex flex-col gap-6">
 
                 {{-- ПАРАМЕТРЫ --}}
-                <section>
-                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
+                <section class="order-2 rounded-2xl border border-white/10 p-5 md:p-6">
+                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
                         Параметры
                     </h2>
-                    <div class="space-y-4 font-serif text-xs md:text-sm tracking-wide">
+                    <div class="space-y-3 font-serif text-xs md:text-sm tracking-wide">
                         @if (!empty($details['age']))
-                            <div class="flex items-center justify-between group">
+                            <div class="flex items-center justify-between gap-3 group">
                                 <span class="text-gray-400 font-bold capitalize w-1/3 text-[11px] tracking-widest group-hover:text-black transition-colors">
                                     Возраст:
                                 </span>
-                                <div class="border border-white/20 bg-white/5 px-5 py-1.5 min-w-[90px] text-center text-gray-200 group-hover:border-[#cd1d46] group-hover:bg-white/10 transition-all duration-300">
+                                <div class="border border-white/20 px-4 py-1.5 min-w-[96px] text-center text-gray-200 rounded-xl group-hover:border-[#cd1d46] group-hover:bg-white/10 transition-all duration-300">
                                     {{ $details['age'] }}
                                 </div>
                             </div>
@@ -343,21 +353,21 @@
                                 <span class="text-gray-400 font-bold capitalize w-1/3 text-[11px] tracking-widest group-hover:text-black transition-colors">
                                     {{ $labelMap[$label] ?? $label }}:
                                 </span>
-                                <div class="border border-white/20 bg-white/5 px-5 py-1.5 min-w-[90px] text-center text-gray-200 group-hover:border-[#cd1d46] group-hover:bg-white/10 transition-all duration-300">
+                                <div class="border border-white/20 px-5 py-1.5 min-w-[90px] text-center text-gray-200 group-hover:border-[#cd1d46] group-hover:bg-white/10 transition-all duration-300">
                                     {{ $value }}
                                 </div>
                             </div>
                         @endforeach --}}
                         @foreach ($traits as $label => $items)
                             @if(!empty($items))
-                                <div class="flex items-center justify-between group">
+                                <div class="flex items-center justify-between gap-3 group">
                                     <span class="text-gray-400 font-bold capitalize w-1/3 text-[11px] tracking-widest group-hover:text-black transition-colors">
                                         {{ $labelMap[$label] ?? $label }}:
                                     </span>
-                                    <div class="flex flex-wrap justify-end gap-2">
+                                    <div class="flex flex-wrap justify-end gap-2 flex-1">
                                         @foreach($items as $item)
                                             <a href="{{ $item['url'] }}" 
-                                            class="border border-white/20 bg-white/5 px-5 py-1.5 min-w-[90px] text-center text-gray-200 hover:border-[#cd1d46] hover:bg-[#cd1d46]/10 hover:text-white transition-all duration-300">
+                                            class="border border-white/20 px-4 py-1.5 min-w-[96px] text-center text-gray-200 rounded-xl hover:border-[#cd1d46] hover:bg-[#cd1d46]/10 hover:text-white transition-all duration-300">
                                                 {{ $item['name'] }}
                                             </a>
                                         @endforeach
@@ -390,12 +400,12 @@
                         $showTaxiForApartments = false;
                         $showTaxiForOutcall = true;
                     @endphp
-                    <section>
-                        <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
+                    <section class="order-1 rounded-2xl border border-white/10 p-5 md:p-6">
+                        <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
                             Тарифы
                         </h2>
                         <div class="space-y-4 font-serif text-xs md:text-sm tracking-wide">
-                            <div class="inline-flex rounded border border-white/20 overflow-hidden">
+                            <div class="inline-flex rounded-xl border border-white/20 overflow-hidden">
                                 <button type="button"
                                         id="tariff-tab-apartments-btn"
                                         data-tariff-tab-target="apartments"
@@ -405,18 +415,18 @@
                                 <button type="button"
                                         id="tariff-tab-outcall-btn"
                                         data-tariff-tab-target="outcall"
-                                        class="tariff-tab-btn bg-white/5 text-gray-300 px-4 py-2 text-[11px] font-bold capitalize tracking-widest transition-colors">
+                                        class="tariff-tab-btn text-gray-300 px-4 py-2 text-[11px] font-bold capitalize tracking-widest transition-colors">
                                     Выезд
                                 </button>
                             </div>
 
-                            <div id="tariff-tab-apartments" class="space-y-3">
+                            <div id="tariff-tab-apartments" class="space-y-2.5" style="margin-bottom: 0">
                                 @foreach($apartmentTariffs as $tariff)
-                                    <div class="flex items-center justify-between group">
+                                    <div class="flex items-center justify-between gap-3 group border border-white/10 rounded-xl px-3 py-2">
                                         <span class="text-gray-400 font-bold capitalize text-[11px] tracking-widest">
                                             {{ $tariff['label'] }}:
                                         </span>
-                                        <div class="border border-white/20 bg-white/5 px-6 py-2 text-gray-200">
+                                        <div class="text-gray-200 text-right">
                                             @if($tariff['value'])
                                                 {{ number_format((float) $tariff['value'], 0, '.', ' ') }} {{ $currency }}
                                             @else
@@ -430,13 +440,13 @@
                                 @endforeach
                             </div>
 
-                            <div id="tariff-tab-outcall" class="space-y-3 hidden">
+                            <div id="tariff-tab-outcall" class="space-y-2.5 hidden">
                                 @foreach($outcallTariffs as $tariff)
-                                    <div class="flex items-center justify-between group">
+                                    <div class="flex items-center justify-between gap-3 group border border-white/10 rounded-xl px-3 py-2">
                                         <span class="text-gray-400 font-bold capitalize text-[11px] tracking-widest">
                                             {{ $tariff['label'] }}:
                                         </span>
-                                        <div class="border border-white/20 bg-white/5 px-6 py-2 text-gray-200">
+                                        <div class="text-gray-200 text-right">
                                             @if($tariff['value'])
                                                 {{ number_format((float) $tariff['value'], 0, '.', ' ') }} {{ $currency }}
                                             @else
@@ -454,8 +464,8 @@
                 @endif
 
                 {{-- КОНТАКТЫ --}}
-                <section class="space-y-4 pt-6">
-                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
+                <section class="order-3 rounded-2xl border border-white/10 p-5 md:p-6">
+                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
                         Контакты
                     </h2>
                     
@@ -485,52 +495,71 @@
                                 $waLink = "https://wa.me/{$waClean}";
                             }
                         }
+
+                        // Логика Max (как в карточках)
+                        $rawMax = get_field('max') ?: get_field('max_link') ?: get_field('global_max', 'option') ?: get_field('global_max_link', 'option');
+                        $maxLink = null;
+                        if (!empty($rawMax)) {
+                            $maxRawString = trim((string) $rawMax);
+                            $maxLink = str_contains($maxRawString, 'http') ? $maxRawString : 'https://max.ru/' . ltrim($maxRawString, '/@');
+                        }
                     @endphp
                     
                     <div class="grid grid-cols-1 gap-3">
                         @if ($tgLink)
                             <a href="{{ $tgLink }}" target="_blank" rel="noopener noreferrer"
-                               class="rounded group relative overflow-hidden border border-[#8ccff0] bg-white px-4 py-4 transition-all duration-500 hover:border-[#46b3e7] hover:shadow-[0_10px_26px_rgba(0,136,204,0.18)]">
-                               <span class="absolute inset-0 bg-gradient-to-r from-[#d8f1ff] via-[#88d8ff] to-[#2eb2ec] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
-                               <span class="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(255,255,255,0.7),transparent_45%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+                               class="rounded group relative overflow-hidden border border-[#2aa5e0] bg-[#15273a] px-4 py-4 transition-all duration-300 hover:bg-[#1c3249] hover:border-[#3ab2ea]">
                                <span class="relative z-10 flex items-center justify-between">
                                    <span class="flex items-center gap-3">
-                                       <span class="flex h-10 w-10 items-center justify-center border border-[#74c8f4] bg-[#bfe7fb]">
-                                           <svg class="h-5 w-5 fill-current text-[#0b5376]" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12.068 12.068 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" /></svg>
+                                       <span class="flex h-10 w-10 items-center justify-center border border-[#2aa5e0]/60 bg-[#1f3851]">
+                                           <svg class="h-5 w-5 fill-current text-[#91d2f2]" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12.068 12.068 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" /></svg>
                                        </span>
                                        <span class="leading-tight">
-                                           <span class="block text-[10px] font-bold capitalize tracking-[0.22em] text-[#0b5376]/70">Быстрый чат</span>
-                                           <span class="block text-sm font-extrabold capitalize tracking-[0.12em] text-[#0b5376]">Telegram</span>
+                                           <span class="block text-sm font-extrabold capitalize tracking-[0.12em] text-[#91d2f2]">Telegram</span>
                                        </span>
                                    </span>
-                                   <span class="text-[11px] font-extrabold capitalize tracking-[0.2em] text-[#0b5376]/80">Написать</span>
+                                   <span class="text-[11px] font-extrabold capitalize tracking-[0.2em] text-[#91d2f2]/80">Написать</span>
                                </span>
                             </a>
                         @endif
                         
                         @if ($waLink)
                             <a href="{{ $waLink }}" target="_blank" rel="noopener noreferrer"
-                               class=" rounded group relative overflow-hidden border border-[#9bdcaf] bg-white px-4 py-4 transition-all duration-500 hover:border-[#47bf74] hover:shadow-[0_10px_26px_rgba(37,211,102,0.16)]">
-                               <span class="absolute inset-0 bg-gradient-to-r from-[#dff9e7] via-[#96e5b1] to-[#33ca70] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
-                               <span class="absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(255,255,255,0.7),transparent_45%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+                               class="rounded group relative overflow-hidden border border-[#26d366] bg-[#163325] px-4 py-4 transition-all duration-300 hover:bg-[#1d422f] hover:border-[#39de77]">
                                <span class="relative z-10 flex items-center justify-between">
                                    <span class="flex items-center gap-3">
-                                       <span class="flex h-10 w-10 items-center justify-center border border-[#6fd394] bg-[#c8f4d6]">
-                                           <svg class="h-5 w-5 fill-current text-[#1d6b3b]" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                                       <span class="flex h-10 w-10 items-center justify-center border border-[#26d366]/60 bg-[#1d422f]">
+                                           <svg class="h-5 w-5 fill-current text-[#8de5ac]" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                                        </span>
                                        <span class="leading-tight">
-                                           <span class="block text-[10px] font-bold capitalize tracking-[0.22em] text-[#1d6b3b]/70">Оперативно</span>
-                                           <span class="block text-sm font-extrabold capitalize tracking-[0.12em] text-[#1d6b3b]">WhatsApp</span>
+                                           <span class="block text-sm font-extrabold capitalize tracking-[0.12em] text-[#8de5ac]">WhatsApp</span>
                                        </span>
                                    </span>
-                                   <span class="text-[11px] font-extrabold capitalize tracking-[0.2em] text-[#1d6b3b]/80">Написать</span>
+                                   <span class="text-[11px] font-extrabold capitalize tracking-[0.2em] text-[#8de5ac]/80">Написать</span>
+                               </span>
+                            </a>
+                        @endif
+
+                        @if ($maxLink)
+                            <a href="{{ $maxLink }}" target="_blank" rel="noopener noreferrer"
+                               class="rounded group relative overflow-hidden border border-[#6d8bff] bg-[#1a2746] px-4 py-4 transition-all duration-300 hover:bg-[#23345b] hover:border-[#90a6ff]">
+                               <span class="relative z-10 flex items-center justify-between">
+                                   <span class="flex items-center gap-3">
+                                       <span class="flex h-10 w-10 items-center justify-center border border-[#6d8bff]/60 bg-[#23345b]">
+                                           <svg class="h-5 w-5 fill-current text-[#b6c5ff]" viewBox="0 0 24 24"><path d="M4 18V6h3.2L12 12.2 16.8 6H20v12h-2.9v-7.3L12 16.8l-5.1-6.1V18z" /></svg>
+                                       </span>
+                                       <span class="leading-tight">
+                                           <span class="block text-sm font-extrabold capitalize tracking-[0.12em] text-[#b6c5ff]">Max</span>
+                                       </span>
+                                   </span>
+                                   <span class="text-[11px] font-extrabold capitalize tracking-[0.2em] text-[#b6c5ff]/80">Написать</span>
                                </span>
                             </a>
                         @endif
                     </div>
                     
-                    @if (!$tgLink && !$waLink)
-                        <div class="border border-[#d9d9d9] bg-[#f4f4f4] px-4 py-5 text-center text-xs capitalize tracking-[0.16em] text-gray-500">
+                    @if (!$tgLink && !$waLink && !$maxLink)
+                        <div class="border border-white/15 bg-[#151b25] px-4 py-5 text-center text-xs capitalize tracking-[0.16em] text-gray-400">
                             Контакты временно недоступны
                         </div>
                     @endif
@@ -541,11 +570,11 @@
             {{-- ========================================================================
                  БЛОК 3: ИНФОРМАЦИЯ + УСЛУГИ (ПРАВАЯ КОЛОНКА)
                  ======================================================================== --}}
-            <div class="w-full order-3 lg:col-span-8 lg:col-start-5 space-y-12">
+            <div class="w-full order-2 lg:order-3 lg:col-span-8 lg:col-start-1 space-y-8">
 
                 {{-- ОБО МНЕ --}}
-                <section class="max-w-4xl">
-                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-8 border-l-2 border-[#cd1d46] pl-4">
+                <section class="rounded-2xl border border-white/10 p-6 md:p-8">
+                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
                         Обо мне
                     </h2>
                     
@@ -559,7 +588,7 @@
                     </div>
 
                     @if ($isLongDescription)
-                        <button id="toggle-desc-btn" class="mt-4 text-xs font-bold capitalize tracking-[0.15em] text-black/70 hover:text-[#cd1d46] border-b border-white/30 hover:border-[#cd1d46] transition-all pb-1">
+                        <button id="toggle-desc-btn" class="mt-4 text-xs font-bold capitalize tracking-[0.15em] hover:text-[#cd1d46] border-b border-white/30 hover:border-[#cd1d46] transition-all pb-1">
                             Читать полностью
                         </button>
                     @endif
@@ -567,14 +596,14 @@
                 
                 {{-- УСЛУГИ (С ССЫЛКАМИ) --}}
                 @if (!empty($services))
-                    <section class="border-t border-gray-900 pt-10">
-                        <h2 class="font-serif text-xl text-black capitalize tracking-widest mb-8">
+                    <section class="rounded-2xl border border-white/10 p-6 md:p-8">
+                        <h2 class="font-serif text-xl text-black capitalize tracking-widest mb-6">
                             Услуги
                         </h2>
                         <div class="flex flex-wrap gap-x-4 gap-y-3">
                             @foreach ($services as $service)
                                 <a href="{{ term_url($service) }}" 
-                                   class="border border-white/20 bg-white/5 px-4 py-2 text-xs text-gray-300 capitalize tracking-widest hover:bg-[#cd1d46] hover:border-[#cd1d46] hover:!text-black transition-colors cursor-pointer">
+                                   class="border border-white/20 rounded-xl px-4 py-2 text-xs text-gray-300 capitalize tracking-widest hover:bg-[#cd1d46] hover:border-[#cd1d46] hover:!text-black transition-colors cursor-pointer">
                                     {{ $service->name }}
                                 </a>
                             @endforeach
@@ -583,8 +612,8 @@
                 @endif
 
                 {{-- ФОРМА ОТПРАВКИ ОТЗЫВА --}}
-                <section class="border-t border-gray-900 pt-10">
-                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-8 border-l-2 border-[#cd1d46] pl-4">
+                <section class="rounded-2xl border border-white/10 p-6 md:p-8">
+                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
                         Оставить отзыв
                     </h2>
                     
@@ -600,7 +629,7 @@
                                     Ваше имя *
                                 </label>
                                 <input type="text" name="author" required
-                                       class="w-full px-4 py-3 bg-black border border-gray-700 text-black placeholder-gray-500 focus:outline-none focus:border-[#cd1d46] focus:ring-1 focus:ring-[#cd1d46]/20 transition-colors"
+                                       class="w-full rounded-xl px-4 py-3 bg-black border border-gray-700 text-black placeholder-gray-500 focus:outline-none focus:border-[#cd1d46] focus:ring-1 focus:ring-[#cd1d46]/20 transition-colors"
                                        placeholder="Введите ваше имя">
                             </div>
                             
@@ -628,14 +657,14 @@
                                     Текст отзыва *
                                 </label>
                                 <textarea name="content" rows="5" required
-                                          class="w-full px-4 py-3 bg-black border border-gray-700 text-black placeholder-gray-500 focus:outline-none focus:border-[#cd1d46] focus:ring-1 focus:ring-[#cd1d46]/20 transition-colors resize-none"
+                                          class="w-full rounded-xl px-4 py-3 bg-black border border-gray-700 text-black placeholder-gray-500 focus:outline-none focus:border-[#cd1d46] focus:ring-1 focus:ring-[#cd1d46]/20 transition-colors resize-none"
                                           placeholder="Расскажите о вашем опыте..."></textarea>
                             </div>
                             
                             {{-- Кнопка отправки --}}
                             <div class="text-center">
                                 <button type="submit" 
-                                        class="rounded bg-[#cd1d46] hover:bg-[#b01530] text-black font-bold capitalize px-8 py-4 transition-colors transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#cd1d46]/20">
+                                        class="rounded-xl bg-[#cd1d46] hover:bg-[#b01530] text-black font-bold capitalize px-8 py-4 transition-colors transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#cd1d46]/20">
                                     Отправить отзыв
                                 </button>
                             </div>
@@ -657,8 +686,8 @@
 
                 {{-- ОТЗЫВЫ --}}
                 @if ($reviews && $reviewsCount > 0)
-                    <section class="border-t border-gray-900 pt-10">
-                        <h2 class="font-serif text-xl text-black capitalize tracking-widest mb-8">
+                    <section class="rounded-2xl border border-white/10 p-6 md:p-8">
+                        <h2 class="font-serif text-xl text-black capitalize tracking-widest mb-6">
                             Отзывы ({{ $reviewsCount }})
                         </h2>
                         <div class="space-y-6">
@@ -1015,7 +1044,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const isActive = btn.dataset.tariffTabTarget === target;
                 btn.classList.toggle('bg-[#cd1d46]', isActive);
                 btn.classList.toggle('text-black', isActive);
-                btn.classList.toggle('bg-white/5', !isActive);
+                btn.classList.toggle('transparent', !isActive);
                 btn.classList.toggle('text-gray-300', !isActive);
             });
         };
@@ -1051,7 +1080,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // --- СКРЫТИЕ КОНТАКТНЫХ ССЫЛОК ---
         document.addEventListener('DOMContentLoaded', function() {
             // Находим все контактные ссылки
-            const contactLinks = document.querySelectorAll('a[href*="wa.me"], a[href*="t.me"], a[href*="telegram"]');
+            const contactLinks = document.querySelectorAll('a[href*="wa.me"], a[href*="t.me"], a[href*="telegram"], a[href*="max.ru"]');
             
             // Скрываем ссылки, заменяя их на span с таким же оформлением
             contactLinks.forEach(link => {
