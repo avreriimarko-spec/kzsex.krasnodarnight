@@ -18,7 +18,7 @@
         
         {{-- ШАПКА МОБИЛЬНАЯ --}}
         <div class="flex items-center justify-between pb-6 mb-2 lg:hidden border-b border-gray-800 shrink-0">
-            <span class="text-xl font-bold text-white capitalize tracking-wider">Фильтры</span>
+            <span class="text-xl font-bold text-white uppercase tracking-wider">Фильтры</span>
             {{-- Кнопка закрытия крупнее для удобства --}}
             <button type="button" onclick="closeMobileFilter(this)" class="text-[#cd1d46] hover:text-[#f06282] p-1">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -35,11 +35,11 @@
 
         {{-- ФОРМА С ФИЛЬТРАМИ --}}
         {{-- space-y-8: Хороший отступ между смысловыми блоками (Цена / Возраст / Категории) --}}
-        <form action="{{ url()->current() }}" method="GET" class="flex-1 overflow-y-auto filter-scroll pr-2 lg:pr-4 space-y-8 pb-6">
+        <form action="{{ url()->current() }}" method="GET" class="filter-cities-scroll flex-1 overflow-y-auto pr-2 lg:pr-4 space-y-8 pb-6">
             
             {{-- 1. ЦЕНА (РАДИО) --}}
             <div>
-                <h3 class="text-base font-bold text-white mb-4 capitalize tracking-wide">Цена</h3>
+                <h3 class="text-base font-bold text-white muppercaselize tracking-wide">Цена</h3>
                 
                 <input type="hidden" name="price_min" value="{{ request('price_min') }}" class="price-min-input">
                 <input type="hidden" name="price_max" value="{{ request('price_max') }}" class="price-max-input">
@@ -80,7 +80,7 @@
 
             {{-- 2. ВОЗРАСТ (РАДИО) --}}
             <div>
-                <h3 class="text-base font-bold text-white mb-4 capitalize tracking-wide">Возраст</h3>
+                <h3 class="text-base font-bold text-whiuppercasepitalize tracking-wide">Возраст</h3>
                 
                 <input type="hidden" name="age_min" value="{{ request('age_min') }}" class="age-min-input">
                 <input type="hidden" name="age_max" value="{{ request('age_max') }}" class="age-max-input">
@@ -126,7 +126,7 @@
                 <div class="filter-group">
                     <button type="button" onclick="toggleFilterSection(this)" class="flex items-center justify-between w-full mb-4 group">
                         {{-- ИСПРАВЛЕНИЕ: h3 заменен на span, так как h3 нельзя вкладывать в button --}}
-                        <span class="text-base font-bold text-white capitalize tracking-wide group-hover:text-[#cd1d46] transition-colors">{{ $data['label'] }}</span>
+                        <span class="text-base font-bolduppercasee capitalize tracking-wide group-hover:text-[#cd1d46] transition-colors">{{ $data['label'] }}</span>
                         <svg class="w-4 h-4 text-[#cd1d46] transform transition-transform duration-200 filter-arrow {{ $isOpen ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
@@ -163,13 +163,13 @@
         {{-- Вернул высоту кнопке (py-4) и отступ сверху (pt-6) --}}
         <div class="pt-6 mt-auto border-t border-gray-800 bg-[#050505] shrink-0 space-y-4 pb-6 lg:pb-0">
             <button type="button" onclick="this.closest('aside').querySelector('form').submit()"
-                class="w-full bg-[#cd1d46] hover:bg-[#f06282] text-white font-bold capitalize text-sm py-4 rounded tracking-widest transition-transform active:scale-95 shadow-lg shadow-[#cd1d46]/20">
+                class="w-full bg-[#cd1d46] hover:bg-[#f06282] text-uppercase-bold capitalize text-sm py-4 rounded tracking-widest transition-transform active:scale-95 shadow-lg shadow-[#cd1d46]/20">
                 Применить фильтр
             </button>
             
             @if (request()->query())
                 <a href="{{ url()->current() }}"
-                   class="block w-full text-center text-xs text-[#cd1d46] hover:text-[#f06282] capitalize tracking-widest transition-colors pb-2">
+                   class="block w-full text-center text-xs text-[#cd1d46] huppercase[#f06282] capitalize tracking-widest transition-colors pb-2">
                    × Сбросить всё
                 </a>
             @endif

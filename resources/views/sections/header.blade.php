@@ -286,12 +286,12 @@
                             <li>
                                 @if($is_online_active)
                                     <span class="{{ $link_classes_active }}">
-                                        <span class="w-2 h-2 bg-green-500"></span>
+                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
                                         Online
                                     </span>
                                 @else
                                     <a href="{{ $online_url }}" class="{{ $link_classes_default }}">
-                                        <span class="w-2 h-2 bg-green-500"></span>
+                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
                                         Online
                                     </a>
                                 @endif
@@ -409,12 +409,12 @@
                         <li>
                             @if($is_online_active)
                                 <span class="{{ $mobile_classes_active }}">
-                                    <span class="w-2 h-2 bg-green-500"></span>
+                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
                                     Online
                                 </span>
                             @else
                                 <a href="{{ $online_url }}" class="{{ $mobile_classes_default }}">
-                                    <span class="w-2 h-2 bg-green-500"></span>
+                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
                                     Online
                                 </a>
                             @endif

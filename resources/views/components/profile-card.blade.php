@@ -150,38 +150,38 @@
         <div class="grid grid-cols-4 gap-2">
             <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
                 <div class="text-[10px] capitalize tracking-wide text-[#8ea0bc]">Возраст</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">{{ $age ?: '-' }}</div>
+                <div class="mt-1 text-[11px] font-[#fff] leading-none text-[#eef3ff]">{{ $age ?: '-' }}</div>
             </div>
             <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
                 <div class="text-[10px] capitalize tracking-wide text-[#8ea0bc]">Рост</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">{{ $height ?: '-' }}</div>
+                <div class="mt-1 text-[11px] font-[#fff] leading-none text-[#eef3ff]">{{ $height ?: '-' }}</div>
             </div>
             <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
                 <div class="text-[10px] capitalize tracking-wide text-[#8ea0bc]">Вес</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">{{ $weight ?: '-' }}</div>
+                <div class="mt-1 text-[11px] font-[#fff] leading-none text-[#eef3ff]">{{ $weight ?: '-' }}</div>
             </div>
             <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
                 <div class="text-[10px] capitalize tracking-wide text-[#8ea0bc]">Грудь</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">{{ $breast ?: '-' }}</div>
+                <div class="mt-1 text-[11px] font-[#fff] leading-none text-[#eef3ff]">{{ $breast ?: '-' }}</div>
             </div>
         </div>
 
         <div class="grid grid-cols-3 gap-2">
             <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
                 <div class="text-[12px] tracking-wide text-[#8ea0bc]">1 час</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">
+                <div class="mt-1 text-[11px] font-[#fff] leading-none text-[#eef3ff]">
                     {{ $price1h ? number_format((float) $price1h, 0, '.', ' ') . ' ' . $currency : '-' }}
                 </div>
             </div>
             <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
                 <div class="text-[12px] tracking-wide text-[#8ea0bc]">2 часа</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">
+                <div class="mt-1 text-[11px] font-[#fff] leading-none text-[#eef3ff]">
                     {{ $price2h ? number_format((float) $price2h, 0, '.', ' ') . ' ' . $currency : '-' }}
                 </div>
             </div>
             <div class="rounded-lg border border-[#2a3142] bg-[#151c28] px-2 py-2 text-center">
                 <div class="text-[12px] tracking-wide text-[#8ea0bc]">ночь</div>
-                <div class="mt-1 text-[11px] font-black leading-none text-[#eef3ff]">
+                <div class="mt-1 text-[11px] font-[#fff] leading-none text-[#eef3ff]">
                     {{ $priceNight ? number_format((float) $priceNight, 0, '.', ' ') . ' ' . $currency : '-' }}
                 </div>
             </div>
