@@ -6,7 +6,7 @@
 @section('content')
     <div class="container mx-auto px-4 py-12 max-w-4xl">
         {{-- Основной контейнер: Черный фон, красная рамка --}}
-        <article class="bg-black p-6 md:p-12 border border-[#cd1d46]">
+        <article class="bg-black p-6 md:p-12 border rounded-2xl border-[#cd1d46]">
             
             {{-- Хедер страницы --}}
             <header class="mb-8 border-b border-[#cd1d46]/30 pb-8">
@@ -59,18 +59,26 @@
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                         Предпочтительный способ связи <span class="text-red-500">*</span>
                     </label>
-                    <div class="space-y-3">
-                        <label class="flex items-center">
-                            <input type="radio" name="contact_method" value="telegram" class="mr-3 text-[#cd1d46] focus:ring-[#cd1d46]">
-                            <span class="text-gray-300">Telegram</span>
+                    <div class="flex flex-wrap gap-2">
+                        <label class="group inline-flex items-center gap-2 cursor-pointer select-none rounded-md border border-gray-700 px-3 py-2 transition-all duration-150 hover:border-[#cd1d46] hover:shadow-[0_0_0_1px_rgba(205,29,70,0.35)]">
+                            <input type="radio" name="contact_method" value="phone" class="peer sr-only">
+                            <span class="relative h-4 w-4 rounded-full border border-gray-500 transition-colors group-hover:border-[#cd1d46] group-hover:ring-1 group-hover:ring-[#cd1d46]/40 peer-checked:border-[#cd1d46] peer-checked:bg-[#cd1d46]/20 peer-focus-visible:ring-2 peer-focus-visible:ring-[#cd1d46]/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black after:absolute after:left-1/2 after:top-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-[#cd1d46] after:scale-0 after:transition-transform peer-checked:after:scale-100"></span>
+                            <span class="text-sm text-gray-300 transition-colors group-hover:text-[#f1b2c0] peer-checked:text-white">Телефон</span>
                         </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="contact_method" value="phone" class="mr-3 text-[#cd1d46] focus:ring-[#cd1d46]">
-                            <span class="text-gray-300">Телефон</span>
+                        <label class="group inline-flex items-center gap-2 cursor-pointer select-none rounded-md border border-gray-700 px-3 py-2 transition-all duration-150 hover:border-[#cd1d46] hover:shadow-[0_0_0_1px_rgba(205,29,70,0.35)]">
+                            <input type="radio" name="contact_method" value="telegram" class="peer sr-only">
+                            <span class="relative h-4 w-4 rounded-full border border-gray-500 transition-colors group-hover:border-[#cd1d46] group-hover:ring-1 group-hover:ring-[#cd1d46]/40 peer-checked:border-[#cd1d46] peer-checked:bg-[#cd1d46]/20 peer-focus-visible:ring-2 peer-focus-visible:ring-[#cd1d46]/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black after:absolute after:left-1/2 after:top-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-[#cd1d46] after:scale-0 after:transition-transform peer-checked:after:scale-100"></span>
+                            <span class="text-sm text-gray-300 transition-colors group-hover:text-[#f1b2c0] peer-checked:text-white">Telegram</span>
                         </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="contact_method" value="whatsapp" class="mr-3 text-[#cd1d46] focus:ring-[#cd1d46]">
-                            <span class="text-gray-300">WhatsApp</span>
+                        <label class="group inline-flex items-center gap-2 cursor-pointer select-none rounded-md border border-gray-700 px-3 py-2 transition-all duration-150 hover:border-[#cd1d46] hover:shadow-[0_0_0_1px_rgba(205,29,70,0.35)]">
+                            <input type="radio" name="contact_method" value="whatsapp" class="peer sr-only">
+                            <span class="relative h-4 w-4 rounded-full border border-gray-500 transition-colors group-hover:border-[#cd1d46] group-hover:ring-1 group-hover:ring-[#cd1d46]/40 peer-checked:border-[#cd1d46] peer-checked:bg-[#cd1d46]/20 peer-focus-visible:ring-2 peer-focus-visible:ring-[#cd1d46]/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black after:absolute after:left-1/2 after:top-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-[#cd1d46] after:scale-0 after:transition-transform peer-checked:after:scale-100"></span>
+                            <span class="text-sm text-gray-300 transition-colors group-hover:text-[#f1b2c0] peer-checked:text-white">WhatsApp</span>
+                        </label>
+                        <label class="group inline-flex items-center gap-2 cursor-pointer select-none rounded-md border border-gray-700 px-3 py-2 transition-all duration-150 hover:border-[#cd1d46] hover:shadow-[0_0_0_1px_rgba(205,29,70,0.35)]">
+                            <input type="radio" name="contact_method" value="max" class="peer sr-only">
+                            <span class="relative h-4 w-4 rounded-full border border-gray-500 transition-colors group-hover:border-[#cd1d46] group-hover:ring-1 group-hover:ring-[#cd1d46]/40 peer-checked:border-[#cd1d46] peer-checked:bg-[#cd1d46]/20 peer-focus-visible:ring-2 peer-focus-visible:ring-[#cd1d46]/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black after:absolute after:left-1/2 after:top-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-[#cd1d46] after:scale-0 after:transition-transform peer-checked:after:scale-100"></span>
+                            <span class="text-sm text-gray-300 transition-colors group-hover:text-[#f1b2c0] peer-checked:text-white">Max</span>
                         </label>
                     </div>
                 </div>
@@ -101,7 +109,7 @@
                                 type="time" 
                                 id="work_time_from" 
                                 name="work_time_from" 
-                                class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
+                                class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
                             >
                         </div>
                         <div>
@@ -110,16 +118,17 @@
                                 type="time" 
                                 id="work_time_to" 
                                 name="work_time_to" 
-                                class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
+                                class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#cd1d46] focus:border-transparent"
                             >
                         </div>
                     </div>
                     
                     {{-- Круглосуточно --}}
                     <div class="mt-3">
-                        <label class="flex items-center">
-                            <input type="checkbox" id="is_24_7" name="is_24_7" class="mr-3 text-[#cd1d46] focus:ring-[#cd1d46] rounded">
-                            <span class="text-gray-300">Работаю круглосуточно</span>
+                        <label class="group inline-flex items-center gap-2 cursor-pointer select-none rounded-md border border-gray-700 px-3 py-2 transition-all duration-150 hover:border-[#cd1d46] hover:shadow-[0_0_0_1px_rgba(205,29,70,0.35)]">
+                            <input type="checkbox" id="is_24_7" name="is_24_7" class="peer sr-only">
+                            <span class="relative h-4 w-4 rounded border border-gray-500 p-[2px] transition-colors group-hover:border-[#cd1d46] group-hover:ring-1 group-hover:ring-[#cd1d46]/40 peer-checked:border-[#cd1d46] peer-checked:bg-[#cd1d46]/20 peer-focus-visible:ring-2 peer-focus-visible:ring-[#cd1d46]/50 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-black after:absolute after:left-1/2 after:top-[45%] after:h-2 after:w-1 after:-translate-x-1/2 after:-translate-y-1/2 after:rotate-45 after:border-b-2 after:border-r-2 after:border-[#cd1d46] after:opacity-0 after:transition-opacity peer-checked:after:opacity-100"></span>
+                            <span class="text-sm text-gray-300 transition-colors group-hover:text-white">Работаю круглосуточно</span>
                         </label>
                     </div>
                 </div>

@@ -35,9 +35,9 @@
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                 @if($terms && !is_wp_error($terms))
                     @foreach($terms as $term)
-                        <a href="{{ term_url($term) }}" 
-                           class="group block bg-black border border-[#cd1d46] p-4 text-center hover:bg-[#cd1d46] transition-all duration-300 transform hover:scale-105">
-                            <h3 class="text-black font-bold text-sm md:text-base capitalize tracking-wide group-hover:text-black">
+                        <a href="{{ term_url($term) }}"
+                           class="group block rounded-xl border border-[#cd1d46]/45 bg-[#11151d] px-4 py-5 text-center shadow-[0_10px_24px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#cd1d46] hover:bg-[#171d27] hover:shadow-[0_12px_28px_rgba(205,29,70,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cd1d46] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0e1015]">
+                            <h3 class="font-bold text-sm md:text-base capitalize tracking-wide text-gray-100 transition-colors duration-300 group-hover:text-[#ff4b73]">
                                 {{ $term->name }}
                             </h3>
                         </a>

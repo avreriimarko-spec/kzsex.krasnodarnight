@@ -194,7 +194,7 @@
 
         {{-- Кнопка "Наверх" --}}
         <button type="button" data-x-bind="scrollBtn"
-            class="w-12 h-12 bg-[#050505] text-[#cd1d46] rounded border border-gray-800 shadow-xl flex items-center justify-center hover:bg-[#cd1d46] hover:text-black hover:border-[#cd1d46] transition-all active:scale-95 group"
+            class="w-12 h-12 bg-[#050505] text-[#cd1d46] rounded border border-gray-800 shadow-xl flex items-center justify-center hover:bg-[#cd1d46] hover:text-[#fff] hover:border-[#cd1d46] transition-all active:scale-95 group"
             aria-label="Наверх">
             <svg class="w-6 h-6 group-hover:-translate-y-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18">

@@ -722,3 +722,13 @@ main .text-red-600:hover,
 main .hover\:text-red-600:hover {
   color: #f06282 !important;
 }
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+input[type="time"] {
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: contain;
+}
