@@ -345,7 +345,6 @@ a:hover {
   .footer-nav .footer-nav-link,
   .footer-nav .footer-nav-link-active {
     display: inline-block;
-    color: #4b5563;
     font-size: 1.05rem;
     font-weight: 400;
     text-transform: none;
@@ -353,16 +352,18 @@ a:hover {
     text-decoration: none;
     line-height: 1.25;
     transition: color 0.2s;
+
+    @apply text-gray-400;
   }
 
   .footer-nav .footer-nav-link:hover,
   .footer-nav .footer-nav-title-link:hover {
-    color: #111827;
+    @apply text-gray-300;
   }
 
   .footer-nav .footer-nav-link-active,
   .footer-nav .footer-nav-title-link-active {
-    color: #111827;
+    @apply text-gray-300;
     cursor: default;
   }
 

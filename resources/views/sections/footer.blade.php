@@ -11,6 +11,7 @@
     // 3. Проверяем, на главной ли мы (для логотипа)
     $logo_path_clean = trim(parse_url($logo_url, PHP_URL_PATH), '/');
     $is_home_page = ($current_request_path === $logo_path_clean);
+    $site_description = trim((string) get_bloginfo('description'));
 
     // 4. Фильтр для меню футера
     add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_request_path, $current_city_slug) {
@@ -73,7 +74,7 @@
     }, 10, 4);
 @endphp
 
-<footer class="bg-[#0f0f0f] text-black border-t border-gray-900 mt-auto font-serif">
+<footer class="bg-[#0f0f0f] border-t border-gray-900 mt-auto font-serif">
 
     <div class="container mx-auto px-4 md:px-8">
 
@@ -84,30 +85,34 @@
             @if($is_home_page)
                 {{-- Если главная: НЕ ссылка --}}
                 <div class="flex flex-col items-start cursor-default">
-                    <span class="font-serif text-2xl tracking-[0.15em] capitalize text-black font-medium">
+                    <span class="font-serif text-2xl tracking-[0.15em] capitalize font-medium">
                         {{ $siteName ?? get_bloginfo('name') }}
                     </span>
-                    <div class="flex items-center w-full mt-1 gap-2">
-                        <span class="h-px bg-white/40 flex-1"></span>
-                        <span class="text-[9px] tracking-[0.3em] capitalize text-gray-400 whitespace-nowrap">
-                            {{ get_bloginfo('description')}}
-                        </span>
-                        <span class="h-px bg-white/40 flex-1"></span>
-                    </div>
+                    @if ($site_description !== '')
+                        <div class="flex items-center w-full mt-1 gap-2">
+                            <span class="h-px bg-white/40 flex-1"></span>
+                            <span class="text-[9px] tracking-[0.3em] capitalize text-gray-400 whitespace-nowrap">
+                                {{ $site_description }}
+                            </span>
+                            <span class="h-px bg-white/40 flex-1"></span>
+                        </div>
+                    @endif
                 </div>
             @else
                 {{-- Если другая страница: Ссылка --}}
                 <a href="{{ $logo_url }}" class="flex flex-col items-start group">
-                    <span class="font-serif text-2xl tracking-[0.15em] capitalize text-black font-medium group-hover:text-gray-300 transition-colors">
+                    <span class="font-serif text-2xl tracking-[0.15em] capitalize  font-medium group-hover:text-gray-300 transition-colors">
                         {{ $siteName ?? get_bloginfo('name') }}
                     </span>
-                    <div class="flex items-center w-full mt-1 gap-2">
-                        <span class="h-px bg-white/40 flex-1"></span>
-                        <span class="text-[9px] tracking-[0.3em] capitalize text-gray-400 whitespace-nowrap">
-                            {{ get_bloginfo('description')}}
-                        </span>
-                        <span class="h-px bg-white/40 flex-1"></span>
-                    </div>
+                    @if ($site_description !== '')
+                        <div class="flex items-center w-full mt-1 gap-2">
+                            <span class="h-px bg-white/40 flex-1"></span>
+                            <span class="text-[9px] tracking-[0.3em] capitalize text-gray-400 whitespace-nowrap">
+                                {{ $site_description }}
+                            </span>
+                            <span class="h-px bg-white/40 flex-1"></span>
+                        </div>
+                    @endif
                 </a>
             @endif
 
@@ -233,25 +238,27 @@
         <div class="flex flex-col md:flex-row justify-between items-center py-6 border-b border-gray-800 gap-4">
             
             {{-- Домен сайта --}}
-            <div class="font-serif text-sm md:text-base tracking-[0.15em] capitalize text-black">
+            <div class="font-serif text-sm md:text-base tracking-[0.15em] capitalize ">
                 {{ strtoupper($_SERVER['HTTP_HOST'] ?? 'SITE.COM') }}
             </div>
 
             {{-- Копирайт --}}
-            <div class="text-[10px] md:text-xs tracking-widest text-gray-500 capitalize">
+            <div class="text-[10px] md:text-xs tracking-widest text-gray-400 capitalize">
                 &copy; {{ date('Y') }} Все права защищены.
             </div>
         </div>
 
         {{-- 3. НИЖНЯЯ ЧАСТЬ: Дисклеймер --}}
         <div class="py-8">
-            <p class="text-[11px] md:text-[12px] leading-relaxed text-gray-400 text-justify font-light opacity-80">
-                <span class="text-black capitalize font-medium mr-1">ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ:</span>
-                Обратите внимание, что данный веб-сайт содержит контент и изображения, не предназначенные для детей. 
-                Если вам не исполнилось 18 лет или вас оскорбляют материалы для взрослых, пожалуйста, покиньте этот ресурс. 
-                Выбирая продолжение просмотра данной страницы, вы освобождаете владельца этого веб-сайта и всех лиц, 
-                участвующих в его создании, поддержке и размещении, от любой ответственности, которая может возникнуть в результате ваших действий. 
-                Мы предоставляем только рекламное пространство и не являемся эскорт-агентством.
+            <p class="text-[11px] md:text-[12px] leading-relaxed text-justify font-light opacity-80">
+                <span class="capitalize font-medium mr-1">ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ:</span>
+                <span class="text-gray-400">
+                    Обратите внимание, что данный веб-сайт содержит контент и изображения, не предназначенные для детей. 
+                    Если вам не исполнилось 18 лет или вас оскорбляют материалы для взрослых, пожалуйста, покиньте этот ресурс. 
+                    Выбирая продолжение просмотра данной страницы, вы освобождаете владельца этого веб-сайта и всех лиц, 
+                    участвующих в его создании, поддержке и размещении, от любой ответственности, которая может возникнуть в результате ваших действий. 
+                    Мы предоставляем только рекламное пространство и не являемся эскорт-агентством.
+                </span>
             </p>
         </div>
 
