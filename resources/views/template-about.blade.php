@@ -21,7 +21,7 @@
 
     {{-- СЕКЦИЯ 2: ОСНОВНОЙ КОНТЕНТ --}}
     <div class="container mx-auto px-4 mb-16">
-        <div class="bg-black border border-[#cd1d46] overflow-hidden">
+        <div class="bg-black border rounded-xl border-[#cd1d46] overflow-hidden">
             <div class="grid grid-cols-1 lg:grid-cols-2">
 
                 {{-- Текст (слева) --}}
@@ -85,9 +85,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach ($features as $item)
                     <div
-                        class="bg-black p-8 border border-[#cd1d46] shadow-sm hover:shadow-lg transition-shadow duration-300">
+                        class="bg-black p-8 border rounded-xl border-[#cd1d46] shadow-sm hover:shadow-lg transition-shadow duration-300">
                         {{-- Иконка (галочка в круге) --}}
-                        <div class="w-12 h-12 bg-[#cd1d46]/20 text-[#cd1d46] flex items-center justify-center mb-6">
+                        <div class="w-12 h-12 bg-[#cd1d46]/20 text-[#cd1d46] rounded-xl flex items-center justify-center mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -107,14 +107,14 @@
     @endif
 
     {{-- СЕКЦИЯ 5: CTA (Призыв к действию) --}}
-    <div class="bg-black py-16 border-t border-[#cd1d46]">
+    <div class="bg-black py-16 border-t rounded-xl border-[#cd1d46]">
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-3xl font-bold mb-6 text-black">Готовы найти компанию?</h2>
             <p class="text-gray-300 mb-8 max-w-xl mx-auto">
                 В нашем каталоге представлены только проверенные анкеты. Выберите девушку прямо сейчас.
             </p>
             <a href="{{ home_url('/') }}"
-                class="inline-block bg-[#cd1d46] !text-black font-bold capitalize px-8 py-4 shadow-lg hover:bg-[#b71833] transition transform hover:-translate-y-1">
+                class="inline-block bg-[#cd1d46] rounded-xl !text-black font-bold capitalize px-8 py-4 shadow-lg hover:bg-[#b71833] transition transform hover:-translate-y-1">
                 Перейти в каталог
             </a>
         </div>
