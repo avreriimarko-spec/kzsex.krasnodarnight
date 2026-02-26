@@ -89,7 +89,7 @@ class UrlHelpers
         $city_slug = ($city instanceof WP_Term) ? $city->slug : $city;
 
         // Страницы, которые всегда должны быть с вложением города
-        $with_city_pages = ['vip', 'deshevye', 'prostitutki', 'online'];
+        $with_city_pages = ['vip', 'deshyovye', 'prostitutki', 'onlajn', 'novye', 'provereno'];
         
         // Страницы, которые всегда должны быть без города
         $without_city_pages = ['map', 'reviews', 'catalog'];
@@ -121,7 +121,7 @@ class UrlHelpers
     
     /**
      * Получить URL термина (услуги, категории) с учетом города
-     * Пример: /balashiha/service/sex-toys/, /moskva/service/relax/
+     * Пример: /balashiha/uslugi/sex-toys/, /moskva/uslugi/relax/
      */
     public static function getTermUrl($term, $city = null): string
     {
@@ -132,6 +132,12 @@ class UrlHelpers
         $city_slug = ($city instanceof WP_Term) ? $city->slug : $city;
         $term_slug = is_object($term) ? $term->slug : $term;
         $taxonomy = is_object($term) ? $term->taxonomy : 'service';
+        if ($taxonomy === 'service') {
+            $taxonomy = 'uslugi';
+        }
+        if ($taxonomy === 'district') {
+            $taxonomy = 'rajony';
+        }
 
         // Всегда добавляем город в URL
         return home_url("/{$city_slug}/{$taxonomy}/{$term_slug}/");

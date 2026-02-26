@@ -4,7 +4,7 @@
 @php
   // Минималистичные ссылки (можешь поменять пути под свой роутинг)
   $home = home_url('/');
-  $sitemap = home_url('/sitemap/');
+  $sitemap = home_url('/karta-sajta/');
 @endphp
 
 <div class="min-h-[70vh] flex items-center justify-center px-4 py-16 bg-black">

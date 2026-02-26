@@ -10,15 +10,14 @@
 
         // 1. СЛАГИ ДЛЯ ИСКЛЮЧЕНИЯ ИЗ БЛОКА "ОСНОВНОЕ"
         $excluded_slugs = [
-            'sample-page',
             'vip', 
-            'deshevye',
+            'deshyovye',
             'prostitutki', 
-            'online', 
-            'new',
-            'verified',
-            'prostitutki-na-vyezd', 
-            'prostitutki-priem',    
+            'onlajn', 
+            'novye',
+            'provereno',
+            'prostitutki-na-vyezd',
+            'prostitutki-priyom',
             'otzyvy', 
             'catalog', 
             'map',
@@ -122,11 +121,11 @@
                                 $city_slug = \App\Helpers\UrlHelpers::DEFAULT_CITY_SLUG;
                                 
                                 if (strpos((string) $page_template, 'template-services.blade.php') !== false) {
-                                    $page_link = home_url('/' . $city_slug . '/service/');
+                                    $page_link = home_url('/' . $city_slug . '/uslugi/');
                                 } elseif (strpos((string) $page_template, 'template-metro.blade.php') !== false) {
                                     $page_link = home_url('/' . $city_slug . '/metro/');
                                 } elseif (strpos((string) $page_template, 'template-district.blade.php') !== false) {
-                                    $page_link = home_url('/' . $city_slug . '/district/');
+                                    $page_link = home_url('/' . $city_slug . '/rajony/');
                                 } else {
                                     $page_link = home_url('/' . $page->post_name . '/');
                                 }
@@ -183,12 +182,12 @@
                                 <div>
                                     <h3 class="font-bold text-gray-800 capitalize mb-2 text-sm">{{ $city->name }}</h3>
                                     <ul class="space-y-1 pl-2 border-l-2 border-red-600 text-sm">
-                                        <li><a href="{{ home_url($city_base . '/deshevye/') }}" class="text-gray-800 hover:text-red-600 transition">Дешевые в {{ $city->name }}</a></li>
+                                        <li><a href="{{ home_url($city_base . '/deshyovye/') }}" class="text-gray-800 hover:text-red-600 transition">Дешевые в {{ $city->name }}</a></li>
                                         <li><a href="{{ home_url($city_base . '/vip/') }}" class="text-gray-800 hover:text-red-600 transition">VIP в {{ $city->name }}</a></li>
                                         <li><a href="{{ home_url($city_base . '/prostitutki/') }}" class="text-gray-800 hover:text-red-600 transition">Проститутки в {{ $city->name }}</a></li>
-                                        <li><a href="{{ home_url($city_base . '/online/') }}" class="text-gray-800 hover:text-red-600 transition">Онлайн в {{ $city->name }}</a></li>
+                                        <li><a href="{{ home_url($city_base . '/onlajn/') }}" class="text-gray-800 hover:text-red-600 transition">Онлайн в {{ $city->name }}</a></li>
                                         <li><a href="{{ home_url($city_base . '/prostitutki-na-vyezd/') }}" class="text-gray-800 hover:text-red-600 transition">Выезд в {{ $city->name }}</a></li>
-                                        <li><a href="{{ home_url($city_base . '/prostitutki-priem/') }}" class="text-gray-800 hover:text-red-600 transition">У себя в {{ $city->name }}</a></li>
+                                        <li><a href="{{ home_url($city_base . '/prostitutki-priyom/') }}" class="text-gray-800 hover:text-red-600 transition">У себя в {{ $city->name }}</a></li>
                                     </ul>
                                 </div>
                             @endforeach
@@ -353,8 +352,13 @@
                                             </p>
                                             <ul class="space-y-1 pl-2 border-l-2 border-red-600 text-sm {{ !$loop->last ? 'mb-3' : '' }}">
                                                 @foreach ($city_location_group['terms'] as $location_term)
+                                                    @php
+                                                        $location_slug = $city_location_group['taxonomy'] === 'district'
+                                                            ? 'rajony'
+                                                            : $city_location_group['taxonomy'];
+                                                    @endphp
                                                     <li>
-                                                        <a href="{{ home_url('/' . $city->slug . '/' . $city_location_group['taxonomy'] . '/' . $location_term->slug . '/') }}"
+                                                        <a href="{{ home_url('/' . $city->slug . '/' . $location_slug . '/' . $location_term->slug . '/') }}"
                                                            class="text-gray-800 hover:text-red-600 transition">
                                                             {{ $location_term->name }}
                                                         </a>

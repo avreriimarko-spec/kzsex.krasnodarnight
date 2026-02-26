@@ -5,7 +5,7 @@ namespace App\Setup;
 // Создание страницы "Online" при активации темы
 add_action('after_setup_theme', function () {
     // Проверяем, существует ли уже страница
-    $online_page = get_page_by_path('online');
+    $online_page = get_page_by_path('onlajn');
     
     if (!$online_page) {
         // Создаем страницу
@@ -14,7 +14,7 @@ add_action('after_setup_theme', function () {
             'post_content' => '',
             'post_status'  => 'publish',
             'post_type'    => 'page',
-            'post_name'    => 'online',
+            'post_name'    => 'onlajn',
         ]);
         
         // Назначаем шаблон
@@ -26,16 +26,16 @@ add_action('after_setup_theme', function () {
 
 // Добавление правил перезаписи для URL с городами
 add_action('init', function () {
-    // Правило для /online/ и /{city}/online/
+    // Правило для /onlajn/ и /{city}/onlajn/
     add_rewrite_rule(
-        '^([^/]+)/online/?$',
-        'index.php?pagename=online&city=$matches[1]',
+        '^([^/]+)/onlajn/?$',
+        'index.php?pagename=onlajn&city=$matches[1]',
         'top'
     );
     
     add_rewrite_rule(
-        '^online/?$',
-        'index.php?pagename=online',
+        '^onlajn/?$',
+        'index.php?pagename=onlajn',
         'top'
     );
 });
@@ -48,10 +48,10 @@ add_filter('query_vars', function ($query_vars) {
 
 // Перенаправление на страницу с городом по умолчанию
 add_action('template_redirect', function () {
-    if (is_page('online') && !get_query_var('city')) {
+    if (is_page('onlajn') && !get_query_var('city')) {
         $current_city = get_current_city();
         if ($current_city) {
-            $redirect_url = home_url("/{$current_city->slug}/online/");
+            $redirect_url = home_url("/{$current_city->slug}/onlajn/");
             wp_redirect($redirect_url, 301);
             exit;
         }

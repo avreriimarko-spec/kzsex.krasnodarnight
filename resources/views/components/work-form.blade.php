@@ -167,7 +167,7 @@
         </button>
 
         <p class="text-center text-xs text-gray-400">
-            Нажимая кнопку, вы соглашаетесь с <a href="/privacy-policy/"
+            Нажимая кнопку, вы соглашаетесь с <a href="/politika-konfidencialnosti/"
                 class="underline hover:text-gray-600">политикой конфиденциальности</a>.
         </p>
     </form>

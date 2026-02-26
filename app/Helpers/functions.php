@@ -65,7 +65,7 @@ if (!function_exists('get_city_seo')) {
 
 /**
  * 7. Получить URL термина (услуги, категории) с учетом города
- * Пример: term_url($service) -> /balashiha/service/sex-toys/
+ * Пример: term_url($service) -> /balashiha/uslugi/sex-toys/
  */
 if (!function_exists('term_url')) {
     function term_url($term, $city = null): string

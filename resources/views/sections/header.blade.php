@@ -13,7 +13,7 @@
     $logo_url = ($current_slug === $default_city_slug) ? home_url('/') : home_url("/{$current_slug}/");
     
     // Online: ВСЕГДА с городом
-    $online_url = home_url("/{$current_slug}/online/");
+    $online_url = home_url("/{$current_slug}/onlajn/");
 
     // 4. Получаем текущий путь
     $current_request_path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
@@ -41,12 +41,12 @@
                     $atts['href'] = ($current_slug === $default_city_slug) ? home_url('/') : home_url("/{$current_slug}/");
                 } 
                 // Ссылка Online (всегда добавляем город)
-                elseif ($path === 'online') {
-                    $atts['href'] = home_url("/{$current_slug}/online/");
+                elseif ($path === 'onlajn') {
+                    $atts['href'] = home_url("/{$current_slug}/onlajn/");
                 } 
-                // Список услуг всегда в формате /{city}/service/
+                // Список услуг всегда в формате /{city}/uslugi/
                 elseif ($path === 'uslugi' || $path === 'service' || preg_match('#^[^/]+/(uslugi|service)$#', $path)) {
-                    $atts['href'] = home_url("/{$current_slug}/service/");
+                    $atts['href'] = home_url("/{$current_slug}/uslugi/");
                 }
                 // Остальные внутренние страницы
                 else {
@@ -116,10 +116,10 @@
 
                     if (empty($path)) {
                         $item_url = ($current_slug === $default_city_slug) ? home_url('/') : home_url("/{$current_slug}/");
-                    } elseif ($path === 'online') {
-                        $item_url = home_url("/{$current_slug}/online/");
+                    } elseif ($path === 'onlajn') {
+                        $item_url = home_url("/{$current_slug}/onlajn/");
                     } elseif ($path === 'uslugi' || $path === 'service' || preg_match('#^[^/]+/(uslugi|service)$#', $path)) {
-                        $item_url = home_url("/{$current_slug}/service/");
+                        $item_url = home_url("/{$current_slug}/uslugi/");
                     } else {
                         $path_parts = explode('/', $path);
                         if (($path_parts[0] ?? '') !== $current_slug) {
@@ -140,22 +140,69 @@
         }
     }
 
-    $can_group_price_dropdown = count($desktop_menu_items) >= 4;
-    $price_item_a = $can_group_price_dropdown ? $desktop_menu_items[2] : null;
-    $price_item_b = $can_group_price_dropdown ? $desktop_menu_items[3] : null;
+    // Fallback: если пункта "Главная" нет по названию, добавляем его первым.
+    $expected_home_url = ($current_slug === $default_city_slug)
+        ? home_url('/')
+        : home_url("/{$current_slug}/");
+    $expected_home_path = trim(parse_url($expected_home_url, PHP_URL_PATH), '/');
+
+    $has_home_menu_item = false;
+    foreach ($desktop_menu_items as $menu_item) {
+        $menu_item_title = mb_strtolower(trim((string) ($menu_item['title'] ?? '')));
+
+        if ($menu_item_title === 'главная' || $menu_item_title === 'home') {
+            $has_home_menu_item = true;
+            break;
+        }
+    }
+
+    if (!$has_home_menu_item) {
+        array_unshift($desktop_menu_items, [
+            'title' => 'Главная',
+            'url' => $expected_home_url,
+            'is_active' => ($expected_home_path === $current_request_path),
+        ]);
+    }
+
+    // Dropdown "Доступность": объединяем "У себя" и "Выезд" по slug, а не по индексам.
+    $price_item_a = null; // incall / у себя
+    $price_item_b = null; // outcall / выезд
+    $price_item_a_index = null;
+    $price_item_b_index = null;
+
+    foreach ($desktop_menu_items as $menu_index => $menu_item) {
+        $menu_path = trim(parse_url($menu_item['url'] ?? '', PHP_URL_PATH), '/');
+        $menu_parts = explode('/', $menu_path);
+        $menu_slug = strtolower(end($menu_parts) ?: '');
+
+        if ($price_item_a === null && in_array($menu_slug, ['prostitutki-priyom', 'incall'], true)) {
+            $price_item_a = $menu_item;
+            $price_item_a_index = $menu_index;
+            continue;
+        }
+
+        if ($price_item_b === null && in_array($menu_slug, ['prostitutki-na-vyezd', 'outcall'], true)) {
+            $price_item_b = $menu_item;
+            $price_item_b_index = $menu_index;
+        }
+    }
+
+    $can_group_price_dropdown = $price_item_a !== null && $price_item_b !== null;
+    $availability_skip_indices = $can_group_price_dropdown ? [$price_item_a_index, $price_item_b_index] : [];
+    $availability_insert_index = $can_group_price_dropdown ? min($availability_skip_indices) : null;
     $price_dropdown_active = $can_group_price_dropdown && (
         !empty($price_item_a['is_active']) || !empty($price_item_b['is_active'])
     );
 
-    // Отдельный dropdown "Цена": только VIP + deshevye
+    // Отдельный dropdown "Цена": только VIP + deshyovye
     $price_menu_vip_item = null;
-    $price_menu_deshevye_item = null;
+    $price_menu_deshyovye_item = null;
     $price_menu_vip_index = null;
-    $price_menu_deshevye_index = null;
+    $price_menu_deshyovye_index = null;
 
     foreach ($desktop_menu_items as $menu_index => $menu_item) {
-        // Индексы 2 и 3 уже заняты блоком "Доступность"
-        if (in_array($menu_index, [2, 3], true)) {
+        // Элементы блока "Доступность" пропускаем из "Цена"
+        if ($can_group_price_dropdown && in_array($menu_index, $availability_skip_indices, true)) {
             continue;
         }
 
@@ -169,18 +216,18 @@
             continue;
         }
 
-        if ($price_menu_deshevye_item === null && $menu_slug === 'deshevye') {
-            $price_menu_deshevye_item = $menu_item;
-            $price_menu_deshevye_index = $menu_index;
+        if ($price_menu_deshyovye_item === null && $menu_slug === 'deshyovye') {
+            $price_menu_deshyovye_item = $menu_item;
+            $price_menu_deshyovye_index = $menu_index;
         }
     }
 
-    $can_group_price_menu = $price_menu_vip_item !== null && $price_menu_deshevye_item !== null;
-    $price_menu_items = $can_group_price_menu ? [$price_menu_vip_item, $price_menu_deshevye_item] : [];
-    $price_menu_skip_indices = $can_group_price_menu ? [$price_menu_vip_index, $price_menu_deshevye_index] : [];
+    $can_group_price_menu = $price_menu_vip_item !== null && $price_menu_deshyovye_item !== null;
+    $price_menu_items = $can_group_price_menu ? [$price_menu_vip_item, $price_menu_deshyovye_item] : [];
+    $price_menu_skip_indices = $can_group_price_menu ? [$price_menu_vip_index, $price_menu_deshyovye_index] : [];
     $price_menu_insert_index = $can_group_price_menu ? min($price_menu_skip_indices) : null;
     $price_menu_active = $can_group_price_menu && (
-        !empty($price_menu_vip_item['is_active']) || !empty($price_menu_deshevye_item['is_active'])
+        !empty($price_menu_vip_item['is_active']) || !empty($price_menu_deshyovye_item['is_active'])
     );
 
 @endphp
@@ -195,7 +242,7 @@
                     <nav class="flex flex-1 justify-center px-6" aria-label="Main Navigation">
                         <ul class="flex items-center gap-6 xl:gap-8 text-sm font-medium capitalize tracking-widest text-white">
                             @foreach($desktop_menu_items as $index => $item)
-                                @if($can_group_price_dropdown && $index === 2)
+                                @if($can_group_price_dropdown && $index === $availability_insert_index)
                                     <li class="relative">
                                         <button id="price-dropdown-btn"
                                                 class="{{ $price_dropdown_active ? $menu_classes_active : $menu_classes_default }} group flex items-center gap-2 focus:outline-none"
@@ -231,7 +278,7 @@
                                     @continue
                                 @endif
 
-                                @if($can_group_price_dropdown && $index === 3)
+                                @if($can_group_price_dropdown && in_array($index, $availability_skip_indices, true) && $index !== $availability_insert_index)
                                     @continue
                                 @endif
 
@@ -398,6 +445,16 @@
                 
                 @if (has_nav_menu('primary_navigation'))
                     <ul class="flex flex-col gap-2 text-lg font-medium capitalize tracking-widest bg-[#0e1015e6] rounded-lg p-2">
+                        @if(!$has_home_menu_item)
+                            <li>
+                                @if($is_home_page)
+                                    <span class="{{ $mobile_classes_active }}">Главная</span>
+                                @else
+                                    <a href="{{ $logo_url }}" class="{{ $mobile_classes_default }}">Главная</a>
+                                @endif
+                            </li>
+                        @endif
+
                         {!! wp_nav_menu([
                             'theme_location' => 'primary_navigation',
                             'menu_class' => 'flex flex-col gap-6',

@@ -34,24 +34,24 @@
         if ($special_page === 'vip' || is_page_template('template-vip.blade.php')) {
             $page_type = 'vip';
             $parent_page = get_page_by_path('vip');
-        } elseif ($special_page === 'deshevye' || is_page_template('template-cheap.blade.php')) {
-            $page_type = 'deshevye';
-            $parent_page = get_page_by_path('deshevye');
+        } elseif ($special_page === 'deshyovye' || is_page_template('template-cheap.blade.php')) {
+            $page_type = 'deshyovye';
+            $parent_page = get_page_by_path('deshyovye');
         } elseif ($special_page === 'outcall' || is_page_template('template-outcall.blade.php')) {
             $page_type = 'outcall';
-            $parent_page = get_page_by_path('prostitutki-na-vyezd'); // правильный slug
+            $parent_page = get_page_by_path('prostitutki-na-vyezd');
         } elseif (($special_page === 'prostitutki') || (get_query_var('pagename') === 'prostitutki') || is_page_template('template-girls.blade.php')) {
             $page_type = 'prostitutki';
             $parent_page = get_page_by_path('prostitutki');
         } elseif ($special_page === 'incall' || is_page_template('template-incall.blade.php')) {
             $page_type = 'incall';
-            $parent_page = get_page_by_path('prostitutki-priem'); // правильный slug для "У себя"
-        } elseif ($special_page === 'new' || is_page_template('template-new.blade.php')) {
-            $page_type = 'new';
-            $parent_page = get_page_by_path('new');
-        } elseif ($special_page === 'verified' || is_page_template('template-verified.blade.php')) {
-            $page_type = 'verified';
-            $parent_page = get_page_by_path('verified');
+            $parent_page = get_page_by_path('prostitutki-priyom');
+        } elseif ($special_page === 'novye' || is_page_template('template-new.blade.php')) {
+            $page_type = 'novye';
+            $parent_page = get_page_by_path('novye');
+        } elseif ($special_page === 'provereno' || is_page_template('template-verified.blade.php')) {
+            $page_type = 'provereno';
+            $parent_page = get_page_by_path('provereno');
         }
         
         // Используем ID родительской страницы если нашли
@@ -65,6 +65,7 @@
         
         $city_specific_data = [];
         $found_city_in_repeater = false;
+        $repeater_rows = [];
 
         if ($current_city && $source_id && function_exists('get_field')) {
             // Берем repeater со страницы настроек
@@ -243,7 +244,7 @@
                 ];
             }
 
-            if ($page_type === 'deshevye' || $special_page === 'deshevye') {
+            if ($page_type === 'deshyovye' || $special_page === 'deshyovye') {
                 $args['meta_query'][] = [
                     'key'     => 'price_price_1h',
                     'value'   => 15000,

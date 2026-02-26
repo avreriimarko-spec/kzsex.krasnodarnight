@@ -36,18 +36,23 @@
                 $path = trim($path, '/');
 
                 // Специальные случаи, которые должны быть без города
-                $no_city_paths = ['online', 'map', 'reviews', 'catalog'];
+                $no_city_paths = ['onlajn', 'map', 'reviews', 'catalog'];
                 
                 if (empty($path)) {
                     $atts['href'] = home_url('/');
-                } elseif (preg_match('#^[^/]+/(service|metro|district)$#', $path, $matches)) {
+                } elseif (preg_match('#^[^/]+/(uslugi|service|metro|district|rajony)$#', $path, $matches)) {
                     $page_slug = $matches[1];
+                    if ($page_slug === 'service') {
+                        $page_slug = 'uslugi';
+                    } elseif ($page_slug === 'district') {
+                        $page_slug = 'rajony';
+                    }
                     $atts['href'] = home_url("/{$current_city_slug}/{$page_slug}/");
                 } elseif (in_array($path, $no_city_paths)) {
                     // Эти страницы всегда без города
                     $atts['href'] = home_url("/{$path}/");
                 } else {
-                    // Для всех остальных страниц (verified, new, vip, online, prostitutki)
+                    // Для всех остальных страниц (provereno, novye, vip, onlajn, prostitutki)
                     // добавляем текущий город в начало пути
                     $path_parts = explode('/', $path);
                     if ($path_parts[0] !== $current_city_slug) {
@@ -171,11 +176,11 @@
                     $footer_links = [
                         '/ankety' => 'Анкеты',
                         '/vip' => 'VIP',
-                        '/verified' => 'Проверенные',
+                        '/provereno' => 'Проверенные',
                         '/job' => 'Работа',
                         '/contacts' => 'Контакты',
                         '/about' => 'О нас',
-                        '/privacy' => 'Политика конфиденциальности',
+                        '/politika-konfidencialnosti' => 'Политика конфиденциальности',
                         '/rules' => 'Правила размещения',
                         '/faq' => 'FAQ',
                     ];

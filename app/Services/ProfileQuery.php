@@ -223,7 +223,7 @@ class ProfileQuery
                 'operator' => 'IN', // IN работает правильно для таксономий
             ];
         }
-        
+
         if (is_page_template('template-incall.blade.php') || get_query_var('special_page') === 'incall') {
             $args['tax_query'][] = ['taxonomy' => 'inoutcall', 'field' => 'slug', 'terms' => ['incall', 'incall-and-outcall'], 'operator' => 'IN'];
         }
@@ -231,10 +231,10 @@ class ProfileQuery
         if (is_page_template('template-outcall.blade.php') || get_query_var('special_page') === 'outcall') {
             $args['tax_query'][] = ['taxonomy' => 'inoutcall', 'field' => 'slug', 'terms' => ['outcall', 'incall-and-outcall'], 'operator' => 'IN'];
         }
-
+        
         $isNewPage = is_page_template('template-new.blade.php')
-            || get_query_var('special_page') === 'new'
-            || get_query_var('pagename') === 'new';
+            || get_query_var('special_page') === 'novye'
+            || get_query_var('pagename') === 'novye';
 
         if ($isNewPage) {
             $newBadgeIds = self::getNewBadgeProfileIds();
@@ -245,11 +245,11 @@ class ProfileQuery
             $args['tax_query'][] = ['taxonomy' => 'vip', 'field' => 'slug', 'terms' => ['vip'], 'operator' => 'IN'];
         }
 
-        if (is_page_template('template-verified.blade.php') || get_query_var('special_page') === 'verified') {
+        if (is_page_template('template-verified.blade.php') || get_query_var('special_page') === 'provereno') {
             $args['tax_query'][] = ['taxonomy' => 'verified', 'field' => 'slug', 'terms' => ['verified'], 'operator' => 'IN'];
         }
 
-        if (is_page_template('template-cheap.blade.php') || get_query_var('special_page') === 'deshevye') {
+        if (is_page_template('template-cheap.blade.php') || get_query_var('special_page') === 'deshyovye') {
             // Дешевые анкеты: ограничиваем верхнюю границу цены за 1 час
             $args['meta_query'][] = ['key' => 'price_price_1h', 'value' => 15000, 'compare' => '<=', 'type' => 'NUMERIC'];
         }
