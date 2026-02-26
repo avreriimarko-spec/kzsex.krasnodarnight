@@ -3,7 +3,7 @@
 {{-- 
     ГЛОБАЛЬНЫЙ КОНТЕЙНЕР КОМПОНЕНТА
 --}}
-<div class="relative font-serif filter-component-wrapper">
+<div class="relative font-serif filter-component-wrapper overflow-x-hidden">
 
     {{-- ПОДЛОЖКА (Backdrop) --}}
     <div class="filter-backdrop fixed inset-0 bg-black/90 backdrop-blur-sm z-40 transition-opacity" 
@@ -12,13 +12,13 @@
 
     {{-- САЙДБАР --}}
     {{-- Ширина w-[320px] для комфортного чтения. Паддинг p-6 (нормальный отступ от краев) --}}
-    <aside class="filter-sidebar relative fixed inset-y-0 right-0 z-50 w-[320px] bg-black shadow-2xl transform transition-transform duration-300 translate-x-full 
-               lg:translate-x-0 lg:static lg:w-auto lg:sticky lg:top-24 lg:z-40 lg:h-[calc(100vh-6rem)] 
-               flex flex-col p-6 border rounded-xl border-gray-800">
+    <aside class="filter-sidebar fixed inset-y-0 right-0 z-50 w-screen sm:w-[320px] max-w-full bg-black shadow-2xl transform transition-transform duration-300 translate-x-full
+               lg:translate-x-0 lg:static lg:w-auto lg:sticky lg:top-24 lg:z-40 lg:h-[calc(100vh-6rem)]
+               flex flex-col p-5 sm:p-6 border rounded-xl border-gray-800">
         
         {{-- ШАПКА МОБИЛЬНАЯ --}}
-        <div class="flex items-center justify-between pb-6 mb-2 lg:hidden border-b border-gray-800 shrink-0">
-            <span class="text-xl font-bold text-white uppercase tracking-wider">Фильтры</span>
+        <div class="flex items-center justify-between pb-4 mb-2 lg:hidden border-b border-gray-800 shrink-0">
+            <span class="text-lg sm:text-xl font-bold text-white uppercase tracking-wider">Фильтры</span>
             {{-- Кнопка закрытия крупнее для удобства --}}
             <button type="button" onclick="closeMobileFilter(this)" class="text-[#cd1d46] hover:text-[#f06282] p-1">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -35,11 +35,11 @@
 
         {{-- ФОРМА С ФИЛЬТРАМИ --}}
         {{-- space-y-8: Хороший отступ между смысловыми блоками (Цена / Возраст / Категории) --}}
-        <form action="{{ url()->current() }}" method="GET" class="filter-cities-scroll flex-1 overflow-y-auto pr-2 lg:pr-4 space-y-8 pb-6">
+        <form action="{{ url()->current() }}" method="GET" class="filter-cities-scroll flex-1 overflow-y-auto pr-1 sm:pr-2 lg:pr-4 space-y-6 sm:space-y-8 pb-6">
             
             {{-- 1. ЦЕНА (РАДИО) --}}
             <div>
-                <h3 class="text-base font-bold text-white muppercaselize tracking-wide">Цена</h3>
+                <h3 class="text-base font-bold text-white capitalize tracking-wide">Цена</h3>
                 
                 <input type="hidden" name="price_min" value="{{ request('price_min') }}" class="price-min-input">
                 <input type="hidden" name="price_max" value="{{ request('price_max') }}" class="price-max-input">
@@ -68,7 +68,7 @@
                                 <div class="w-3 h-3  bg-[#cd1d46] transition-transform duration-200 transform {{ $isActive ? 'scale-100' : 'scale-0' }} radio-dot"></div>
                             </div>
                             
-                            <span class="text-base text-[#d4dcec] group-hover:text-[#cd1d46] transition-colors radio-label {{ $isActive ? 'text-white font-medium' : '' }}">
+                            <span class="text-sm sm:text-base text-[#d4dcec] group-hover:text-[#cd1d46] transition-colors radio-label {{ $isActive ? 'text-white font-medium' : '' }}">
                                 {{ $range['label'] }}
                             </span>
                         </div>
@@ -80,7 +80,7 @@
 
             {{-- 2. ВОЗРАСТ (РАДИО) --}}
             <div>
-                <h3 class="text-base font-bold text-whiuppercasepitalize tracking-wide">Возраст</h3>
+                <h3 class="text-base font-bold text-white capitalize tracking-wide">Возраст</h3>
                 
                 <input type="hidden" name="age_min" value="{{ request('age_min') }}" class="age-min-input">
                 <input type="hidden" name="age_max" value="{{ request('age_max') }}" class="age-max-input">
@@ -105,7 +105,7 @@
                             <div class="w-5 h-5  border-2 border-gray-600 flex items-center justify-center mr-3 group-hover:border-[#cd1d46] transition-colors radio-circle {{ $isActive ? 'border-[#cd1d46]' : '' }}">
                                 <div class="w-3 h-3  bg-[#cd1d46] transition-transform duration-200 transform {{ $isActive ? 'scale-100' : 'scale-0' }} radio-dot"></div>
                             </div>
-                            <span class="text-base text-[#d4dcec] group-hover:text-[#cd1d46] transition-colors radio-label {{ $isActive ? 'text-white font-medium' : '' }}">
+                            <span class="text-sm sm:text-base text-[#d4dcec] group-hover:text-[#cd1d46] transition-colors radio-label {{ $isActive ? 'text-white font-medium' : '' }}">
                                 {{ $range['label'] }}
                             </span>
                         </div>
@@ -126,7 +126,7 @@
                 <div class="filter-group">
                     <button type="button" onclick="toggleFilterSection(this)" class="flex items-center justify-between w-full mb-4 group">
                         {{-- ИСПРАВЛЕНИЕ: h3 заменен на span, так как h3 нельзя вкладывать в button --}}
-                        <span class="text-base font-bolduppercasee capitalize tracking-wide group-hover:text-[#cd1d46] transition-colors">{{ $data['label'] }}</span>
+                        <span class="text-base font-bold capitalize tracking-wide group-hover:text-[#cd1d46] transition-colors">{{ $data['label'] }}</span>
                         <svg class="w-4 h-4 text-[#cd1d46] transform transition-transform duration-200 filter-arrow {{ $isOpen ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
@@ -144,7 +144,7 @@
                                     <span class="absolute inset-0 m-auto w-2.5 h-2.5  bg-[#cd1d46] opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></span>
                                 </span>
                                 
-                                <span class="text-base text-[#d4dcec] group-hover:text-[#cd1d46] transition-colors {{ in_array($term->slug, $selected) ? 'text-white font-medium' : '' }}">
+                                <span class="text-sm sm:text-base text-[#d4dcec] group-hover:text-[#cd1d46] transition-colors {{ in_array($term->slug, $selected) ? 'text-white font-medium' : '' }}">
                                     {{ $term->name }}
                                 </span>
                             </label>
@@ -161,15 +161,15 @@
 
         {{-- ФУТЕР --}}
         {{-- Вернул высоту кнопке (py-4) и отступ сверху (pt-6) --}}
-        <div class="pt-6 mt-auto border-t border-gray-800 bg-[#050505] shrink-0 space-y-4 pb-6 lg:pb-0">
+        <div class="pt-5 mt-auto border-t border-gray-800 bg-[#050505] shrink-0 space-y-4 pb-6 lg:pb-0">
             <button type="button" onclick="this.closest('aside').querySelector('form').submit()"
-                class="w-full bg-[#cd1d46] hover:bg-[#f06282] text-uppercase-bold capitalize text-sm py-4 rounded tracking-widest transition-transform active:scale-95 shadow-lg shadow-[#cd1d46]/20">
+                class="w-full bg-[#cd1d46] hover:bg-[#f06282] text-black font-bold capitalize text-sm py-3.5 rounded-xl tracking-widest transition-transform active:scale-95 shadow-lg shadow-[#cd1d46]/20">
                 Применить фильтр
             </button>
             
             @if (request()->query())
                 <a href="{{ url()->current() }}"
-                   class="block w-full text-center text-xs text-[#cd1d46] huppercase[#f06282] capitalize tracking-widest transition-colors pb-2">
+                   class="block w-full text-center text-xs text-[#cd1d46] hover:text-[#f06282] capitalize tracking-widest transition-colors pb-2">
                    × Сбросить всё
                 </a>
             @endif
@@ -177,31 +177,71 @@
 
     </aside>
     <style>
+        @media (max-width: 1023.98px) {
+            .filter-component-wrapper .filter-sidebar {
+                position: fixed !important;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: auto;
+                width: min(100vw, 360px);
+                max-width: 100vw;
+                z-index: 60;
+                transform: translateX(100%);
+            }
 
+            .filter-component-wrapper .filter-sidebar.is-open {
+                transform: translateX(0) !important;
+            }
+
+            .filter-component-wrapper .filter-backdrop {
+                z-index: 50;
+            }
+        }
     </style>
 </div>
 
 {{-- СКРИПТЫ --}}
 <script>
+    function getVisibleMobileFilterWrapper() {
+        const wrappers = Array.from(document.querySelectorAll('.filter-component-wrapper'));
+        const mobileWrappers = wrappers.filter((wrapper) => wrapper.closest('.lg\\:hidden'));
+        return (
+            mobileWrappers.find((wrapper) => {
+                const host = wrapper.closest('.lg\\:hidden');
+                return host && window.getComputedStyle(host).display !== 'none';
+            }) || mobileWrappers[0] || null
+        );
+    }
+
     function openMobileFiltersGlobal() {
-        const mobileWrapper = document.querySelector('.lg\\:hidden .filter-component-wrapper');
+        const mobileWrapper = getVisibleMobileFilterWrapper();
+
         if (mobileWrapper) {
             const sidebar = mobileWrapper.querySelector('.filter-sidebar');
             const backdrop = mobileWrapper.querySelector('.filter-backdrop');
-            if (sidebar) sidebar.classList.remove('translate-x-full');
+            if (sidebar) {
+                sidebar.classList.remove('translate-x-full');
+                sidebar.classList.add('is-open');
+            }
             if (backdrop) backdrop.style.display = 'block';
-            document.body.style.overflow = 'hidden'; 
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
         }
     }
 
     function closeMobileFilter(element) {
-        const wrapper = element.closest('.filter-component-wrapper');
+        const wrapper = element.closest('.filter-component-wrapper') || getVisibleMobileFilterWrapper();
         if (!wrapper) return;
         const sidebar = wrapper.querySelector('.filter-sidebar');
         const backdrop = wrapper.querySelector('.filter-backdrop');
-        if (sidebar) sidebar.classList.add('translate-x-full');
+        if (sidebar) {
+            sidebar.classList.remove('is-open');
+            sidebar.classList.add('translate-x-full');
+        }
         if (backdrop) backdrop.style.display = 'none';
-        document.body.style.overflow = ''; 
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
     }
 
     function setRange(element, type, min, max) {

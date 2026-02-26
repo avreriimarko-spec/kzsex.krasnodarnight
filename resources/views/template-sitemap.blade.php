@@ -89,10 +89,10 @@
 
         {{-- ЗАГОЛОВОК --}}
         <header class="text-center mb-16">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 capitalize mb-4 tracking-tight">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 capitalize mb-4 tracking-tight">
                 {!! get_field('custom_h1') ?: get_the_title() !!}
             </h1>
-            <p class="text-gray-500 text-lg">
+            <p class="text-gray-800 text-lg">
                 Навигация по всем разделам сайта
             </p>
         </header>
@@ -105,7 +105,7 @@
                     <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Основное
                     </h2>
-                    <ul class="space-y-2">
+                    <ul class="space-y-1 pl-2 border-l-2 border-red-600 text-sm">
                         <li>
                             {{-- Главная страница (Строго корень) --}}
                             <a href="{{ home_url('/') }}" class="text-gray-700 hover:text-red-600 transition font-medium">
@@ -146,7 +146,7 @@
                     <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Города
                     </h2>
-                    <ul class="space-y-2 max-h-[300px] overflow-y-auto custom-scrollbar pr-2 border-b border-gray-100 pb-4">
+                    <ul class="space-y-1 pl-2 border-l-2 border-red-600 text-sm">
                         @if (!is_wp_error($cities))
                             @foreach ($cities as $city)
                                 @php
@@ -170,7 +170,7 @@
                 {{-- Список городов --}}
                 {{-- Разделы по городам --}}
                 <section>
-                    <h2 class="text-xl font-bold text-gray-800 capitalize mb-6 border-b border-gray-200 pb-2">
+                    <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Разделы по городам
                     </h2>
                     <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
@@ -181,14 +181,14 @@
                                     $city_base = '/' . $city->slug;
                                 @endphp
                                 <div>
-                                    <h3 class="font-bold text-gray-900 capitalize mb-2 text-sm">{{ $city->name }}</h3>
-                                    <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm">
-                                        <li><a href="{{ home_url($city_base . '/deshevye/') }}" class="text-gray-600 hover:text-red-600 transition">Дешевые в {{ $city->name }}</a></li>
-                                        <li><a href="{{ home_url($city_base . '/vip/') }}" class="text-gray-600 hover:text-red-600 transition">VIP в {{ $city->name }}</a></li>
-                                        <li><a href="{{ home_url($city_base . '/individualki/') }}" class="text-gray-600 hover:text-red-600 transition">Проститутки в {{ $city->name }}</a></li>
-                                        <li><a href="{{ home_url($city_base . '/online/') }}" class="text-gray-600 hover:text-red-600 transition">Онлайн в {{ $city->name }}</a></li>
-                                        <li><a href="{{ home_url($city_base . '/prostitutki-na-vyezd/') }}" class="text-gray-600 hover:text-red-600 transition">Выезд в {{ $city->name }}</a></li>
-                                        <li><a href="{{ home_url($city_base . '/prostitutki-priem/') }}" class="text-gray-600 hover:text-red-600 transition">У себя в {{ $city->name }}</a></li>
+                                    <h3 class="font-bold text-gray-800 capitalize mb-2 text-sm">{{ $city->name }}</h3>
+                                    <ul class="space-y-1 pl-2 border-l-2 border-red-600 text-sm">
+                                        <li><a href="{{ home_url($city_base . '/deshevye/') }}" class="text-gray-800 hover:text-red-600 transition">Дешевые в {{ $city->name }}</a></li>
+                                        <li><a href="{{ home_url($city_base . '/vip/') }}" class="text-gray-800 hover:text-red-600 transition">VIP в {{ $city->name }}</a></li>
+                                        <li><a href="{{ home_url($city_base . '/individualki/') }}" class="text-gray-800 hover:text-red-600 transition">Проститутки в {{ $city->name }}</a></li>
+                                        <li><a href="{{ home_url($city_base . '/online/') }}" class="text-gray-800 hover:text-red-600 transition">Онлайн в {{ $city->name }}</a></li>
+                                        <li><a href="{{ home_url($city_base . '/prostitutki-na-vyezd/') }}" class="text-gray-800 hover:text-red-600 transition">Выезд в {{ $city->name }}</a></li>
+                                        <li><a href="{{ home_url($city_base . '/prostitutki-priem/') }}" class="text-gray-800 hover:text-red-600 transition">У себя в {{ $city->name }}</a></li>
                                     </ul>
                                 </div>
                             @endforeach
@@ -198,7 +198,7 @@
 
                 {{-- Модели (Анкеты) по городам --}}
                 <section>
-                    <h2 class="text-xl font-bold text-gray-800 capitalize mb-6 border-b border-gray-200 pb-2">
+                    <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Модели
                     </h2>
                     <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
@@ -224,7 +224,7 @@
                                 
                                 @if ($models_query->have_posts())
                                     <div>
-                                        <h3 class="font-bold text-gray-900 capitalize mb-2 text-sm">
+                                        <h3 class="font-bold text-gray-800 capitalize mb-2 text-sm">
                                             {{ $city->name }} 
                                             @if ($models_query->found_posts > 50)
                                                 (показано 50 из {{ $models_query->found_posts }})
@@ -232,17 +232,17 @@
                                                 ({{ $models_query->found_posts }})
                                             @endif
                                         </h3>
-                                        <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm max-h-[200px] overflow-y-auto">
+                                        <ul class="space-y-1 pl-2 border-l-2 border-red-600 text-sm">
                                             @while ($models_query->have_posts())
                                                 @php $models_query->the_post(); @endphp
                                                 <li>
                                                     <a href="{{ profile_url(get_the_ID()) }}" 
-                                                       class="text-gray-600 hover:text-red-600 transition text-xs block truncate">
+                                                       class="text-gray-800 hover:text-red-600 transition text-xs block truncate">
                                                         {{ get_the_title() }}
                                                         @php
                                                             $age = get_field('age');
                                                             if ($age) {
-                                                                echo ' <span class="text-gray-400">(' . $age . ')</span>';
+                                                                echo ' <span class="text-gray-800">(' . $age . ')</span>';
                                                             }
                                                         @endphp
                                                     </a>
@@ -271,17 +271,17 @@
                         <div class="max-h-[800px] overflow-y-auto custom-scrollbar pr-2 space-y-8">
                             @foreach ($cities as $city)
                                 <div>
-                                    <h3 class="font-bold text-gray-900 bg-black capitalize mb-3 border-b border-gray-100 pb-1 sticky top-0 z-10">
+                                    <h3 class="font-bold text-gray-800 capitalize mb-2 text-sm">
                                         {{ $city->name }}
                                     </h3>
-                                    <ul class="space-y-1 pl-2 text-sm grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+                                    <ul class="space-y-1 pl-2 border-l-2 border-red-600 text-sm">
                                         @foreach ($taxonomies['Услуги'] as $term)
                                             @php
                                                 $final_link = term_url($term, $city);
                                             @endphp
                                             <li>
                                                 <a href="{{ $final_link }}"
-                                                    class="text-gray-600 hover:text-red-600 transition flex justify-between">
+                                                    class="text-gray-800 hover:text-red-600 transition flex justify-between">
                                                     <span>{{ $term->name }}</span>
                                                 </a>
                                             </li>
@@ -296,14 +296,14 @@
                 {{-- Блог --}}
                 @if ($blog_posts)
                     <section>
-                        <h2 class="text-xl font-bold text-gray-800 capitalize mb-6 border-b border-gray-200 pb-2">
+                        <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
                             Блог
                         </h2>
                         <ul class="space-y-2">
                             @if ($blogId = get_option('page_for_posts'))
                                 <li>
                                     <a href="{{ get_permalink($blogId) }}"
-                                        class="text-gray-900 hover:text-red-600 transition font-bold">
+                                        class="text-gray-800 hover:text-red-600 transition font-bold">
                                         Все статьи &rarr;
                                     </a>
                                 </li>
@@ -312,7 +312,7 @@
                             @foreach (array_slice($blog_posts, 0, 5) as $post)
                                 <li>
                                     <a href="{{ get_permalink($post->ID) }}"
-                                        class="text-gray-600 hover:text-red-600 transition text-sm">
+                                        class="text-gray-800 hover:text-red-600 transition text-sm">
                                         {{ $post->post_title }}
                                     </a>
                                 </li>
@@ -322,7 +322,7 @@
                 @endif
 
                 <section>
-                    <h2 class="text-xl font-bold text-gray-800 capitalize mb-6 border-b border-gray-200 pb-2">
+                    <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Метро и районы
                     </h2>
                     <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
@@ -345,17 +345,17 @@
 
                                 @if (!empty($city_location_groups))
                                     <div>
-                                        <h3 class="font-bold text-gray-900 capitalize mb-2 text-sm">{{ $city->name }}</h3>
+                                        <h3 class="font-bold text-gray-800 capitalize mb-2 text-sm">{{ $city->name }}</h3>
 
                                         @foreach ($city_location_groups as $city_location_group)
-                                            <p class="text-xs capitalize tracking-wide text-gray-500 mb-1">
+                                            <p class="text-xs capitalize tracking-wide text-gray-800 mb-1">
                                                 {{ $city_location_group['label'] }}
                                             </p>
-                                            <ul class="space-y-1 pl-2 border-l-2 border-gray-100 text-sm {{ !$loop->last ? 'mb-3' : '' }}">
+                                            <ul class="space-y-1 pl-2 border-l-2 border-red-600 text-sm {{ !$loop->last ? 'mb-3' : '' }}">
                                                 @foreach ($city_location_group['terms'] as $location_term)
                                                     <li>
                                                         <a href="{{ home_url('/' . $city->slug . '/' . $city_location_group['taxonomy'] . '/' . $location_term->slug . '/') }}"
-                                                           class="text-gray-600 hover:text-red-600 transition">
+                                                           class="text-gray-800 hover:text-red-600 transition">
                                                             {{ $location_term->name }}
                                                         </a>
                                                     </li>

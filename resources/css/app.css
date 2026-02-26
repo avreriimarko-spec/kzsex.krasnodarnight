@@ -310,12 +310,20 @@ a:hover {
     padding: 0;
     display: grid;
     grid-template-columns: 1fr;
+    row-gap: 1.5rem;
   }
 
   @media (min-width: 768px) {
     .footer-nav .footer-nav-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      column-gap: 10rem;
+      column-gap: 3.5rem;
+      row-gap: 0;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .footer-nav .footer-nav-grid {
+      column-gap: 6rem;
     }
   }
 
@@ -345,7 +353,7 @@ a:hover {
   .footer-nav .footer-nav-link,
   .footer-nav .footer-nav-link-active {
     display: inline-block;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     font-weight: 400;
     text-transform: none;
     letter-spacing: 0;
@@ -354,6 +362,13 @@ a:hover {
     transition: color 0.2s;
 
     @apply text-gray-400;
+  }
+
+  @media (min-width: 768px) {
+    .footer-nav .footer-nav-link,
+    .footer-nav .footer-nav-link-active {
+      font-size: 1.05rem;
+    }
   }
 
   .footer-nav .footer-nav-link:hover,

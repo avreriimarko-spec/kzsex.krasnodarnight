@@ -79,7 +79,7 @@
     <div class="container mx-auto px-4 md:px-8">
 
         {{-- 1. ВЕРХНЯЯ ЧАСТЬ: Логотип и Навигация --}}
-        <div class="pt-8 pb-24 border-b border-gray-800 flex gap-65">
+        <div class="pt-8 pb-12 md:pb-24 border-b border-gray-800 flex flex-col md:flex-row md:items-start gap-8 md:gap-65">
             
             {{-- Логотип --}}
             @if($is_home_page)
@@ -188,7 +188,7 @@
                     ],
                     [
                         'title' => 'Сотрудничество',
-                        'links' => array_slice($footer_links, 4, 8, true),
+                        'links' => array_slice($footer_links, 4, 4, true),
                     ],
                     [
                         'title' => 'Помощь',
@@ -197,7 +197,7 @@
                 ];
             @endphp
 
-            <div class="footer-nav">
+            <div class="footer-nav w-full">
                 <ul class="footer-nav-grid">
                     @foreach($footer_columns as $column)
                         <li>

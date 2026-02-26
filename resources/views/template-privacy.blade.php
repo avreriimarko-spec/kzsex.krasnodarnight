@@ -8,7 +8,7 @@
     <div class="container mx-auto px-4 py-12 max-w-4xl">
 
         {{-- Основной контейнер: Черный фон, красная рамка --}}
-        <article class="bg-black p-6 md:p-12  border border-[#cd1d46]">
+        <article class="bg-black p-6 md:p-12 rounded-xl border border-[#cd1d46]">
             
             {{-- Хедер страницы --}}
             <header class="mb-8 border-b border-[#cd1d46]/30 pb-8">
