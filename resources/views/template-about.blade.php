@@ -8,7 +8,7 @@
 
     {{-- СЕКЦИЯ 1: ЗАГОЛОВОК --}}
     <div class="container prose mx-auto px-4 pt-12 pb-8 text-center max-w-4xl">
-        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 capitalize mb-6 tracking-tight">
+        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
             {!! get_field('custom_h1') ?: get_the_title() !!}
         </h1>
 
@@ -78,7 +78,7 @@
     @if ($features)
         <div class="container mx-auto px-4 pb-20">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold capitalize text-black">Почему выбирают нас</h2>
+                <h2 class="text-3xl font-bold text-black">Почему выбирают нас</h2>
                 <div class="w-20 h-1 bg-[#cd1d46] mx-auto mt-4 rounded"></div>
             </div>
 

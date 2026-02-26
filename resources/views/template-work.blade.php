@@ -42,7 +42,7 @@
         <div class="bg-gray-50 py-20">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl font-bold text-gray-900 capitalize">Почему выбирают нас</h2>
+                    <h2 class="text-3xl font-bold text-gray-900">Почему выбирают нас</h2>
                     <div class="w-16 h-1 bg-red-600 mx-auto mt-4"></div>
                 </div>
 
@@ -79,7 +79,7 @@
 
                     <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h2 class="text-3xl font-bold text-black capitalize mb-6">
+                            <h2 class="text-3xl font-bold text-black mb-6">
                                 Кого мы ищем?
                             </h2>
                             <p class="text-gray-400 mb-8">
@@ -121,7 +121,7 @@
     <div id="apply-form" class="bg-gray-50 py-20">
         <div class="container mx-auto px-4 max-w-3xl">
             <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold text-gray-900 capitalize">Отправить анкету</h2>
+                <h2 class="text-3xl font-bold text-gray-900">Отправить анкету</h2>
                 <p class="text-gray-600 mt-4">Заполните форму ниже, и наш менеджер свяжется с вами в ближайшее время для
                     обсуждения деталей.</p>
             </div>

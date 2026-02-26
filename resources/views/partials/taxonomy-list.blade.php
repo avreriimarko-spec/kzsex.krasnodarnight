@@ -26,7 +26,7 @@
         <div class="lg:col-span-4">
             {{-- ВЕРХНЯЯ ПАНЕЛЬ --}}
             <div class="flex flex-wrap items-center justify-between mb-6 pb-4 gap-4">
-                <h2 class="text-xl md:text-2xl font-bold text-black capitalize tracking-wide">
+                <h2 class="text-xl md:text-2xl font-bold text-black tracking-wide">
                     {{ $found_label }}: {{ $terms && !is_wp_error($terms) ? count($terms) : 0 }}
                 </h2>
             </div>

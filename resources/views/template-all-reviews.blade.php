@@ -9,7 +9,7 @@
         
         {{-- Заголовок --}}
         <header class="text-center mb-10">
-            <h1 class="text-3xl md:text-5xl font-bold capitalize mb-4 tracking-tight text-[#cd1d46]">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 tracking-tight text-[#cd1d46]">
                 Все отзывы моделей
             </h1>
             <p class="text-gray-400 text-lg">
@@ -18,13 +18,13 @@
         </header>
         
         @if(empty($allReviews))
-            <div class="text-center py-12 bg-black border border-[#cd1d46]">
+            <div class="text-center py-12 bg-black border rounded-xl border-[#cd1d46]">
                 <p class="text-gray-400 text-lg">Пока нет ни одного отзыва</p>
             </div>
         @else
             <div class="space-y-6">
                 @foreach($allReviews as $review)
-                    <div class="bg-black p-6 border border-[#cd1d46] hover:shadow-[0_4px_20px_rgba(205,29,70,0.15)] transition-shadow duration-300">
+                    <div class="bg-black p-6 border rounded-xl border-[#cd1d46] hover:shadow-[0_4px_20px_rgba(205,29,70,0.15)] transition-shadow duration-300">
                         <div class="flex items-start space-x-4">
                             
                             {{-- Аватар --}}

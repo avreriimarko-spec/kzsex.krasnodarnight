@@ -9,7 +9,7 @@
 
         {{-- Заголовок --}}
         <header class="text-center mb-16 prose mx-auto">
-            <h1 class="text-3xl md:text-5xl font-bold capitalize mb-4 tracking-tight">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
                 {!! get_field('custom_h1') ?: get_the_title() !!}
             </h1>
 
@@ -26,7 +26,7 @@
                 @foreach ($faq_items as $item)
                     {{-- Стилизация под карточки услуг: черный фон, красная рамка --}}
                     <div
-                        class="bg-black  border border-[#cd1d46] shadow-sm hover:shadow-[0_4px_20px_rgba(205,29,70,0.15)] transition-shadow duration-300 overflow-hidden">
+                        class="bg-black  border rounded-xl border-[#cd1d46] shadow-sm hover:shadow-[0_4px_20px_rgba(205,29,70,0.15)] transition-shadow duration-300 overflow-hidden">
                         <details class="group">
                             {{-- Вопрос --}}
                             <summary
@@ -56,7 +56,7 @@
             </div>
         @else
             {{-- Пустое состояние --}}
-            <div class="text-center text-gray-400 py-20 bg-black  border border-[#cd1d46]">
+            <div class="text-center text-gray-400 py-20 bg-black rounded-xl border border-[#cd1d46]">
                 Вопросы еще не добавлены.
             </div>
         @endif

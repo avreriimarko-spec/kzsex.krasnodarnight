@@ -32,7 +32,7 @@
                 <span class="text-3xl font-bold text-red-600">18+</span>
             </div>
 
-            <h2 class="text-2xl font-bold text-gray-900 capitalize mb-2">Ограничение доступа</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Ограничение доступа</h2>
             <p class="text-gray-600 text-sm leading-relaxed">
                 Этот сайт содержит материалы для взрослых. Вы должны быть старше 18 лет, чтобы просматривать его
                 содержимое.

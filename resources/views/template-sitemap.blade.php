@@ -89,7 +89,7 @@
 
         {{-- ЗАГОЛОВОК --}}
         <header class="text-center mb-16">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 capitalize mb-4 tracking-tight">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4 tracking-tight">
                 {!! get_field('custom_h1') ?: get_the_title() !!}
             </h1>
             <p class="text-gray-800 text-lg">
@@ -102,7 +102,7 @@
             {{-- === КОЛОНКА 1: ОСНОВНОЕ === --}}
             <div class="space-y-12">
                 <section>
-                    <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Основное
                     </h2>
                     <ul class="space-y-1 pl-2 border-l-2 border-red-600 text-sm">
@@ -143,7 +143,7 @@
                 </section>
 
                 <section>
-                    <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Города
                     </h2>
                     <ul class="space-y-1 pl-2 border-l-2 border-red-600 text-sm">
@@ -170,7 +170,7 @@
                 {{-- Список городов --}}
                 {{-- Разделы по городам --}}
                 <section>
-                    <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Разделы по городам
                     </h2>
                     <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
@@ -198,7 +198,7 @@
 
                 {{-- Модели (Анкеты) по городам --}}
                 <section>
-                    <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Модели
                     </h2>
                     <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">
@@ -264,7 +264,7 @@
                 {{-- Услуги по городам --}}
                 @if (isset($taxonomies['Услуги']) && !empty($taxonomies['Услуги']) && !is_wp_error($cities))
                     <section>
-                        <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-red-600 inline-block pb-1">
                             Услуги по городам
                         </h2>
                         
@@ -296,7 +296,7 @@
                 {{-- Блог --}}
                 @if ($blog_posts)
                     <section>
-                        <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-red-600 inline-block pb-1">
                             Блог
                         </h2>
                         <ul class="space-y-2">
@@ -322,7 +322,7 @@
                 @endif
 
                 <section>
-                    <h2 class="text-2xl font-bold text-gray-800 capitalize mb-6 border-b-2 border-red-600 inline-block pb-1">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-red-600 inline-block pb-1">
                         Метро и районы
                     </h2>
                     <div class="max-h-[600px] overflow-y-auto custom-scrollbar pr-2 space-y-6">

@@ -333,7 +333,7 @@
 
                 {{-- ПАРАМЕТРЫ --}}
                 <section class="order-2 rounded-2xl border border-white/10 p-5 md:p-6">
-                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
+                    <h2 class="font-serif text-2xl text-black tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
                         Параметры
                     </h2>
                     <div class="space-y-3 font-serif text-xs md:text-sm tracking-wide">
@@ -401,7 +401,7 @@
                         $showTaxiForOutcall = true;
                     @endphp
                     <section class="order-1 rounded-2xl border border-white/10 p-5 md:p-6">
-                        <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
+                        <h2 class="font-serif text-2xl text-black tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
                             Тарифы
                         </h2>
                         <div class="space-y-4 font-serif text-xs md:text-sm tracking-wide">
@@ -465,7 +465,7 @@
 
                 {{-- КОНТАКТЫ --}}
                 <section class="order-3 rounded-2xl border border-white/10 p-5 md:p-6">
-                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
+                    <h2 class="font-serif text-2xl text-black tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
                         Контакты
                     </h2>
                     
@@ -574,7 +574,7 @@
 
                 {{-- ОБО МНЕ --}}
                 <section class="rounded-2xl border border-white/10 p-6 md:p-8">
-                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
+                    <h2 class="font-serif text-2xl text-black tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
                         Обо мне
                     </h2>
                     
@@ -597,7 +597,7 @@
                 {{-- УСЛУГИ (С ССЫЛКАМИ) --}}
                 @if (!empty($services))
                     <section class="rounded-2xl border border-white/10 p-6 md:p-8">
-                        <h2 class="font-serif text-xl text-black capitalize tracking-widest mb-6">
+                        <h2 class="font-serif text-xl text-black tracking-widest mb-6">
                             Услуги
                         </h2>
                         <div class="flex flex-wrap gap-x-4 gap-y-3">
@@ -613,7 +613,7 @@
 
                 {{-- ФОРМА ОТПРАВКИ ОТЗЫВА --}}
                 <section class="rounded-2xl border border-white/10 p-6 md:p-8">
-                    <h2 class="font-serif text-2xl text-black capitalize tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
+                    <h2 class="font-serif text-2xl text-black tracking-widest mb-6 border-l-2 border-[#cd1d46] pl-4">
                         Оставить отзыв
                     </h2>
                     
@@ -687,7 +687,7 @@
                 {{-- ОТЗЫВЫ --}}
                 @if ($reviews && $reviewsCount > 0)
                     <section class="rounded-2xl border border-white/10 p-6 md:p-8">
-                        <h2 class="font-serif text-xl text-black capitalize tracking-widest mb-6">
+                        <h2 class="font-serif text-xl text-black tracking-widest mb-6">
                             Отзывы ({{ $reviewsCount }})
                         </h2>
                         <div class="space-y-6">
@@ -784,7 +784,7 @@
              ======================================================================== --}}
         @if ($relatedModels->have_posts())
             <section class="border-t border-gray-900 pt-16">
-                <h2 class="font-serif text-2xl md:text-3xl text-black capitalize tracking-[0.2em] text-center mb-10">
+                <h2 class="font-serif text-2xl md:text-3xl text-black tracking-[0.2em] text-center mb-10">
                     Другие модели
                 </h2>
                 

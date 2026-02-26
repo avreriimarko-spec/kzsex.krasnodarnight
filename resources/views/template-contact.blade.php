@@ -30,7 +30,7 @@
 
                 {{-- Карточка с данными: Фон черный, обводка красная (как в услугах) --}}
                 <div class="bg-black rounded-xl p-8 border border-[#cd1d46]">
-                    <h2 class="text-2xl font-bold text-black mb-6 capitalize">Свяжитесь с нами</h2>
+                    <h2 class="text-2xl font-bold text-black mb-6">Свяжитесь с нами</h2>
 
                     <div class="space-y-4">
                         {{-- Telegram --}}
@@ -102,7 +102,7 @@
             <div class="lg:col-span-7">
                 {{-- Стиль контейнера изменен на черный с красной обводкой --}}
                 <div class="bg-black  p-8 border rounded-xl border-[#cd1d46] h-full">
-                    <h2 class="text-2xl font-bold text-black mb-2 capitalize">Напишите нам</h2>
+                    <h2 class="text-2xl font-bold text-black mb-2">Напишите нам</h2>
                     <p class="text-gray-400 mb-8 text-sm">
                         Оставьте заявку, и наш менеджер свяжется с вами в ближайшее время.
                     </p>

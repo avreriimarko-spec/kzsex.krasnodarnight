@@ -100,7 +100,7 @@ a:hover {
   .prose h2,
   .prose h3,
   .prose h4 {
-    @apply text-gray-100 font-bold capitalize tracking-tight mb-4 mt-8 scroll-mt-24;
+    @apply text-gray-100 font-bold tracking-tight mb-4 mt-8 scroll-mt-24;
   }
 
   .prose h1 {

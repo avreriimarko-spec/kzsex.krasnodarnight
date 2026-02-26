@@ -219,7 +219,7 @@
 
                 {{-- ВЕРХНЯЯ ПАНЕЛЬ --}}
                 <div class="flex flex-wrap items-center justify-between mb-6 pb-4 gap-4">
-                    <h2 class="text-xl md:text-2xl font-bold text-black capitalize tracking-wide">
+                    <h2 class="text-xl md:text-2xl font-bold text-black tracking-wide">
                         Найдено анкет: {{ $profiles_query->found_posts }}
     </h2>
 
