@@ -280,7 +280,7 @@
             {{-- ========================================================================
                  БЛОК 1: ФОТОГРАФИИ
                  ======================================================================== --}}
-            <div class="w-full order-1 lg:col-span-8 lg:col-start-1 space-y-8">
+            <div class="w-full lg:col-span-8 lg:col-start-1 space-y-8">
                 <section class="rounded-2xl border border-white/10 p-3 md:p-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4" id="photo-gallery-container">
                     @foreach ($allPhotos as $index => $photo)
@@ -315,10 +315,10 @@
             {{-- ========================================================================
                  БЛОК 2: САЙДБАР (ЛЕВАЯ КОЛОНКА)
                  ======================================================================== --}}
-            <aside class="w-full order-3 lg:order-2 lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:sticky lg:top-24 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto scrollbar-hide flex flex-col gap-6">
+            <aside class="w-full lg:order-2 lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:sticky lg:top-24 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto scrollbar-hide flex flex-col gap-6">
 
                 {{-- ПАРАМЕТРЫ --}}
-                <section class="order-2 rounded-2xl border border-white/10 p-5 md:p-6">
+                <section class="order-1 lg:order-2 rounded-2xl border border-white/10 p-5 md:p-6">
                     <h2 class="font-serif text-2xl text-black tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
                         Параметры
                     </h2>
@@ -386,7 +386,7 @@
                         $showTaxiForApartments = false;
                         $showTaxiForOutcall = true;
                     @endphp
-                    <section class="order-1 rounded-2xl border border-white/10 p-5 md:p-6">
+                    <section class="order-2 lg:order-1 rounded-2xl border border-white/10 p-5 md:p-6">
                         <h2 class="font-serif text-2xl text-black tracking-widest mb-5 border-l-2 border-[#cd1d46] pl-4">
                             Тарифы
                         </h2>
@@ -556,7 +556,7 @@
             {{-- ========================================================================
                  БЛОК 3: ИНФОРМАЦИЯ + УСЛУГИ (ПРАВАЯ КОЛОНКА)
                  ======================================================================== --}}
-            <div class="w-full order-2 lg:order-3 lg:col-span-8 lg:col-start-1 space-y-8">
+            <div class="w-full lg:order-3 lg:col-span-8 lg:col-start-1 space-y-8">
 
                 {{-- ОБО МНЕ --}}
                 <section class="rounded-2xl border border-white/10 p-6 md:p-8">
