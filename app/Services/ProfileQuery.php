@@ -8,6 +8,7 @@ class ProfileQuery
 {
     // Статическое свойство для хранения результата в памяти
     private static $cachedQuery = null;
+    private static $cachedNewBadgeProfileIds = null;
     
     private const FILTER_TAXONOMIES = [
         'service',
@@ -101,6 +102,72 @@ class ProfileQuery
     }
 
     /**
+     * Профили, которые должны иметь бейдж "Новая":
+     * 1) опубликованы за последние 7 дней
+     * 2) или имеют термин таксономии `new`
+     * 3) или имеют категорию со slug: new|novye|новые
+     */
+    private static function getNewBadgeProfileIds(): array
+    {
+        if (self::$cachedNewBadgeProfileIds !== null) {
+            return self::$cachedNewBadgeProfileIds;
+        }
+
+        $weekAgoTimestamp = current_time('timestamp') - (7 * DAY_IN_SECONDS);
+        $weekAgoDate = wp_date('Y-m-d H:i:s', $weekAgoTimestamp);
+
+        $dateIds = get_posts([
+            'post_type' => 'profile',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'no_found_rows' => true,
+            'date_query' => [
+                [
+                    'after' => $weekAgoDate,
+                    'inclusive' => false,
+                    'column' => 'post_date',
+                ],
+            ],
+        ]);
+
+        $taxonomyNewIds = get_posts([
+            'post_type' => 'profile',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'no_found_rows' => true,
+            'tax_query' => [
+                [
+                    'taxonomy' => 'new',
+                    'operator' => 'EXISTS',
+                ],
+            ],
+        ]);
+
+        $categoryNewIds = get_posts([
+            'post_type' => 'profile',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'no_found_rows' => true,
+            'tax_query' => [
+                [
+                    'taxonomy' => 'category',
+                    'field' => 'slug',
+                    'terms' => ['new', 'novye', 'новые'],
+                    'operator' => 'IN',
+                ],
+            ],
+        ]);
+
+        $ids = array_values(array_unique(array_map('intval', array_merge($dateIds, $taxonomyNewIds, $categoryNewIds))));
+        self::$cachedNewBadgeProfileIds = $ids;
+
+        return $ids;
+    }
+
+    /**
      * Получить запрос (Выполняется 1 раз за загрузку страницы)
      */
     public static function get(): WP_Query
@@ -165,16 +232,21 @@ class ProfileQuery
             $args['tax_query'][] = ['taxonomy' => 'inoutcall', 'field' => 'slug', 'terms' => ['outcall', 'incall-and-outcall'], 'operator' => 'IN'];
         }
 
+        $isNewPage = is_page_template('template-new.blade.php')
+            || get_query_var('special_page') === 'new'
+            || get_query_var('pagename') === 'new';
+
+        if ($isNewPage) {
+            $newBadgeIds = self::getNewBadgeProfileIds();
+            $args['post__in'] = !empty($newBadgeIds) ? $newBadgeIds : [0];
+        }
+
         if (is_page_template('template-vip.blade.php') || get_query_var('special_page') === 'vip') {
             $args['tax_query'][] = ['taxonomy' => 'vip', 'field' => 'slug', 'terms' => ['vip'], 'operator' => 'IN'];
         }
 
         if (is_page_template('template-verified.blade.php') || get_query_var('special_page') === 'verified') {
             $args['tax_query'][] = ['taxonomy' => 'verified', 'field' => 'slug', 'terms' => ['verified'], 'operator' => 'IN'];
-        }
-
-        if (is_page_template('template-new.blade.php') || get_query_var('special_page') === 'new') {
-            $args['tax_query'][] = ['taxonomy' => 'new', 'field' => 'slug', 'terms' => ['new'], 'operator' => 'IN'];
         }
 
         if (is_page_template('template-cheap.blade.php') || get_query_var('special_page') === 'deshevye') {
