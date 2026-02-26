@@ -123,7 +123,7 @@
     </h2>
                 </div>
                 
-                <ul class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <ul class="grid list-none md:grid-cols-2 lg:grid-cols-3 gap-10">
                     @while($online_profiles->have_posts())
                         @php
                             $online_profiles->the_post();

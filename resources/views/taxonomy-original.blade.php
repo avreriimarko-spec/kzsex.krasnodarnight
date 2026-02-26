@@ -153,7 +153,7 @@
                     </div>
                 @else
                     
-                    <ul class="grid list-none grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <ul class="grid list-none md:grid-cols-2 lg:grid-cols-3 gap-10">
                         @while (have_posts())
                             @php
                                 the_post();
