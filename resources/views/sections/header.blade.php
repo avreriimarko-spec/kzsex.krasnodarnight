@@ -21,6 +21,8 @@
     // 5. Проверка для логотипа (Главная)
     $logo_path_clean = trim(parse_url($logo_url, PHP_URL_PATH), '/');
     $is_home_page = ($current_request_path === $logo_path_clean);
+    $site_title = $siteName ?? get_bloginfo('name');
+    $header_logo = get_field('schema_logo', 'option') ?: asset('resources/images/logo.png');
 
     // 6. Фильтр для меню WP
     add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_slug, $current_request_path, $default_city_slug) {
@@ -234,7 +236,27 @@
 
 <header class="bg-[#0e101599] backdrop-blur-sm mx-auto rounded-xl lg:border lg:border-[#1f232e] text-white shadow-lg sticky top-0 lg:top-3 z-50 w-full lg:w-9/10 font-serif">
     <div class="container mx-auto px-4 py-1">
-        <div class="flex justify-between items-center h-15 relative">
+        <div class="flex items-center h-15 relative gap-3">
+            {{-- 1. ЛЕВАЯ ЧАСТЬ: место под логотип (ПК + моб) --}}
+            <div class="shrink-0 w-[6.5rem] sm:w-[8rem] lg:w-[9.5rem]">
+                @if($is_home_page)
+                    <span class="flex items-center h-10">
+                        @if(!empty($header_logo))
+                            <img src="{{ $header_logo }}" alt="{{ $site_title }}" class="h-8 sm:h-9 w-auto object-contain" />
+                        @else
+                            <span class="text-sm sm:text-base font-semibold tracking-[0.12em] uppercase">{{ $site_title }}</span>
+                        @endif
+                    </span>
+                @else
+                    <a href="{{ $logo_url }}" class="group flex items-center h-10">
+                        @if(!empty($header_logo))
+                            <img src="{{ $header_logo }}" alt="{{ $site_title }}" class="h-8 sm:h-9 w-auto object-contain group-hover:opacity-85 transition-opacity" />
+                        @else
+                            <span class="text-sm sm:text-base font-semibold tracking-[0.12em] uppercase group-hover:text-[#cd1d46] transition-colors">{{ $site_title }}</span>
+                        @endif
+                    </a>
+                @endif
+            </div>
 
             {{-- 2. НАВИГАЦИЯ (Только ПК) --}}
             @if (!$is_mobile)
@@ -351,24 +373,42 @@
             {{-- 2.5. ВЫБОР ГОРОДА (Только Мобилка) --}}
             @if($is_mobile)
                 @if(!empty($cities) && !is_wp_error($cities))
-                    <div>
-                        <button id="city-dropdown-mobile-btn" 
-                                class="group flex items-center gap-2 text-xs font-bold capitalize tracking-widest text-white hover:text-[#cd1d46] transition-colors focus:outline-none py-2" 
-                                aria-expanded="false">
-                            @php
-                                $display_name = $city_obj ? $city_obj->name : $default_city_name; 
-                            @endphp
-                            <span>{{ $display_name }}</span>
-                            <svg class="w-4 h-4 text-[#cd1d46] group-hover:text-white transition-transform transition-colors duration-300 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
+                    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                        <div class="relative">
+                            <button id="city-dropdown-mobile-btn"
+                                    class="group inline-flex items-center gap-2 rounded-full border border-[#2a3142] bg-[#141925]/90 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white hover:border-[#cd1d46] hover:bg-[#1b2231] transition-colors focus:outline-none"
+                                    aria-expanded="false">
+                                @php
+                                    $display_name = $city_obj ? $city_obj->name : $default_city_name;
+                                @endphp
+                                <span class="text-[#9da9c2]">Город</span>
+                                <span class="max-w-[110px] truncate text-white">{{ $display_name }}</span>
+                            </button>
+
+                            <div id="city-dropdown-mobile-list"
+                                 class="hidden absolute left-1/2 top-full mt-3 w-60 -translate-x-1/2 bg-[#0e101599] backdrop-blur-xl border border-[#1f232e] shadow-[0_20px_50px_-25px_rgba(0,0,0,0.95)] rounded-lg z-[60] overflow-hidden">
+                                <div class="max-h-[250px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-[#3b455d] scrollbar-track-transparent">
+                                    @foreach($cities as $city)
+                                        @php
+                                            $city_link = ($city->slug === $default_city_slug) ? home_url('/') : home_url("/{$city->slug}/");
+                                        @endphp
+                                        <a href="{{ $city_link }}"
+                                           class="flex justify-between items-center px-4 py-2.5 text-white hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-[#293142]/70 last:border-0 text-sm">
+                                            <span class="tracking-wide capitalize font-medium">{{ $city->name }}</span>
+                                            @if($city->count > 0)
+                                                <span class="text-[10px] text-[#98a4bc] group-hover:text-white transition-colors">{{ $city->count }}</span>
+                                            @endif
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 @endif
             @endif
 
             {{-- 3. ПРАВАЯ ЧАСТЬ --}}
-            <div class="flex items-center gap-4 md:gap-6 shrink-0">
+            <div class="ml-auto flex items-center justify-end gap-4 md:gap-6 shrink-0 w-[6.5rem] sm:w-[8rem] lg:w-auto">
 
                 {{-- === ДРОПДАУН ГОРОДОВ (Только ПК) === --}}
                 @if(!$is_mobile)
@@ -409,26 +449,6 @@
 
                 {{-- === МОБИЛЬНЫЕ ЭЛЕМЕНТЫ (Только Мобилка) === --}}
                 @if($is_mobile)
-                    @if(!empty($cities) && !is_wp_error($cities))
-                        <div id="city-dropdown-mobile-list" 
-                             class="hidden absolute left-0 top-full w-56 bg-[#0e101599] backdrop-blur-xl border border-[#1f232e] shadow-[0_20px_50px_-25px_rgba(0,0,0,0.95)] rounded-lg z-[60] overflow-hidden">
-                            <div class="max-h-[250px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-[#3b455d] scrollbar-track-transparent">
-                                @foreach($cities as $city)
-                                    @php
-                                        $city_link = ($city->slug === $default_city_slug) ? home_url('/') : home_url("/{$city->slug}/");
-                                    @endphp
-                                    <a href="{{ $city_link }}" 
-                                       class="flex justify-between items-center px-4 py-2.5 text-white hover:bg-[#cd1d46] hover:!text-white transition-colors border-b border-[#293142]/70 last:border-0 text-sm">
-                                        <span class="tracking-wide capitalize font-medium">{{ $city->name }}</span>
-                                        @if($city->count > 0)
-                                            <span class="text-[10px] text-[#98a4bc] group-hover:text-white transition-colors">{{ $city->count }}</span>
-                                        @endif
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-
                     <button id="mobile-menu-btn" class="text-white focus:outline-none p-2 relative z-50">
                         <svg id="icon-menu" class="w-6 h-6 block transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         <svg id="icon-close" class="w-6 h-6 hidden transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
