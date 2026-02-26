@@ -80,7 +80,7 @@
     if ($breast_size_text) {
         $seo_description .= ". Размер груди: {$breast_size_text}";
     }
-    $seo_description .= ". Индивидуалка предлагает интим-услуги, доступна 24/7. Выезд и по квартире.";
+    $seo_description .= ". Проститутка предлагает интим-услуги, доступна 24/7. Выезд и по квартире.";
     
     // Устанавливаем SEO тайтл через фильтры
     add_filter('pre_get_document_title', function() use ($seo_title) { return $seo_title; }, 999);
@@ -119,17 +119,7 @@
     
     // Базовый alt текст
     $is_vip = has_term('vip', 'vip', get_the_ID());
-    $is_independent = has_term('independent', 'independent', get_the_ID());
-    
-    // Определяем префикс согласно логике
-    if ($is_vip && !$is_independent) {
-        $base_alt = "Элитная проститутка";
-    } elseif ($is_independent && !$is_vip) {
-        $base_alt = "Индивидуалка";
-    } else {
-        // Если ни то ни другое, или оба статуса вместе
-        $base_alt = "Проститутка";
-    }
+    $base_alt = $is_vip ? "Элитная проститутка" : "Проститутка";
     if ($city_name) {
         $base_alt .= " {$city_name}";
     }
@@ -258,10 +248,6 @@
                                 'New' => [
                                     'label' => 'Новая',
                                     'class' => 'rounded-full bg-gradient-to-r from-[#f08a9d] via-[#e24466] to-[#a51233] px-4 py-1.5 text-[11px] font-bold tracking-wide text-[#e9f1ff] shadow-[0_6px_16px_rgba(0,0,0,0.35)]',
-                                ],
-                                'Independent' => [
-                                    'label' => 'Индивидуалка',
-                                    'class' => 'rounded-full bg-gradient-to-r from-[#1a2332] via-[#273955] to-[#314a6e] px-4 py-1.5 text-[11px] font-bold tracking-wide text-[#e9f1ff] shadow-[0_6px_16px_rgba(0,0,0,0.35)]',
                                 ],
                                 default => [
                                     'label' => $badge,
@@ -804,17 +790,7 @@
                                     
                                     // Генерируем alt для похожих моделей
                                     $related_is_vip = has_term('vip', 'vip', get_the_ID());
-                                    $related_is_independent = has_term('independent', 'independent', get_the_ID());
-                                    
-                                    // Определяем префикс согласно логике
-                                    if ($related_is_vip && !$related_is_independent) {
-                                        $related_alt = "Элитная проститутка";
-                                    } elseif ($related_is_independent && !$related_is_vip) {
-                                        $related_alt = "Индивидуалка";
-                                    } else {
-                                        // Если ни то ни другое, или оба статуса вместе
-                                        $related_alt = "Проститутка";
-                                    }
+                                    $related_alt = $related_is_vip ? "Элитная проститутка" : "Проститутка";
                                     if ($related_city_name) {
                                         $related_alt .= " {$related_city_name}";
                                     }
@@ -842,9 +818,6 @@
                                 if (has_term('vip', 'category', get_the_ID())) {
                                     $badges[] = 'VIP';
                                 }
-                                if (has_term('independent', 'category', get_the_ID())) {
-                                    $badges[] = 'Independent';
-                                }
                                 $verified = get_field('verified', get_the_ID());
                                 if ($verified) {
                                     $badges[] = 'Verified';
@@ -865,7 +838,6 @@
                                                 'New'         => ['class' => 'bg-yellow-500 text-black', 'label' => 'Новая'],
                                                 'Verified'    => ['class' => 'bg-green-600 text-black',   'label' => 'Проверена'],
                                                 'VIP'         => ['class' => 'bg-[#cd1d46] text-black',   'label' => 'ВИП'],
-                                                'Independent' => ['class' => 'bg-black/60 text-black',    'label' => 'Индивидуалка'],
                                                 default       => ['class' => 'bg-black/60 text-black',    'label' => $badge],
                                             };
                                         @endphp

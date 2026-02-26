@@ -537,7 +537,6 @@ class SchemaGenerator
             
             if (has_term('vip', 'vip', $pid)) $props[] = ['@type' => 'PropertyValue', 'name' => 'Статус', 'value' => 'VIP'];
             if (has_term('verified', 'verified', $pid)) $props[] = ['@type' => 'PropertyValue', 'name' => 'Статус', 'value' => 'Проверенная'];
-            if (has_term('independent', 'independent', $pid)) $props[] = ['@type' => 'PropertyValue', 'name' => 'Тип работы', 'value' => 'Индивидуалка'];
             if (strtotime($post->post_date) > strtotime('-7 days')) $props[] = ['@type' => 'PropertyValue', 'name' => 'Статус', 'value' => 'Новая'];
             
             $item = [
@@ -651,7 +650,6 @@ class SchemaGenerator
                     $pid = $post->ID;
                     if (has_term('vip', 'vip', $pid)) $props[] = ['@type' => 'PropertyValue', 'name' => 'Статус', 'value' => 'VIP'];
                     if (has_term('verified', 'verified', $pid)) $props[] = ['@type' => 'PropertyValue', 'name' => 'Статус', 'value' => 'Проверенная'];
-                    if (has_term('independent', 'independent', $pid)) $props[] = ['@type' => 'PropertyValue', 'name' => 'Тип работы', 'value' => 'Индивидуалка'];
                     if (strtotime($post->post_date) > strtotime('-7 days')) $props[] = ['@type' => 'PropertyValue', 'name' => 'Статус', 'value' => 'Новая'];
 
                     $item = [
@@ -846,12 +844,7 @@ class SchemaGenerator
             $props[] = ['@type' => 'PropertyValue', 'name' => 'Статус', 'value' => 'Проверенная'];
         }
 
-        // 3. Индивидуалка
-        if (has_term('independent', 'independent', $id)) {
-            $props[] = ['@type' => 'PropertyValue', 'name' => 'Тип работы', 'value' => 'Индивидуалка'];
-        }
-
-        // 4. Новая (по дате)
+        // 3. Новая (по дате)
         if (strtotime(get_the_date('', $id)) > strtotime('-7 days')) {
             $props[] = ['@type' => 'PropertyValue', 'name' => 'Статус', 'value' => 'Новая'];
         }

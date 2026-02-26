@@ -14,7 +14,7 @@ class ProfilesCatalog extends Composer
         'template-cheap',
         'template-incall',
         'template-outcall',
-        'template-independent',
+        'template-girls',
         'template-vip',
     ];
 

@@ -38,7 +38,6 @@ class ImportProfiles extends Command
         'inoutcall' => 'inoutcall',
         'smoker' => 'smoker',
         'verified' => 'verified',
-        'independent' => 'independent',
         'vip' => 'vip',
         'gender' => 'gender',
         'orientation' => 'orientation',
@@ -202,7 +201,6 @@ class ImportProfiles extends Command
             'inoutcall',
             'smoker',
             'verified',      // Это "0" или "1" в JSON
-            'independent',   // Это "0" или "1" в JSON
             'vip',           // Это "0" или "1" в JSON
             'gender',
             'orientation',

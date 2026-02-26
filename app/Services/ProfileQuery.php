@@ -126,9 +126,6 @@ class ProfileQuery
 
         $args = self::applyRequestFiltersToArgs($args);
 
-        // 3. Логика шаблонов (Проверяем текущий шаблон страницы)
-        $current_template = get_page_template_slug();
-        
         // Добавляем фильтрацию по текущему городу для всех страниц кроме главной
         $current_city = null;
         
@@ -149,16 +146,7 @@ class ProfileQuery
             $city_slug = sanitize_text_field($_GET['city']);
             $current_city = get_term_by('slug', $city_slug, 'city');
         }
-        
-        // Проверяем специальные страницы через query_var или включение template-profiles
-        $is_template_profiles = is_page_template('template-profiles.blade.php') 
-                               || is_page_template('template-independent.blade.php')
-                               || is_page_template('template-vip.blade.php')
-                               || is_page_template('template-cheap.blade.php')
-                               || is_page_template('template-incall.blade.php')
-                               || is_page_template('template-outcall.blade.php')
-                               || get_query_var('special_page');
-        
+
         // Всегда добавляем фильтр города если он определен
         if ($current_city) {
             $args['tax_query'][] = [
@@ -175,10 +163,6 @@ class ProfileQuery
 
         if (is_page_template('template-outcall.blade.php') || get_query_var('special_page') === 'outcall') {
             $args['tax_query'][] = ['taxonomy' => 'inoutcall', 'field' => 'slug', 'terms' => ['outcall', 'incall-and-outcall'], 'operator' => 'IN'];
-        }
-
-        if (is_page_template('template-independent.blade.php') || get_query_var('special_page') === 'independent') {
-            $args['tax_query'][] = ['taxonomy' => 'independent', 'field' => 'slug', 'terms' => ['independent'], 'operator' => 'IN'];
         }
 
         if (is_page_template('template-vip.blade.php') || get_query_var('special_page') === 'vip') {

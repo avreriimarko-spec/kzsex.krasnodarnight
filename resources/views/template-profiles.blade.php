@@ -40,9 +40,9 @@
         } elseif ($special_page === 'outcall' || is_page_template('template-outcall.blade.php')) {
             $page_type = 'outcall';
             $parent_page = get_page_by_path('prostitutki-na-vyezd'); // правильный slug
-        } elseif ($special_page === 'independent' || is_page_template('template-independent.blade.php')) {
-            $page_type = 'independent';
-            $parent_page = get_page_by_path('individualki');
+        } elseif (($special_page === 'prostitutki') || (get_query_var('pagename') === 'prostitutki') || is_page_template('template-girls.blade.php')) {
+            $page_type = 'prostitutki';
+            $parent_page = get_page_by_path('prostitutki');
         } elseif ($special_page === 'incall' || is_page_template('template-incall.blade.php')) {
             $page_type = 'incall';
             $parent_page = get_page_by_path('prostitutki-priem'); // правильный slug для "У себя"

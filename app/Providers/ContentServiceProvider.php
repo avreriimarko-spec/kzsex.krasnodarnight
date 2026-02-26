@@ -17,7 +17,7 @@ class ContentServiceProvider extends ServiceProvider
         'template-verified.blade.php'    => 'verified',    // Добавлено
         'template-vip.blade.php'         => 'vip',         // Добавлено
         'template-cheap.blade.php'       => 'deshevye',    // Добавлено
-        'template-independent.blade.php' => 'individualki', // Добавлено
+        'template-girls.blade.php'       => 'prostitutki', // Добавлено
         'template-online.blade.php'      => 'online',      // Добавлено
     ];
 
@@ -44,7 +44,6 @@ class ContentServiceProvider extends ServiceProvider
         'inoutcall'    => ['slug' => 'inoutcall', 'name' => 'У Себя / Выезд', 'post_type' => ['profile']],
         'smoker'       => ['slug' => 'smoker', 'name' => 'Курит', 'post_type' => ['profile']],
         'verified'     => ['slug' => 'verified', 'name' => 'Проверенная', 'post_type' => ['profile']],
-        'independent'  => ['slug' => 'independent', 'name' => 'Индивидуалка', 'post_type' => ['profile']],
         'vip'          => ['slug' => 'vip', 'name' => 'Вип', 'post_type' => ['profile']],
         'gender'       => ['slug' => 'gender', 'name' => 'Пол', 'post_type' => ['profile']],
         'orientation'  => ['slug' => 'orientation', 'name' => 'Ориентация', 'post_type' => ['profile']],
@@ -151,7 +150,7 @@ class ContentServiceProvider extends ServiceProvider
 
             // --- ПРАВИЛА ДЛЯ ПАГИНАЦИИ СТРАНИЦ БЕЗ ГОРОДА ---
 
-            // Пагинация обычных страниц (исключая известные города): /individualki/page/2/, /vip/page/3/
+            // Пагинация обычных страниц (исключая известные города): /prostitutki/page/2/, /vip/page/3/
             // Список городов берем из CityCatalog.
             add_rewrite_rule(
                 '^(?!' . $excludedCitiesPattern . ')([^/]+)/page/([0-9]{1,})/?$',
@@ -205,7 +204,7 @@ class ContentServiceProvider extends ServiceProvider
 
             // Спец. страницы в городе (включая локализованные алиасы)
             add_rewrite_rule(
-                '^' . $knownCityCapture . '/(map|reviews|catalog|vip|individualki|deshevye)/?$',
+                '^' . $knownCityCapture . '/(map|reviews|catalog|vip|prostitutki|deshevye)/?$',
                 'index.php?city=$matches[1]&pagename=$matches[2]',
                 'top'
             );
@@ -213,7 +212,7 @@ class ContentServiceProvider extends ServiceProvider
             $city_special_pages = [
                 'prostitutki-na-vyezd' => 'outcall',
                 'prostitutki-priem'    => 'incall',
-                'individualki'         => 'independent',
+                'prostitutki'          => 'prostitutki',
                 'otzyvy'               => 'reviews',
                 'online'               => 'online',
             ];
@@ -247,7 +246,7 @@ class ContentServiceProvider extends ServiceProvider
                 'top'
             );
 
-            // Страницы с городом (кроме спец. страниц и page): /balashiha/independent/, /moskva/vip/
+            // Страницы с городом (кроме спец. страниц и page): /balashiha/prostitutki/, /moskva/vip/
             add_rewrite_rule(
                 '^' . $knownCityCapture . '/((?!page|profiles)[^/]+)/?$',
                 'index.php?city=$matches[1]&pagename=$matches[2]',
@@ -262,7 +261,7 @@ class ContentServiceProvider extends ServiceProvider
             );
         });
 
-        // Редирект VIP и Independent без города на версию с городом
+        // Редиректы шаблонных страниц без города на версию с городом
         add_action('template_redirect', function () {
             // Страницы service/metro/district без префикса города недоступны.
             if (!get_query_var('city') && is_page()) {
@@ -294,13 +293,6 @@ class ContentServiceProvider extends ServiceProvider
                 }
             }
 
-            if (is_page_template('template-independent.blade.php') && !get_query_var('city')) {
-                $current_city = get_current_city();
-                if ($current_city) {
-                    wp_redirect(home_url("/{$current_city->slug}/independent/"), 301);
-                    exit;
-                }
-            }
             if (is_page_template('template-new.blade.php') && !get_query_var('city')) {
                 $current_city = get_current_city();
                 if ($current_city) {
@@ -422,19 +414,18 @@ class ContentServiceProvider extends ServiceProvider
     protected function addTemplateFilter(): void
     {
         add_filter('template_include', function ($template) {
-            // Проверяем, есть ли город и special_page (ПРИОРИТЕТ 1)
+            // Проверяем, есть ли город и ключ спец-страницы (special_page или pagename)
             $city = get_query_var('city');
             $special_page = get_query_var('special_page');
+            $pagename = get_query_var('pagename');
+            $special_key = $special_page ?: ($city ? $pagename : null);
 
-            if ($city && $special_page) {
-                $special_page = get_query_var('special_page');
-
+            if ($city && $special_key) {
                 // Ищем шаблон для специальной страницы
                 $special_templates = [
                     'vip' => 'views/template-vip.blade.php',
                     'deshevye' => 'views/template-cheap.blade.php',
-                    'independent' => 'views/template-independent.blade.php',
-                    'individualki' => 'views/template-independent.blade.php',
+                    'prostitutki' => 'views/template-girls.blade.php',
                     'outcall' => 'views/template-outcall.blade.php',
                     'incall' => 'views/template-incall.blade.php',
                     'online' => 'views/template-online.blade.php',
@@ -444,15 +435,16 @@ class ContentServiceProvider extends ServiceProvider
                     'verified' => 'views/template-verified.blade.php',
                 ];
 
-                if (isset($special_templates[$special_page])) {
-                    $template_name = $special_templates[$special_page];
+                if (isset($special_templates[$special_key])) {
+                    $template_name = $special_templates[$special_key];
 
-                    // Пробуем прямой путь к файлу
-                    $direct_path = get_template_directory() . '/resources/' . $template_name;
+                    // Для Sage/Acorn: рендерим Blade через sage/template, а не прямым include
+                    add_filter('sage/template', function($templates) use ($template_name) {
+                        array_unshift($templates, str_replace('views/', '', $template_name));
+                        return $templates;
+                    });
 
-                    if (file_exists($direct_path)) {
-                        return $direct_path;
-                    }
+                    return get_template_directory() . '/index.php';
                 }
             }
             // Проверяем special_page без города (ПРИОРИТЕТ 2)
@@ -601,7 +593,7 @@ class ContentServiceProvider extends ServiceProvider
                                     'map' => 'Карта',
                                     'reviews' => 'Отзывы',
                                     'vip' => 'VIP',
-                                    'independent' => 'Инди',
+                                    'prostitutki' => 'Проститутки',
                                 ],
                                 'wrapper' => ['width' => '20'],
                             ],

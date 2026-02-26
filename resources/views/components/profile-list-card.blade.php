@@ -45,17 +45,7 @@
     
     // Проверяем статусы анкеты
     $is_vip = has_term('vip', 'vip', get_the_ID());
-    $is_independent = has_term('independent', 'independent', get_the_ID());
-    
-    // Определяем префикс согласно логике
-    if ($is_vip && !$is_independent) {
-        $prefix = "Элитная проститутка";
-    } elseif ($is_independent && !$is_vip) {
-        $prefix = "Индивидуалка";
-    } else {
-        // Если ни то ни другое, или оба статуса вместе
-        $prefix = "Проститутка";
-    }
+    $prefix = $is_vip ? "Элитная проститутка" : "Проститутка";
     
     $alt_text = $prefix . ($city_name ? " {$city_name}" : "") . " {$profile_name}" . ($age ? " {$age} лет" : "");
     
@@ -157,7 +147,6 @@
                                 'New'         => ['class' => 'bg-yellow-500 text-black', 'label' => 'Новая'],
                                 'Verified'    => ['class' => 'bg-green-600 text-black',   'label' => 'Проверена'],
                                 'VIP'         => ['class' => 'bg-[#cd1d46] text-black',   'label' => 'ВИП'],
-                                'Independent' => ['class' => 'bg-black/60 text-black',    'label' => 'Индивидуалка'],
                                 default       => ['class' => 'bg-black/60 text-black',    'label' => $badge],
                             };
                         @endphp

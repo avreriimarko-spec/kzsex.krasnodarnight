@@ -47,7 +47,7 @@
                     // Эти страницы всегда без города
                     $atts['href'] = home_url("/{$path}/");
                 } else {
-                    // Для всех остальных страниц (verified, new, vip, online, individualki)
+                    // Для всех остальных страниц (verified, new, vip, online, prostitutki)
                     // добавляем текущий город в начало пути
                     $path_parts = explode('/', $path);
                     if ($path_parts[0] !== $current_city_slug) {

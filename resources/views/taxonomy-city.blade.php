@@ -10,7 +10,7 @@
         $special_page = get_query_var('special_page');
         
         if ($special_page && $current_city) {
-            // Для спецстраниц (VIP, Independent) ищем данные в repeater
+            // Для спецстраниц (VIP и др.) ищем данные в repeater
             $city_pages = get_field('city_pages_seo', 'city_' . $current_city->term_id);
             $seo_data = [];
             
@@ -129,7 +129,7 @@
             ],
         ];
         
-        // Добавляем фильтр по специальной странице (VIP, Independent)
+        // Добавляем фильтр по специальной странице (VIP)
         if ($special_page === 'vip') {
             $vip_term = get_term_by('slug', 'vip', 'vip');
             if ($vip_term) {
@@ -139,12 +139,6 @@
                     'terms' => $vip_term->term_id,
                 ];
             }
-        } elseif ($special_page === 'independent') {
-            $tax_query[] = [
-                'taxonomy' => 'independent',
-                'field' => 'slug',
-                'terms' => 'independent',
-            ];
         }
         
         $query_args = [

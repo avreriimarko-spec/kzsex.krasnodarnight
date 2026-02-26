@@ -64,7 +64,7 @@
             $profile_count = $profiles_query->found_posts;
             
             $seo_title = "Проститутки для услуги {$service_name} {$city_name} - {$profile_count} свободных девушек | Kzsex 24/7";
-            $meta_description = "Заказать шлюху или индивидуалку с услугой {$service_name} в городе {$city_name}. Большой каталог проверенных проституток на любой вкус с фильтрами по районам и внешности.";
+            $meta_description = "Заказать проститутку с услугой {$service_name} в городе {$city_name}. Большой каталог проверенных проституток на любой вкус с фильтрами по районам и внешности.";
             
             if (empty($page_title)) {
                 $page_title = "Проститутки с услугой {$service_name} в {$city_name}";

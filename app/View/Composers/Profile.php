@@ -124,7 +124,6 @@ class Profile extends Composer
         }
 
         if (has_term('verified', 'verified', $profileId)) $badges[] = 'Verified';
-        if (has_term('independent', 'independent', $profileId)) $badges[] = 'Independent';
 
         return $badges;
     }
