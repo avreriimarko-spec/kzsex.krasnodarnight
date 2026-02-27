@@ -318,7 +318,7 @@
 
                 {{-- КНОПКА "ПОКАЗАТЬ ВСЕ ФОТО" --}}
                 @if ($totalPhotos > 3)
-                    <button id="show-more-photos" class="mt-3 w-full md:hidden border border-white/30 py-4 text-xs font-bold capitalize tracking-[0.2em] hover:bg-[#cd1d46] hover:border-[#cd1d46] hover:text-black transition-colors">
+                    <button id="show-more-photos" class="mt-3 w-full rounded-xl md:hidden border border-white/30 py-4 text-xs font-bold capitalize tracking-[0.2em] hover:bg-[#cd1d46] hover:border-[#cd1d46] hover:text-black transition-colors">
                         Показать все фото ({{ $totalPhotos }})
                     </button>
                 @endif
@@ -716,11 +716,11 @@
 
                                     $reviewDate = isset($review['date']) ? date('d.m.Y', strtotime($review['date'])) : '';
                                 @endphp
-                                <div class="bg-white/5 border border-white/10 p-6 hover:bg-white/10 transition-colors">
+                                <div class="border rounded-xl border-white/10 p-6 transition-colors">
                                     {{-- Заголовок отзыва --}}
                                     <div class="flex items-center justify-between mb-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 bg-[#cd1d46]  flex items-center justify-center text-black font-bold text-sm">
+                                            <div class="w-10 h-10 bg-[#cd1d46] rounded-xl flex items-center justify-center text-black font-bold text-sm">
                                                 {{ strtoupper(substr($review['author'] ?? 'А', 0, 1)) }}
                                             </div>
                                             <div>
