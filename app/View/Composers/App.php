@@ -23,6 +23,7 @@ class App extends Composer
             'contacts' => [
                 'telegram' => get_field('global_tg', 'option'),
                 'whatsapp' => get_field('global_wa', 'option'),
+                'max'      => get_field('global_max', 'option') ?: get_field('global_max_link', 'option'),
                 'phone'    => get_field('global_phone', 'option'),
             ],
         ];

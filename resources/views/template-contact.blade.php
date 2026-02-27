@@ -33,6 +33,17 @@
                     <h2 class="text-2xl font-bold text-black mb-6">Свяжитесь с нами</h2>
 
                     <div class="space-y-4">
+                        @php
+                            $contactMaxRaw = trim((string) ($contacts['max'] ?? ''));
+                            $contactMaxLink = null;
+
+                            if ($contactMaxRaw !== '') {
+                                $contactMaxLink = str_contains($contactMaxRaw, 'http')
+                                    ? $contactMaxRaw
+                                    : 'https://max.ru/' . ltrim($contactMaxRaw, '/@');
+                            }
+                        @endphp
+
                         {{-- Telegram --}}
                         @if ($contacts['tg'])
                             <a href="https://t.me/{{ str_replace('@', '', $contacts['tg']) }}" target="_blank"
@@ -66,6 +77,24 @@
                                 <div class="overflow-hidden">
                                     <div class="text-xs font-bold capitalize text-gray-400 group-hover:text-gray-200">WhatsApp</div>
                                     <div class="font-bold text-lg text-black group-hover:text-black truncate">{{ $contacts['wa'] }}</div>
+                                </div>
+                            </a>
+                        @endif
+
+                        {{-- Max --}}
+                        @if ($contactMaxLink)
+                            <a href="{{ $contactMaxLink }}" target="_blank"
+                                class="group flex items-center gap-4 p-4 rounded-xl bg-black border border-[#cd1d46] hover:bg-[#cd1d46] transition-all duration-300 transform hover:scale-105">
+                                
+                                <div class="w-12 h-12 flex-shrink-0 rounded-full bg-[#cd1d46] flex items-center justify-center transition-colors">
+                                    <svg class="w-6 h-6 text-black group-hover:text-[#cd1d46]" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M4 18V6h3.2L12 12.2 16.8 6H20v12h-2.9v-7.3L12 16.8l-5.1-6.1V18z" />
+                                    </svg>
+                                </div>
+                                
+                                <div class="overflow-hidden">
+                                    <div class="text-xs font-bold capitalize text-gray-400 group-hover:text-gray-200">Max</div>
+                                    <div class="font-bold text-lg text-black group-hover:text-black truncate">{{ $contacts['max'] }}</div>
                                 </div>
                             </a>
                         @endif

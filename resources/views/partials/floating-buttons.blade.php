@@ -166,7 +166,18 @@
         }
     }" class="pointer-events-auto flex flex-row md:flex-col gap-4 items-end" data-x-cloak>
 
-        {{-- Контейнер для WhatsApp и Telegram --}}
+        @php
+            $maxRaw = trim((string) ($contacts['max'] ?? ''));
+            $maxFloatingLink = null;
+
+            if ($maxRaw !== '') {
+                $maxFloatingLink = str_contains($maxRaw, 'http')
+                    ? $maxRaw
+                    : 'https://max.ru/' . ltrim($maxRaw, '/@');
+            }
+        @endphp
+
+        {{-- Контейнер для WhatsApp, Telegram и Max --}}
         {{-- Flex-row для мобилки, Flex-col для ПК --}}
         <div class="flex flex-row md:flex-col gap-4">
             {{-- Кнопка WhatsApp --}}
@@ -190,6 +201,17 @@
                     </svg>
                 </a>
             @endif
+
+            {{-- Кнопка Max --}}
+            @if($maxFloatingLink)
+                <a href="{{ $maxFloatingLink }}" target="_blank"
+                   class="rounded w-12 h-12 bg-[#1a2746] hover:bg-[#23345b] text-[#b6c5ff] shadow-lg shadow-[#6d8bff]/30 flex items-center justify-center transition-transform hover:scale-105 active:scale-95 border border-[#6d8bff]"
+                   aria-label="Max">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4 18V6h3.2L12 12.2 16.8 6H20v12h-2.9v-7.3L12 16.8l-5.1-6.1V18z" />
+                    </svg>
+                </a>
+            @endif
         </div>
 
         {{-- Кнопка "Наверх" --}}
@@ -210,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!floatingButtonsRoot) return;
 
     // Скрываем плавающие кнопки контактов для подмены на заглушки
-    const floatingContactLinks = floatingButtonsRoot.querySelectorAll('a[href*="wa.me"], a[href*="t.me"]');
+    const floatingContactLinks = floatingButtonsRoot.querySelectorAll('a[href*="wa.me"], a[href*="t.me"], a[href*="max.ru"], a[aria-label="Max"]');
     
     floatingContactLinks.forEach(link => {
         // Пропускаем подписку

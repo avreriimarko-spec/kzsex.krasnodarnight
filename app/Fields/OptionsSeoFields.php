@@ -74,6 +74,16 @@ add_action('acf/init', function () {
                 'ui_off_text' => 'Нет',
             ],
 
+            // 2.5 Max
+            [
+                'key' => 'field_global_max',
+                'label' => 'Глобальный Max',
+                'name' => 'global_max',
+                'type' => 'text',
+                'placeholder' => 'username или https://max.ru/username',
+                'instructions' => 'Выводится на странице Контакты и в плавающих кнопках.',
+            ],
+
             // 3. Телефон
             [
                 'key' => 'field_global_phone',

@@ -19,6 +19,7 @@ class PageContact extends Composer
                 'wa'    => get_field('global_wa', 'option'),
                 'whatsapp' => get_field('global_wa', 'option'), // Добавляем для совместимости
                 'telegram' => get_field('global_tg', 'option'), // Добавляем для совместимости
+                'max' => get_field('global_max', 'option') ?: get_field('global_max_link', 'option'),
                 'phone' => get_field('global_phone', 'option'),
                 'hours' => get_field('contact_hours') ?: '10:00 - 22:00',
             ],
