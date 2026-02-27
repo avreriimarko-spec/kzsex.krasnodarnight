@@ -12,6 +12,8 @@
     $logo_path_clean = trim(parse_url($logo_url, PHP_URL_PATH), '/');
     $is_home_page = ($current_request_path === $logo_path_clean);
     $site_description = trim((string) get_bloginfo('description'));
+    $site_title = $siteName ?? get_bloginfo('name');
+    $footer_logo = get_theme_file_uri('/resources/images/logo.png') . '?v=20260227';
 
     // 4. Фильтр для меню футера
     add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_request_path, $current_city_slug) {
@@ -90,9 +92,7 @@
             @if($is_home_page)
                 {{-- Если главная: НЕ ссылка --}}
                 <div class="flex flex-col items-start cursor-default">
-                    <span class="font-serif text-2xl tracking-[0.15em] capitalize font-medium">
-                        {{ $siteName ?? get_bloginfo('name') }}
-                    </span>
+                    <img src="{{ $footer_logo }}" alt="{{ $site_title }}" class="h-10 sm:h-14 w-auto object-contain" />
                     @if ($site_description !== '')
                         <div class="flex items-center w-full mt-1 gap-2">
                             <span class="h-px bg-white/40 flex-1"></span>
@@ -106,9 +106,7 @@
             @else
                 {{-- Если другая страница: Ссылка --}}
                 <a href="{{ $logo_url }}" class="flex flex-col items-start group">
-                    <span class="font-serif text-2xl tracking-[0.15em] capitalize  font-medium group-hover:text-gray-300 transition-colors">
-                        {{ $siteName ?? get_bloginfo('name') }}
-                    </span>
+                    <img src="{{ $footer_logo }}" alt="{{ $site_title }}" class="h-10 sm:h-11 w-auto object-contain group-hover:opacity-85 transition-opacity" />
                     @if ($site_description !== '')
                         <div class="flex items-center w-full mt-1 gap-2">
                             <span class="h-px bg-white/40 flex-1"></span>

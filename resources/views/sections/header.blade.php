@@ -22,7 +22,7 @@
     $logo_path_clean = trim(parse_url($logo_url, PHP_URL_PATH), '/');
     $is_home_page = ($current_request_path === $logo_path_clean);
     $site_title = $siteName ?? get_bloginfo('name');
-    $header_logo = get_field('schema_logo', 'option') ?: asset('resources/images/logo.png');
+    $header_logo = get_theme_file_uri('/resources/images/logo.png') . '?v=20260227';
 
     // 6. Фильтр для меню WP
     add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_slug, $current_request_path, $default_city_slug) {

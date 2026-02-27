@@ -45,7 +45,7 @@
                     {{-- Логотип если нет фото у страницы --}}
                     <div class="bg-black flex items-center justify-center min-h-[300px]">
                         @php
-                            $logo = get_field('schema_logo', 'option') ?: asset('resources/images/logo.png');
+                            $logo = get_theme_file_uri('/resources/images/logo.png') . '?v=20260227';
                         @endphp
                         <img src="{{ $logo }}" alt="{{ get_bloginfo('name') }}" class="h-24 w-auto opacity-80">
                     </div>

@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     {{-- Favicon --}}
-    <link rel="icon" type="image/x-icon" href="{{ get_template_directory_uri() }}/resources/images/favicon.ico">
-        <link rel="apple-touch-icon" sizes="16x16" href="{{ get_template_directory_uri() }}/resources/images/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ get_template_directory_uri() }}/resources/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ get_template_directory_uri() }}/resources/images/favicon-32x32.png?v=20260227">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ get_template_directory_uri() }}/resources/images/favicon-16x16.png?v=20260227">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ get_template_directory_uri() }}/resources/images/apple-touch-icon.png?v=20260227">
     
     @php(do_action('get_header'))
     @php(wp_head())
