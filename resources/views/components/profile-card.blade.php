@@ -229,7 +229,7 @@
                         </span>
                     @endif
                 @else
-                    <span class="rounded-full border border-[#2a3142] bg-[#141a24] px-2 py-0.5 text-[11px] font-semibold text-[#8ea0bc]">-</span>
+                    <span class="text-[11px] font-semibold text-[#8ea0bc] leading-[180%]">-</span>
                 @endif
             </div>
         </div>
@@ -249,7 +249,7 @@
                         </span>
                     @endif
                 @else
-                    <span class="rounded-full border border-[#2a3142] bg-[#141a24] px-2 py-0.5 text-[11px] font-semibold text-[#8ea0bc]">-</span>
+                    <span class="text-[11px] font-semibold text-[#8ea0bc] leading-[180%]">-</span>
                 @endif
             </div>
         </div>
