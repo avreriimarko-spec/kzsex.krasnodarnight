@@ -1,18 +1,47 @@
 {{-- resources/views/partials/taxonomy-list.blade.php --}}
 @php
-    $terms = get_terms([
-        'taxonomy' => $taxonomy,
-        'hide_empty' => true,
-        'orderby' => 'name',
-        'order' => 'ASC'
-    ]);
+    $currentCity = function_exists('get_current_city') ? get_current_city() : null;
+    $locationTaxonomies = function_exists('location_taxonomies') ? location_taxonomies() : [];
+
+    if (
+        $currentCity
+        && !is_wp_error($currentCity)
+        && isset($locationTaxonomies[$taxonomy])
+        && function_exists('get_location_terms_by_city')
+    ) {
+        $termsByCity = get_location_terms_by_city($taxonomy);
+        $terms = $termsByCity[(int) $currentCity->term_id] ?? [];
+    } else {
+        $terms = get_terms([
+            'taxonomy' => $taxonomy,
+            'hide_empty' => true,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+    }
+
+    $pageTitle = (string) (get_field('custom_h1') ?: $default_title);
+
+    if ($currentCity && !is_wp_error($currentCity)) {
+        $cityName = (string) $currentCity->name;
+
+        if ($cityName !== '') {
+            $containsCity = function_exists('mb_stripos')
+                ? mb_stripos($pageTitle, $cityName, 0, 'UTF-8') !== false
+                : stripos($pageTitle, $cityName) !== false;
+
+            if (!$containsCity) {
+                $pageTitle = trim($pageTitle . ' ' . $cityName);
+            }
+        }
+    }
 @endphp
 
 <div class="container mx-auto px-4 py-8">
     {{-- Header --}}
     <header class="prose mb-10 text-center mx-auto">
         <h1 class="text-3xl md:text-5xl font-bold mb-4 capitalize tracking-tight text-[#cd1d46]">
-            {!! get_field('custom_h1') ?: $default_title !!}
+            {!! $pageTitle !!}
         </h1>
         @if ($intro = get_field('intro_text'))
             <p class="leading-relaxed max-w-2xl mx-auto text-gray-300">
