@@ -73,7 +73,7 @@
                         
                         // Если нет кастомных SEO полей, генерируем по шаблону
                         if (empty($seo_title)) {
-                            $seo_title = "Проститутки для услуги {$service_name} {$city_name} - {$profile_count} свободных девушек | Kzsex 24/7";
+                            $seo_title = "Проститутки для услуги {$service_name} {$city_name} - {$profile_count} свободных девушек | Эскорт Москвы 24/7";
                         }
                         
                         if (empty($meta_description)) {

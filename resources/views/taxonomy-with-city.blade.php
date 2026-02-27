@@ -63,7 +63,7 @@
             $city_name = $current_city->name;
             $profile_count = $profiles_query->found_posts;
             
-            $seo_title = "Проститутки для услуги {$service_name} {$city_name} - {$profile_count} свободных девушек | Kzsex 24/7";
+            $seo_title = "Проститутки для услуги {$service_name} {$city_name} - {$profile_count} свободных девушек | Эскорт Москвы 24/7";
             $meta_description = "Заказать проститутку с услугой {$service_name} в городе {$city_name}. Большой каталог проверенных проституток на любой вкус с фильтрами по районам и внешности.";
             
             if (empty($page_title)) {
