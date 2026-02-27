@@ -102,10 +102,27 @@ class ProfileQuery
     }
 
     /**
-     * Профили, которые должны иметь бейдж "Новая":
-     * 1) опубликованы за последние 7 дней
-     * 2) или имеют термин таксономии `new`
-     * 3) или имеют категорию со slug: new|novye|новые
+     * Правило "новая анкета": опубликована за последние 7 дней.
+     */
+    public static function isProfileNew(int $profileId): bool
+    {
+        $post = get_post($profileId);
+        if (!$post || $post->post_type !== 'profile' || $post->post_status !== 'publish') {
+            return false;
+        }
+
+        $postTimestamp = (int) get_post_time('U', false, $profileId);
+        if ($postTimestamp <= 0) {
+            return false;
+        }
+
+        $weekAgo = current_time('timestamp') - (7 * DAY_IN_SECONDS);
+
+        return $postTimestamp > $weekAgo;
+    }
+
+    /**
+     * Профили, которые должны отображаться как "Новые" (до 7 дней с публикации).
      */
     private static function getNewBadgeProfileIds(): array
     {
@@ -131,37 +148,7 @@ class ProfileQuery
             ],
         ]);
 
-        $taxonomyNewIds = get_posts([
-            'post_type' => 'profile',
-            'post_status' => 'publish',
-            'posts_per_page' => -1,
-            'fields' => 'ids',
-            'no_found_rows' => true,
-            'tax_query' => [
-                [
-                    'taxonomy' => 'new',
-                    'operator' => 'EXISTS',
-                ],
-            ],
-        ]);
-
-        $categoryNewIds = get_posts([
-            'post_type' => 'profile',
-            'post_status' => 'publish',
-            'posts_per_page' => -1,
-            'fields' => 'ids',
-            'no_found_rows' => true,
-            'tax_query' => [
-                [
-                    'taxonomy' => 'category',
-                    'field' => 'slug',
-                    'terms' => ['new', 'novye', 'новые'],
-                    'operator' => 'IN',
-                ],
-            ],
-        ]);
-
-        $ids = array_values(array_unique(array_map('intval', array_merge($dateIds, $taxonomyNewIds, $categoryNewIds))));
+        $ids = array_values(array_unique(array_map('intval', $dateIds)));
         self::$cachedNewBadgeProfileIds = $ids;
 
         return $ids;

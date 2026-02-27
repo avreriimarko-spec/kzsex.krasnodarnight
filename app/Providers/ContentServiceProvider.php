@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Helpers\CityCatalog;
+use App\Services\ProfileNewStatusService;
 
 class ContentServiceProvider extends ServiceProvider
 {
@@ -60,6 +61,7 @@ class ContentServiceProvider extends ServiceProvider
     {
         $this->registerPostTypes();
         $this->registerTaxonomies();
+        ProfileNewStatusService::registerHooks();
         CityCatalog::syncTerms();
         $this->addCustomRewriteRules();
         $this->registerAcfCityFields(); // Регистрация полей ACF

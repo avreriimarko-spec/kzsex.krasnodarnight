@@ -94,6 +94,7 @@
 
     $isVip = has_term('vip', 'vip', $profileId) || in_array('VIP', $badges, true);
     $isVerified = has_term('verified', 'verified', $profileId) || in_array('Verified', $badges, true);
+    $isNew = in_array('New', $badges, true) || \App\Services\ProfileQuery::isProfileNew((int) $profileId);
 
     $altText = "Проститутка {$cityName} {$profileName}";
     if ($age) {
@@ -141,6 +142,14 @@
             @endif
 
             <a href="{{ profile_url($profileId) }}" class="absolute inset-0 z-10" aria-label="Просмотреть профиль {{ $profileName }}"></a>
+
+            @if ($isNew)
+                <div class="absolute right-3 top-3 z-20 flex flex-col items-end gap-2">
+                    <span class="rounded-full bg-gradient-to-r from-[#f08a9d] via-[#e24466] to-[#a51233] px-4 py-1.5 text-[11px] font-bold tracking-wide text-[#e9f1ff] shadow-[0_6px_16px_rgba(0,0,0,0.35)]">
+                        Новая
+                    </span>
+                </div>
+            @endif
 
             <div class="absolute left-3 top-3 z-20 flex flex-col items-start gap-2">
                 @if ($isVerified)
