@@ -20,6 +20,23 @@
     $districtNames = (!empty($districtTerms) && !is_wp_error($districtTerms))
         ? array_values(array_unique(wp_list_pluck($districtTerms, 'name')))
         : [];
+    $locationPreviewLimit = 2;
+    $buildLocationPreview = static function (array $items, int $limit): array {
+        $normalized = array_values(array_filter(
+            array_map(static fn($item): string => trim((string) $item), $items),
+            static fn(string $item): bool => $item !== ''
+        ));
+
+        $visible = array_slice($normalized, 0, $limit);
+
+        return [
+            'visible' => $visible,
+            'hidden_count' => max(0, count($normalized) - count($visible)),
+            'full' => implode(', ', $normalized),
+        ];
+    };
+    $metroPreview = $buildLocationPreview($metroNames, $locationPreviewLimit);
+    $districtPreview = $buildLocationPreview($districtNames, $locationPreviewLimit);
 
     $age = get_field('age');
     $height = get_field('height');
@@ -196,13 +213,46 @@
         </div>
     </div>
 
-    <div class="mt-2 space-y-1 text-[13px] leading-tight text-[#9aa8c2]">
-        @if (!empty($metroNames))
-            <div>Метро: {{ implode(', ', $metroNames) }}</div>
-        @endif
-        @if (!empty($districtNames))
-            <div>Районы: {{ implode(', ', $districtNames) }}</div>
-        @endif
+    <div class="mt-2 space-y-1.5 text-[12px] leading-tight text-[#9aa8c2]">
+        <div class="flex items-start gap-1.5">
+            <span class="shrink-0 pt-0.5 text-[#7f90ad]">Метро:</span>
+            <div class="flex min-w-0 flex-wrap gap-1" title="{{ $metroPreview['full'] ?: '-' }}">
+                @if (!empty($metroPreview['visible']))
+                    @foreach ($metroPreview['visible'] as $metroName)
+                        <span class="max-w-[125px] truncate rounded-full border border-[#2a3142] bg-[#141a24] px-2 py-0.5 text-[11px] text-[#c8d4ea]" title="{{ $metroName }}">
+                            {{ $metroName }}
+                        </span>
+                    @endforeach
+                    @if ($metroPreview['hidden_count'] > 0)
+                        <span class="rounded-full border border-[#2a3142] bg-[#141a24] px-2 py-0.5 text-[11px] font-semibold text-[#8ea0bc]">
+                            +{{ $metroPreview['hidden_count'] }}
+                        </span>
+                    @endif
+                @else
+                    <span class="rounded-full border border-[#2a3142] bg-[#141a24] px-2 py-0.5 text-[11px] font-semibold text-[#8ea0bc]">-</span>
+                @endif
+            </div>
+        </div>
+
+        <div class="flex items-start gap-1.5">
+            <span class="shrink-0 pt-0.5 text-[#7f90ad]">Районы:</span>
+            <div class="flex min-w-0 flex-wrap gap-1" title="{{ $districtPreview['full'] ?: '-' }}">
+                @if (!empty($districtPreview['visible']))
+                    @foreach ($districtPreview['visible'] as $districtName)
+                        <span class="max-w-[125px] truncate rounded-full border border-[#2a3142] bg-[#141a24] px-2 py-0.5 text-[11px] text-[#c8d4ea]" title="{{ $districtName }}">
+                            {{ $districtName }}
+                        </span>
+                    @endforeach
+                    @if ($districtPreview['hidden_count'] > 0)
+                        <span class="rounded-full border border-[#2a3142] bg-[#141a24] px-2 py-0.5 text-[11px] font-semibold text-[#8ea0bc]">
+                            +{{ $districtPreview['hidden_count'] }}
+                        </span>
+                    @endif
+                @else
+                    <span class="rounded-full border border-[#2a3142] bg-[#141a24] px-2 py-0.5 text-[11px] font-semibold text-[#8ea0bc]">-</span>
+                @endif
+            </div>
+        </div>
     </div>
 
     <div class="mt-3 flex flex-wrap items-center gap-2">
