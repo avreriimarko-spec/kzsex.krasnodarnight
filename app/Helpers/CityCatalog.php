@@ -48,7 +48,7 @@ class CityCatalog
         }
 
         $catalogHash = md5(wp_json_encode(self::CITIES));
-        $storedHash = get_option('kzsex_city_catalog_hash');
+        $storedHash = get_option('eskort-moskvy_city_catalog_hash');
         $needsSync = ($storedHash !== $catalogHash);
 
         if ($needsSync) {
@@ -85,7 +85,7 @@ class CityCatalog
         self::removeObsoleteTerms();
 
         if ($needsSync) {
-            update_option('kzsex_city_catalog_hash', $catalogHash, false);
+            update_option('eskort-moskvy_city_catalog_hash', $catalogHash, false);
         }
     }
 

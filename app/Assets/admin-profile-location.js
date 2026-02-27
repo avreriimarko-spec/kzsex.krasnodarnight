@@ -1,5 +1,5 @@
 (function ($) {
-    const config = window.kzsexProfileLocationAdmin || {};
+    const config = window.eskortMoskvyProfileLocationAdmin || {};
     const termCityMap = config.termCityMap || {};
     const messages = config.messages || {};
     const locationTaxonomies = ['metro', 'district'];
@@ -55,9 +55,9 @@
             return;
         }
 
-        let $hint = $box.find('.kzsex-location-hint');
+        let $hint = $box.find('.eskort-moskvy-location-hint');
         if (!$hint.length) {
-            $hint = $('<p class="kzsex-location-hint" style="margin-top:8px;color:#646970;"></p>');
+            $hint = $('<p class="eskort-moskvy-location-hint" style="margin-top:8px;color:#646970;"></p>');
             $box.find('.inside').append($hint);
         }
 
