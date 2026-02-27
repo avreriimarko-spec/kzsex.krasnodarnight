@@ -235,3 +235,34 @@ if (!function_exists('get_location_terms_by_city')) {
         return $terms_by_city;
     }
 }
+
+/**
+ * 15. Получить карту term_id => city_id для метро/районов (все термины, включая пустые)
+ */
+if (!function_exists('get_location_term_city_map')) {
+    function get_location_term_city_map(string $location_taxonomy): array
+    {
+        if (!array_key_exists($location_taxonomy, location_taxonomies())) {
+            return [];
+        }
+
+        $terms = get_terms([
+            'taxonomy' => $location_taxonomy,
+            'hide_empty' => false,
+            'orderby' => 'name',
+            'order' => 'ASC',
+        ]);
+
+        if (is_wp_error($terms) || empty($terms)) {
+            return [];
+        }
+
+        $map = [];
+
+        foreach ($terms as $term) {
+            $map[(int) $term->term_id] = get_related_city_id_for_location_term($location_taxonomy, $term);
+        }
+
+        return $map;
+    }
+}
