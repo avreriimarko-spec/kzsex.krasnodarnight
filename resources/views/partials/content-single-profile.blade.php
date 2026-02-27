@@ -176,6 +176,7 @@
     }
 
     $totalPhotos = count($allPhotos);
+    $photoFallbackUrl = get_theme_file_uri('/resources/images/logo.png');
 
     // --- ЛОГИКА ОПИСАНИЯ (200 символов) ---
     $fullContent = apply_filters('the_content', get_the_content());
@@ -283,23 +284,36 @@
             <div class="w-full lg:col-span-8 lg:col-start-1 space-y-8">
                 <section class="rounded-2xl border border-white/10 p-3 md:p-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4" id="photo-gallery-container">
-                    @foreach ($allPhotos as $index => $photo)
-                        @php
-                            $visibilityClass = ($index >= 3) ? 'hidden md:block mobile-hidden-photo' : '';
-                        @endphp
+                    @if ($totalPhotos > 0)
+                        @foreach ($allPhotos as $index => $photo)
+                            @php
+                                $visibilityClass = ($index >= 3) ? 'hidden md:block mobile-hidden-photo' : '';
+                            @endphp
 
-                        <div class="md:col-span-1 {{ $visibilityClass }} relative group overflow-hidden rounded-2xl border border-white/10">
-                            <a href="{{ $photo['full'] }}" 
-                               data-fancybox="gallery" 
-                               class="block w-full aspect-[3/4] bg-[#0f0f0f] group">
-                                
-                                <img src="{{ $photo['thumb'] }}" 
-                                     alt="{{ $photo['alt'] }}" 
-                                     class="w-full h-full object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-110 opacity-90 group-hover:opacity-100 grayscale-[10%] group-hover:grayscale-0">
-                                
-                            </a>
+                            <div class="md:col-span-1 {{ $visibilityClass }} relative group overflow-hidden rounded-2xl border border-white/10">
+                                <a href="{{ $photo['full'] }}" 
+                                   data-fancybox="gallery" 
+                                   class="block w-full aspect-[3/4] bg-[#0f0f0f] group">
+                                    
+                                    <img src="{{ $photo['thumb'] }}" 
+                                         alt="{{ $photo['alt'] }}" 
+                                         class="w-full h-full object-cover transition-transform duration-[1.5s] ease-in-out group-hover:scale-110 opacity-90 group-hover:opacity-100 grayscale-[10%] group-hover:grayscale-0">
+                                    
+                                </a>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="sm:col-span-2 lg:col-span-3 overflow-hidden rounded-2xl border border-white/10">
+                            <div class="relative flex aspect-square w-full flex-col items-center justify-center gap-4 bg-gradient-to-b from-[#121212] to-[#0a0a0a] px-6 text-center">
+                                <img src="{{ $photoFallbackUrl }}"
+                                     alt="Фотография анкеты временно недоступна"
+                                     class="h-20 w-20 object-contain opacity-80">
+                                <p class="text-xs font-bold uppercase tracking-[0.2em] text-gray-300">
+                                    Фото скоро появятся
+                                </p>
+                            </div>
                         </div>
-                    @endforeach
+                    @endif
                 </div>
 
                 {{-- КНОПКА "ПОКАЗАТЬ ВСЕ ФОТО" --}}
@@ -657,13 +671,13 @@
                         </form>
                         
                         {{-- Сообщение об успешной отправке --}}
-                        <div id="reviewSuccess" class="hidden mt-4 bg-green-900/50 border border-green-500 text-green-300 px-6 py-4 text-center">
+                        <div id="reviewSuccess" class="hidden mt-4 rounded-xl bg-green-900/50 border border-green-500 text-green-300 px-6 py-4 text-center">
                             <p class="font-bold">Спасибо за ваш отзыв!</p>
                             <p class="text-sm mt-1">Ваш отзыв будет опубликован после модерации.</p>
                         </div>
                         
                         {{-- Сообщение об ошибке --}}
-                        <div id="reviewError" class="hidden mt-4 bg-red-900/50 border border-red-500 text-red-300 px-6 py-4  text-center">
+                        <div id="reviewError" class="hidden mt-4 rounded-xl bg-red-900/50 border border-red-500 text-red-300 px-6 py-4  text-center">
                             <p class="font-bold">Ошибка при отправке</p>
                             <p class="text-sm mt-1">Пожалуйста, попробуйте еще раз.</p>
                         </div>

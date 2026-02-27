@@ -30,9 +30,9 @@
                             {{-- Аватар --}}
                             @if(!empty($review['profile_photo']))
                                 <img src="{{ $review['profile_photo'] }}" alt="{{ $review['profile_title'] }}" 
-                                     class="w-16 h-16  object-cover flex-shrink-0 border-2 border-[#cd1d46]">
+                                     class="w-16 h-16  object-cover flex-shrink-0 border-2 rounded-xl border-[#cd1d46]">
                             @else
-                                <div class="w-16 h-16  bg-[#cd1d46] flex-shrink-0 flex items-center justify-center border-2 border-[#cd1d46]">
+                                <div class="w-16 h-16 rounded-xl bg-[#cd1d46] flex-shrink-0 flex items-center justify-center border-2 border-[#cd1d46]">
                                     <span class="text-black text-xl font-bold">?</span>
                                 </div>
                             @endif
@@ -55,7 +55,7 @@
                                     
                                     {{-- РЕЙТИНГ (Исправленная логика) --}}
                                     @if(isset($review['rating']) && $review['rating'] > 0)
-                                        <div class="inline-flex items-center bg-[#111827] px-4 py-2  border border-gray-800">
+                                        <div class="inline-flex rounded-xl items-center bg-[#111827] px-4 py-2  border border-gray-800">
                                             <div class="flex items-center space-x-1 mr-3">
                                                 @php 
                                                     $rawRating = floatval($review['rating']);
