@@ -1,5 +1,5 @@
 (function ($) {
-    const config = window.eskortMoskvyProfileLocationAdmin || {};
+    const config = window.escortIntimProfileLocationAdmin || {};
     const termCityMap = config.termCityMap || {};
     const messages = config.messages || {};
     const locationTaxonomies = ['metro', 'district'];
@@ -55,9 +55,9 @@
             return;
         }
 
-        let $hint = $box.find('.eskort-moskvy-location-hint');
+        let $hint = $box.find('.escortintim-location-hint');
         if (!$hint.length) {
-            $hint = $('<p class="eskort-moskvy-location-hint" style="margin-top:8px;color:#646970;"></p>');
+            $hint = $('<p class="escortintim-location-hint" style="margin-top:8px;color:#646970;"></p>');
             $box.find('.inside').append($hint);
         }
 

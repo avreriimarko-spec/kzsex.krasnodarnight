@@ -42,7 +42,7 @@ add_action('admin_enqueue_scripts', function ($hook) {
         'district' => function_exists('get_location_term_city_map') ? \get_location_term_city_map('district') : [],
     ];
 
-    wp_localize_script('admin-profile-location', 'eskortMoskvyProfileLocationAdmin', [
+    wp_localize_script('admin-profile-location', 'escortIntimProfileLocationAdmin', [
         'termCityMap' => $termCityMap,
         'messages' => [
             'selectCity' => 'Сначала выберите город, затем метро и районы.',

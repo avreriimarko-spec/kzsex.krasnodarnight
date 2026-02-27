@@ -4,7 +4,7 @@ namespace App\Services;
 
 class ProfileNewStatusService
 {
-    private const CRON_HOOK = 'eskort-moskvy_sync_profile_new_status';
+    private const CRON_HOOK = 'escortintim_sync_profile_new_status';
     private const NEW_TAXONOMY = 'new';
     private const NEW_TAXONOMY_TERM_SLUG = 'new';
     private const NEW_TAXONOMY_TERM_NAME = 'Новые';
