@@ -10,8 +10,12 @@
 
     $cityTerms = get_the_terms($profileId, 'city');
     $cityName = !empty($cityTerms) && !is_wp_error($cityTerms) ? $cityTerms[0]->name : 'Москва';
+    $citySlug = !empty($cityTerms) && !is_wp_error($cityTerms)
+        ? ($cityTerms[0]->slug ?? \App\Helpers\CityCatalog::DEFAULT_CITY_SLUG)
+        : \App\Helpers\CityCatalog::DEFAULT_CITY_SLUG;
+    $isMoscowCity = $citySlug === \App\Helpers\CityCatalog::DEFAULT_CITY_SLUG;
 
-    $metroTerms = get_the_terms($profileId, 'metro');
+    $metroTerms = $isMoscowCity ? get_the_terms($profileId, 'metro') : [];
     $metroNames = (!empty($metroTerms) && !is_wp_error($metroTerms))
         ? array_values(array_unique(wp_list_pluck($metroTerms, 'name')))
         : [];
@@ -214,6 +218,7 @@
     </div>
 
     <div class="mt-2 space-y-1.5 text-[12px] leading-tight text-[#9aa8c2]">
+        @if ($isMoscowCity)
         <div class="flex items-start gap-1.5">
             <span class="shrink-0 pt-0.5 text-[#7f90ad]">Метро:</span>
             <div class="flex min-w-0 flex-wrap gap-1" title="{{ $metroPreview['full'] ?: '-' }}">
@@ -233,6 +238,7 @@
                 @endif
             </div>
         </div>
+        @endif
 
         <div class="flex items-start gap-1.5">
             <span class="shrink-0 pt-0.5 text-[#7f90ad]">Районы:</span>

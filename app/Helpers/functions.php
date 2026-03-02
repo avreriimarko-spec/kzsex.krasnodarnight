@@ -170,6 +170,11 @@ if (!function_exists('get_location_terms')) {
             return [];
         }
 
+        // Метро показываем только в Москве.
+        if ($location_taxonomy === 'metro' && !UrlHelpers::isDefaultCity()) {
+            return [];
+        }
+
         $terms = get_terms([
             'taxonomy' => $location_taxonomy,
             'hide_empty' => true,

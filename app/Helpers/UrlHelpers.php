@@ -139,6 +139,15 @@ class UrlHelpers
             $taxonomy = 'rajony';
         }
 
+        if ($taxonomy === 'city') {
+            return self::getCityUrl($term);
+        }
+
+        // Метро доступно только в Москве (дефолтный город).
+        if ($taxonomy === 'metro') {
+            $city_slug = self::DEFAULT_CITY_SLUG;
+        }
+
         // Всегда добавляем город в URL
         return home_url("/{$city_slug}/{$taxonomy}/{$term_slug}/");
     }

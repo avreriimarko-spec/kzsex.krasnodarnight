@@ -6,9 +6,13 @@
     // Получаем город
     $city_terms = get_the_terms(get_the_ID(), 'city');
     $city_name = !empty($city_terms) && !is_wp_error($city_terms) ? $city_terms[0]->name : '';
+    $city_slug = !empty($city_terms) && !is_wp_error($city_terms)
+        ? ($city_terms[0]->slug ?? \App\Helpers\CityCatalog::DEFAULT_CITY_SLUG)
+        : \App\Helpers\CityCatalog::DEFAULT_CITY_SLUG;
+    $is_moscow_city = $city_slug === \App\Helpers\CityCatalog::DEFAULT_CITY_SLUG;
 
     // Получаем списки метро и районов
-    $metro_terms = get_the_terms(get_the_ID(), 'metro');
+    $metro_terms = $is_moscow_city ? get_the_terms(get_the_ID(), 'metro') : [];
     $metro_names = (!empty($metro_terms) && !is_wp_error($metro_terms))
         ? array_values(array_unique(wp_list_pluck($metro_terms, 'name')))
         : [];
@@ -263,9 +267,9 @@
                 </div>
             @endif
 
-            @if (!empty($metro_names) || !empty($district_names))
+            @if (($is_moscow_city && !empty($metro_names)) || !empty($district_names))
                 <div class="mt-3 space-y-1 text-sm text-gray-300">
-                    @if (!empty($metro_names))
+                    @if ($is_moscow_city && !empty($metro_names))
                         <div>Метро: {{ implode(', ', $metro_names) }}</div>
                     @endif
                     @if (!empty($district_names))

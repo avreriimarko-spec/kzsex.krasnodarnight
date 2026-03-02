@@ -16,7 +16,7 @@
     $footer_logo = get_theme_file_uri('/resources/images/logo.png') . '?v=20260227';
 
     // 4. Фильтр для меню футера
-    add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_request_path, $current_city_slug) {
+    add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_request_path, $current_city_slug, $default_city_slug) {
         // Применяем только к навигации футера
         if (($args->theme_location ?? null) !== 'footer_navigation') {
             return $atts;
@@ -49,7 +49,8 @@
                     } elseif ($page_slug === 'district') {
                         $page_slug = 'rajony';
                     }
-                    $atts['href'] = home_url("/{$current_city_slug}/{$page_slug}/");
+                    $target_city_slug = $page_slug === 'metro' ? $default_city_slug : $current_city_slug;
+                    $atts['href'] = home_url("/{$target_city_slug}/{$page_slug}/");
                 } elseif (in_array($path, $no_city_paths)) {
                     // Эти страницы всегда без города
                     $atts['href'] = home_url("/{$path}/");
@@ -57,7 +58,9 @@
                     // Для всех остальных страниц (provereno, novye, vip, onlajn, prostitutki)
                     // добавляем текущий город в начало пути
                     $path_parts = explode('/', $path);
-                    if ($path_parts[0] !== $current_city_slug) {
+                    if ($path_parts[0] === 'metro') {
+                        $atts['href'] = home_url("/{$default_city_slug}/{$path}/");
+                    } elseif ($path_parts[0] !== $current_city_slug) {
                         $atts['href'] = home_url("/{$current_city_slug}/{$path}/");
                     } else {
                         $atts['href'] = home_url("/{$path}/");
@@ -122,6 +125,17 @@
             {{-- Меню футера: 2 колонки (первые 4 ссылки + остальные) --}}
             @php
                 $footer_links = [];
+                $hide_metro_links = ($current_city_slug !== $default_city_slug);
+                $is_metro_footer_link = static function (string $url): bool {
+                    $path = trim((string) parse_url($url, PHP_URL_PATH), '/');
+                    if ($path === '') {
+                        return false;
+                    }
+
+                    $segments = explode('/', $path);
+                    return in_array('metro', $segments, true);
+                };
+
 
                 if (has_nav_menu('footer_navigation')) {
                     $menu_locations = get_nav_menu_locations();
@@ -153,6 +167,9 @@
                                         $child_title = trim((string) ($child->title ?? ''));
 
                                         if ($child_url !== '' && $child_title !== '') {
+                                            if ($hide_metro_links && $is_metro_footer_link($child_url)) {
+                                                continue;
+                                            }
                                             $footer_links[$child_url] = $child_title;
                                         }
                                     }
@@ -163,6 +180,9 @@
                                 $item_title = trim((string) ($menu_item->title ?? ''));
 
                                 if ($item_url !== '' && $item_title !== '') {
+                                    if ($hide_metro_links && $is_metro_footer_link($item_url)) {
+                                        continue;
+                                    }
                                     $footer_links[$item_url] = $item_title;
                                 }
                             }
@@ -184,18 +204,20 @@
                     ];
                 }
 
+                $pages_links_count = ($current_city_slug === $default_city_slug) ? 4 : 3;
+
                 $footer_columns = [
                     [
                         'title' => 'Страницы',
-                        'links' => array_slice($footer_links, 0, 4, true),
+                        'links' => array_slice($footer_links, 0, $pages_links_count, true),
                     ],
                     [
                         'title' => 'Сотрудничество',
-                        'links' => array_slice($footer_links, 4, 4, true),
+                        'links' => array_slice($footer_links, $pages_links_count, 4, true),
                     ],
                     [
                         'title' => 'Помощь',
-                        'links' => array_slice($footer_links, 8, null, true),
+                        'links' => array_slice($footer_links, $pages_links_count + 4, null, true),
                     ],
                 ];
             @endphp
@@ -220,6 +242,12 @@
                                         }
 
                                         $url_path = trim(parse_url($url, PHP_URL_PATH), '/');
+                                        $is_metro_link = in_array('metro', explode('/', $url_path), true);
+
+                                        if ($hide_metro_links && $is_metro_link) {
+                                            continue;
+                                        }
+
                                         $is_active = ($url_path === $current_request_path);
                                     @endphp
                                     <li>

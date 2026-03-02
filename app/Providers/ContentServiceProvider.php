@@ -334,6 +334,11 @@ class ContentServiceProvider extends ServiceProvider
                 $query_vars['taxonomy'] = 'service';
             }
 
+            // Таксономия city не должна открываться как /city/{slug} или /{city}/city/{slug}.
+            if (isset($query_vars['taxonomy']) && $query_vars['taxonomy'] === 'city') {
+                $query_vars['error'] = 404;
+                return $query_vars;
+            }
             if (
                 isset($query_vars['city'], $query_vars['taxonomy'])
                 && $query_vars['taxonomy'] === 'district'
@@ -346,6 +351,16 @@ class ContentServiceProvider extends ServiceProvider
                 isset($query_vars['city'], $query_vars['taxonomy'])
                 && $query_vars['taxonomy'] === 'service'
                 && (($requestSegments[1] ?? '') === 'service')
+            ) {
+                $query_vars['error'] = 404;
+                return $query_vars;
+            }
+
+            // Метро доступно только для Москвы: /{city}/metro/... для других городов -> 404.
+            if (
+                isset($query_vars['city'], $query_vars['taxonomy'])
+                && $query_vars['taxonomy'] === 'metro'
+                && (string) $query_vars['city'] !== CityCatalog::DEFAULT_CITY_SLUG
             ) {
                 $query_vars['error'] = 404;
                 return $query_vars;
@@ -410,6 +425,16 @@ class ContentServiceProvider extends ServiceProvider
             }
 
             if (isset($query_vars['city'])) {
+                // Метро-страница доступна только для Москвы.
+                if (
+                    isset($query_vars['pagename'])
+                    && (string) $query_vars['pagename'] === 'metro'
+                    && (string) $query_vars['city'] !== CityCatalog::DEFAULT_CITY_SLUG
+                ) {
+                    $query_vars['error'] = 404;
+                    return $query_vars;
+                }
+
                 // Проверяем, является ли второй сегмент специальной страницей
                 if (isset($query_vars['special_page'])) {
                     // Это special_page запрос, проверяем что город существует
@@ -566,6 +591,10 @@ class ContentServiceProvider extends ServiceProvider
             $current_city = get_current_city();
             $city_slug = $current_city ? $current_city->slug : CityCatalog::DEFAULT_CITY_SLUG;
 
+            if ($targetSlug === 'metro') {
+                $city_slug = CityCatalog::DEFAULT_CITY_SLUG;
+            }
+
             return home_url("/{$city_slug}/{$targetSlug}/");
         }, 10, 3);
     }
@@ -585,6 +614,10 @@ class ContentServiceProvider extends ServiceProvider
     {
         // Service/metro/district всегда должны иметь город в URL, даже если где-то вызывается get_term_link().
         add_filter('term_link', function ($termlink, $term, $taxonomy) {
+            if ($taxonomy === 'city' && $term instanceof \WP_Term) {
+                return city_url($term);
+            }
+
             if (in_array($taxonomy, self::CITY_SCOPED_TAXONOMIES, true) && $term instanceof \WP_Term) {
                 return term_url($term);
             }

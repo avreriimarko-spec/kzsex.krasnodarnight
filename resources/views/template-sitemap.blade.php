@@ -330,6 +330,10 @@
                                 @php
                                     $city_location_groups = [];
                                     foreach ($location_taxonomies as $location_taxonomy => $location_label) {
+                                        if ($location_taxonomy === 'metro' && $city->slug !== $default_city_slug) {
+                                            continue;
+                                        }
+
                                         $taxonomy_terms = $city_location_terms[$location_taxonomy][$city->term_id] ?? [];
 
                                         if (!empty($taxonomy_terms)) {

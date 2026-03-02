@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use WP_Query;
+use App\Helpers\UrlHelpers;
 
 class ProfileQuery
 {
@@ -43,8 +44,13 @@ class ProfileQuery
         $args['tax_query'] = self::normalizeRelationQuery($args['tax_query'] ?? []);
         $args['meta_query'] = self::normalizeRelationQuery($args['meta_query'] ?? []);
 
+        $isDefaultCity = UrlHelpers::isDefaultCity();
+
         foreach (self::FILTER_TAXONOMIES as $slug) {
             if (isset($exclude[$slug])) {
+                continue;
+            }
+            if ($slug === 'metro' && !$isDefaultCity) {
                 continue;
             }
             if (!taxonomy_exists($slug)) {
