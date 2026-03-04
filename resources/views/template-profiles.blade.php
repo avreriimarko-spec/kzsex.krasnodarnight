@@ -14,6 +14,7 @@
         $city_slug = isset($wp->query_vars['city']) ? $wp->query_vars['city'] : get_query_var('city');
         $current_city = get_term_by('slug', $city_slug, 'city');
         $special_page = isset($wp->query_vars['special_page']) ? $wp->query_vars['special_page'] : get_query_var('special_page');
+        $pagename = isset($wp->query_vars['pagename']) ? (string) $wp->query_vars['pagename'] : (string) get_query_var('pagename');
         
         // Если город не определен в URL, используем дефолтный
         if (!$current_city) {
@@ -28,35 +29,43 @@
         
         $page_type = '';
         $parent_page = null;
-        $source_id = get_the_ID(); // по умолчанию текущая страница
+        $source_id = (int) (get_queried_object_id() ?: get_the_ID()); // по умолчанию текущая страница
         
         // Определяем тип страницы и получаем родительскую страницу настроек
-        if ($special_page === 'vip' || is_page_template('template-vip.blade.php')) {
+        if ($special_page === 'vip' || $pagename === 'vip' || is_page_template('template-vip.blade.php')) {
             $page_type = 'vip';
             $parent_page = get_page_by_path('vip');
-        } elseif ($special_page === 'deshyovye' || is_page_template('template-cheap.blade.php')) {
+        } elseif ($special_page === 'deshyovye' || $pagename === 'deshyovye' || is_page_template('template-cheap.blade.php')) {
             $page_type = 'deshyovye';
             $parent_page = get_page_by_path('deshyovye');
-        } elseif ($special_page === 'outcall' || is_page_template('template-outcall.blade.php')) {
+        } elseif ($special_page === 'outcall' || $pagename === 'prostitutki-na-vyezd' || is_page_template('template-outcall.blade.php')) {
             $page_type = 'outcall';
             $parent_page = get_page_by_path('prostitutki-na-vyezd');
-        } elseif (($special_page === 'prostitutki') || (get_query_var('pagename') === 'prostitutki') || is_page_template('template-girls.blade.php')) {
+        } elseif (($special_page === 'prostitutki') || ($pagename === 'prostitutki') || is_page_template('template-girls.blade.php')) {
             $page_type = 'prostitutki';
             $parent_page = get_page_by_path('prostitutki');
-        } elseif ($special_page === 'incall' || is_page_template('template-incall.blade.php')) {
+        } elseif ($special_page === 'incall' || $pagename === 'prostitutki-priyom' || is_page_template('template-incall.blade.php')) {
             $page_type = 'incall';
             $parent_page = get_page_by_path('prostitutki-priyom');
-        } elseif ($special_page === 'novye' || is_page_template('template-new.blade.php')) {
+        } elseif ($special_page === 'novye' || $pagename === 'novye' || is_page_template('template-new.blade.php')) {
             $page_type = 'novye';
             $parent_page = get_page_by_path('novye');
-        } elseif ($special_page === 'provereno' || is_page_template('template-verified.blade.php')) {
+        } elseif ($special_page === 'provereno' || $pagename === 'provereno' || is_page_template('template-verified.blade.php')) {
             $page_type = 'provereno';
             $parent_page = get_page_by_path('provereno');
         }
         
-        // Используем ID родительской страницы если нашли
-        if ($parent_page) {
-            $source_id = $parent_page->ID;
+        // Используем ID родительской страницы только если в запросе не определилась текущая страница.
+        if ($parent_page && ($source_id <= 0 || get_post_type($source_id) !== 'page')) {
+            $source_id = (int) $parent_page->ID;
+        }
+
+        // Последний fallback: пытаемся найти страницу по pagename из query var.
+        if ($source_id <= 0 && $pagename !== '') {
+            $page_by_name = get_page_by_path($pagename);
+            if ($page_by_name) {
+                $source_id = (int) $page_by_name->ID;
+            }
         }
         
         // -----------------------------------------------------------
@@ -67,25 +76,111 @@
         $found_city_in_repeater = false;
         $repeater_rows = [];
 
-        if ($current_city && $source_id && function_exists('get_field')) {
-            // Берем repeater со страницы настроек
-            $repeater_rows = get_field('city_pages_seo', $source_id);
-            
-            if (is_array($repeater_rows)) {
-                foreach ($repeater_rows as $row) {
-                    // Проверяем, совпадает ли город в строке с текущим городом
-                    if (isset($row['city']) && is_object($row['city']) && $row['city']->term_id == $current_city->term_id) {
-                        $city_specific_data = [
-                            'seo_title'       => $row['seo_title'] ?? '',
-                            'seo_description' => $row['meta_description'] ?? '',
-                            'custom_h1'       => $row['h1'] ?? '',
-                            'description'     => $row['description'] ?? '', // Интро текст
-                            'main_text'       => $row['main_text'] ?? '',   // SEO текст внизу
-                        ];
-                        $found_city_in_repeater = true;
-                        break; 
+        if ($current_city && function_exists('get_field')) {
+            $resolve_city_term_id = static function ($raw_city) use (&$resolve_city_term_id): int {
+                if ($raw_city instanceof \WP_Term) {
+                    return (int) $raw_city->term_id;
+                }
+
+                if (is_object($raw_city) && isset($raw_city->term_id)) {
+                    return (int) $raw_city->term_id;
+                }
+
+                if (is_array($raw_city)) {
+                    if (!isset($raw_city['term_id']) && !isset($raw_city['id']) && !isset($raw_city['ID']) && !isset($raw_city['slug'])) {
+                        $first = reset($raw_city);
+                        if ($first !== false || (is_array($raw_city) && count($raw_city) > 0)) {
+                            return $resolve_city_term_id($first);
+                        }
+                    }
+
+                    if (isset($raw_city['term_id'])) {
+                        return (int) $raw_city['term_id'];
+                    }
+
+                    if (isset($raw_city['id'])) {
+                        return (int) $raw_city['id'];
+                    }
+
+                    if (isset($raw_city['ID'])) {
+                        return (int) $raw_city['ID'];
+                    }
+
+                    if (!empty($raw_city['slug'])) {
+                        $city_term = get_term_by('slug', (string) $raw_city['slug'], 'city');
+                        return $city_term instanceof \WP_Term ? (int) $city_term->term_id : 0;
                     }
                 }
+
+                if (is_numeric($raw_city)) {
+                    return (int) $raw_city;
+                }
+
+                if (is_string($raw_city) && $raw_city !== '') {
+                    $city_term = get_term_by('slug', $raw_city, 'city');
+                    return $city_term instanceof \WP_Term ? (int) $city_term->term_id : 0;
+                }
+
+                return 0;
+            };
+
+            $extract_city_row = static function (array $row): array {
+                return [
+                    'seo_title'       => (string) ($row['seo_title'] ?? $row['meta_title'] ?? ''),
+                    'seo_description' => (string) ($row['meta_description'] ?? $row['seo_description'] ?? ''),
+                    'custom_h1'       => (string) ($row['h1'] ?? $row['custom_h1'] ?? ''),
+                    'description'     => (string) ($row['description'] ?? $row['intro_text'] ?? ''),
+                    'main_text'       => (string) ($row['main_text'] ?? $row['seo_text'] ?? ''),
+                ];
+            };
+
+            $source_candidates = [];
+            $push_source_candidate = static function (array &$candidates, int $candidate): void {
+                if ($candidate > 0 && !in_array($candidate, $candidates, true)) {
+                    $candidates[] = $candidate;
+                }
+            };
+
+            $push_source_candidate($source_candidates, (int) $source_id);
+            $push_source_candidate($source_candidates, (int) (get_queried_object_id() ?: 0));
+            $push_source_candidate($source_candidates, (int) (get_the_ID() ?: 0));
+            $push_source_candidate($source_candidates, $parent_page ? (int) $parent_page->ID : 0);
+
+            if ($pagename !== '') {
+                $page_by_name = get_page_by_path($pagename);
+                $push_source_candidate($source_candidates, $page_by_name ? (int) $page_by_name->ID : 0);
+            }
+
+            $matched_source_id = 0;
+            foreach ($source_candidates as $candidate_id) {
+                $rows = get_field('city_pages_seo', $candidate_id);
+                if (!is_array($rows) || empty($rows)) {
+                    continue;
+                }
+
+                foreach ($rows as $row) {
+                    if (!is_array($row)) {
+                        continue;
+                    }
+
+                    $row_city_id = $resolve_city_term_id($row['city'] ?? null);
+                    if ($row_city_id > 0 && $row_city_id === (int) $current_city->term_id) {
+                        $candidate_data = $extract_city_row($row);
+                        $has_content = trim(implode('', $candidate_data)) !== '';
+
+                        if ($has_content) {
+                            $city_specific_data = $candidate_data;
+                            $found_city_in_repeater = true;
+                            $matched_source_id = (int) $candidate_id;
+                            $repeater_rows = $rows;
+                            break 2;
+                        }
+                    }
+                }
+            }
+
+            if ($matched_source_id > 0) {
+                $source_id = $matched_source_id;
             }
         }
 
@@ -263,7 +358,6 @@
     @endphp
     
     <div class="container mx-auto px-4 py-8">
-
         {{-- Header --}}
         <header class="prose mb-10 text-center max-w-4xl mx-auto">
             <h1 class="text-xl xl:text-3xl font-bold mb-8 mt-0 text-center px-1 md:px-0">
@@ -367,7 +461,7 @@
         {{-- SEO Text --}}
         @if (!is_paged() && $main_text)
             <div class="mt-16">
-                <article class="prose prose-lg max-w-none bg-black p-6 md:p-10 border border-[#cd1d46]">
+                <article class="prose prose-lg max-w-none rounded-xl bg-black p-6 md:p-10 border border-[#cd1d46]">
                     {!! $main_text !!}
                 </article>
             </div>

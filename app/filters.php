@@ -145,30 +145,28 @@ add_filter('rank_math/frontend/title', function ($title) {
 /**
  * 2. Логика META DESCRIPTION
  */
-add_action('wp_head', function () {
-    // ВАЖНО: Если это пагинация (2, 3 страница...), description НЕ выводим
-    if (is_paged()) {
-        return false;
-    }
+if (!function_exists('get_custom_meta_description')) {
+    function get_custom_meta_description($default_desc = ''): string
+    {
+        // На страницах пагинации description не выводим
+        if (is_paged()) {
+            return '';
+        }
 
-    $desc = '';
+        $desc = '';
 
-    // Если это страница Блога
-    if (is_home()) {
-        $blogPageId = get_option('page_for_posts');
-        $desc = get_field('seo_description', $blogPageId);
-    }
-    // Если это главная страница (статичная)
-    elseif (is_front_page()) {
-        $frontPageId = get_option('page_on_front');
-        if ($frontPageId) {
-            $desc = get_field('seo_description', $frontPageId);
-            
-            // Если главная страница - это template-profiles, проверяем специфичные данные для города
-            if (!$desc && get_query_var('city')) {
-                $current_city = get_term_by('slug', get_query_var('city'), 'city');
-                if ($current_city) {
-                    // Пробуем получить city_seo_description для страницы
+        // Если это страница Блога
+        if (is_home()) {
+            $blogPageId = get_option('page_for_posts');
+            $desc = get_field('seo_description', $blogPageId);
+        }
+        // Если это главная страница (статичная)
+        elseif (is_front_page()) {
+            $frontPageId = get_option('page_on_front');
+            if ($frontPageId) {
+                $desc = get_field('seo_description', $frontPageId);
+
+                if (!$desc && get_query_var('city')) {
                     $city_desc = get_field('city_seo_description', 'page_' . $frontPageId);
                     if ($city_desc) {
                         $desc = $city_desc;
@@ -176,53 +174,77 @@ add_action('wp_head', function () {
                 }
             }
         }
-    }
-    // Если это таксономия (включая категории, теги, кастомные таксономии)
-    elseif (is_tax() || is_category() || is_tag()) {
-        $queried_object = get_queried_object();
-        if ($queried_object && !is_wp_error($queried_object)) {
-            // Сначала пробуем получить SEO описание из ACF поля
-            $desc = get_field('seo_description', $queried_object);
-            
-            // Если это таксономия с городом, пробуем получить специфичные данные для города
-            if (!$desc && get_query_var('city')) {
-                $current_city = get_term_by('slug', get_query_var('city'), 'city');
-                if ($current_city) {
-                    // Пробуем получить city_seo_description для таксономии
-                    $city_desc = get_field('city_seo_description', $queried_object->taxonomy . '_' . $current_city->term_id);
-                    if ($city_desc) {
-                        $desc = $city_desc;
-                    }
+        // Если это таксономия (включая категории, теги, кастомные таксономии)
+        elseif (is_tax() || is_category() || is_tag()) {
+            $queried_object = get_queried_object();
+            if ($queried_object && !is_wp_error($queried_object)) {
+                $desc = get_field('seo_description', $queried_object);
+
+                // Для city-scoped страниц пробуем поле city_seo_description на термине
+                if (!$desc && get_query_var('city')) {
+                    $desc = get_field('city_seo_description', $queried_object);
+                }
+
+                // Fallback для service/metro/district: автогенерация по шаблону
+                if (
+                    !$desc
+                    && isset($queried_object->taxonomy)
+                    && in_array($queried_object->taxonomy, ['metro', 'service', 'district'], true)
+                    && class_exists(\App\Services\TaxonomySeoTextGenerator::class)
+                ) {
+                    $generated = \App\Services\TaxonomySeoTextGenerator::generateForTerm($queried_object, $GLOBALS['wp_query'] ?? null);
+                    $desc = $generated['meta_description'] ?? '';
                 }
             }
         }
-    }
-    // Обычная логика
-    elseif (is_singular()) {
-        // Специальная логика для анкет (profile)
-        if (get_post_type() === 'profile') {
-            $profile_id = get_the_ID();
-            
-            // 1. Сначала пробуем получить кастомное описание страницы модели
-            $desc = get_field('profile_description', $profile_id);
-            
-            // 2. Если нет описания страницы, пробуем SEO описание
-            if (!$desc) {
-                $desc = get_field('seo_description', $profile_id);
+        // Обычная логика
+        elseif (is_singular()) {
+            if (get_post_type() === 'profile') {
+                $profile_id = get_the_ID();
+                $desc = get_field('profile_description', $profile_id);
+
+                if (!$desc) {
+                    $desc = get_field('seo_description', $profile_id);
+                }
+
+                if (!$desc) {
+                    $desc = get_the_excerpt();
+                }
+            } else {
+                $desc = get_field('seo_description');
             }
-            
-            // 3. Если нет ни одного описания, берем контент анкеты (как в SchemaGenerator)
-            if (!$desc) {
-                $desc = get_the_excerpt();
-            }
-        } else {
-            // Для остальных типов записей используем стандартную логику
-            $desc = get_field('seo_description');
         }
+
+        $desc = trim(wp_strip_all_tags((string) $desc));
+
+        if ($desc === '') {
+            $desc = trim(wp_strip_all_tags((string) $default_desc));
+        }
+
+        if ($desc === '') {
+            $desc = trim(wp_strip_all_tags((string) get_bloginfo('description')));
+        }
+
+        return $desc;
+    }
+}
+
+add_action('wp_head', function () {
+    // Если SEO-плагин активен, плагин сам выведет meta description.
+    $hasSeoPlugin = defined('WPSEO_VERSION')
+        || defined('RANK_MATH_VERSION')
+        || class_exists('\WPSEO_Frontend')
+        || class_exists('\RankMath');
+
+    if ($hasSeoPlugin) {
+        return;
     }
 
-    return $desc ? $desc : $default_desc;
-}, 1);
+    $desc = get_custom_meta_description('');
+    if ($desc !== '') {
+        echo '<meta name="description" content="' . esc_attr($desc) . '">' . "\n";
+    }
+}, 2);
 
 // Теперь подключаем нашу функцию к SEO-плагинам через фильтры
 

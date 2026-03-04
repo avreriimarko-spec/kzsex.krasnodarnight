@@ -4,45 +4,127 @@
     @php
         // Получаем текущий город
         $current_city = get_queried_object();
-        $city_name = $current_city ? $current_city->name : 'Город';
-        
+        $city_name = ($current_city instanceof \WP_Term) ? $current_city->name : 'Город';
+
         // Получаем SEO данные города
-        $special_page = get_query_var('special_page');
-        
-        if ($special_page && $current_city) {
-            // Для спецстраниц (VIP и др.) ищем данные в repeater
+        $special_page = (string) get_query_var('special_page');
+        $page_key = $special_page !== '' ? $special_page : 'home';
+
+        $resolve_city_term_id = static function ($raw_city) use (&$resolve_city_term_id): int {
+            if ($raw_city instanceof \WP_Term) {
+                return (int) $raw_city->term_id;
+            }
+
+            if (is_object($raw_city) && isset($raw_city->term_id)) {
+                return (int) $raw_city->term_id;
+            }
+
+            if (is_array($raw_city)) {
+                if (!isset($raw_city['term_id']) && !isset($raw_city['id']) && !isset($raw_city['ID']) && !isset($raw_city['slug'])) {
+                    $first = reset($raw_city);
+                    if ($first !== false || count($raw_city) > 0) {
+                        return $resolve_city_term_id($first);
+                    }
+                }
+
+                if (isset($raw_city['term_id'])) {
+                    return (int) $raw_city['term_id'];
+                }
+
+                if (isset($raw_city['id'])) {
+                    return (int) $raw_city['id'];
+                }
+
+                if (isset($raw_city['ID'])) {
+                    return (int) $raw_city['ID'];
+                }
+
+                if (!empty($raw_city['slug'])) {
+                    $city_term = get_term_by('slug', (string) $raw_city['slug'], 'city');
+                    return $city_term instanceof \WP_Term ? (int) $city_term->term_id : 0;
+                }
+            }
+
+            if (is_numeric($raw_city)) {
+                return (int) $raw_city;
+            }
+
+            if (is_string($raw_city) && $raw_city !== '') {
+                $city_term = get_term_by('slug', $raw_city, 'city');
+                return $city_term instanceof \WP_Term ? (int) $city_term->term_id : 0;
+            }
+
+            return 0;
+        };
+
+        $extract_page_city_row = static function (array $row): array {
+            return [
+                'seo_title' => (string) ($row['seo_title'] ?? $row['meta_title'] ?? ''),
+                'seo_description' => (string) ($row['meta_description'] ?? $row['seo_description'] ?? ''),
+                'custom_h1' => (string) ($row['h1'] ?? $row['custom_h1'] ?? ''),
+                'description' => (string) ($row['description'] ?? $row['intro_text'] ?? ''),
+                'main_text' => (string) ($row['main_text'] ?? $row['seo_text'] ?? ''),
+            ];
+        };
+
+        $extract_city_term_row = static function (array $row): array {
+            return [
+                'seo_title' => (string) ($row['meta_title'] ?? $row['seo_title'] ?? ''),
+                'seo_description' => (string) ($row['meta_description'] ?? $row['seo_description'] ?? ''),
+                'custom_h1' => (string) ($row['h1'] ?? $row['custom_h1'] ?? ''),
+                'description' => (string) ($row['intro_text'] ?? $row['description'] ?? ''),
+                'main_text' => (string) ($row['seo_text'] ?? $row['main_text'] ?? ''),
+            ];
+        };
+
+        $city_page_data = [];
+        $term_page_data = [];
+
+        if ($current_city instanceof \WP_Term && function_exists('get_field')) {
+            // 1) Данные из repeater на термине города: city_{term_id}, page_key=home|vip|...
             $city_pages = get_field('city_pages_seo', 'city_' . $current_city->term_id);
-            $seo_data = [];
-            
             if (is_array($city_pages)) {
                 foreach ($city_pages as $page_data) {
-                    if (isset($page_data['page_key']) && $page_data['page_key'] === $special_page) {
-                        $seo_data = [
-                            'seo_title' => $page_data['meta_title'] ?? '',
-                            'seo_description' => $page_data['meta_description'] ?? '',
-                            'custom_h1' => $page_data['h1'] ?? '',
-                            'description' => $page_data['intro_text'] ?? '',
-                            'main_text' => $page_data['seo_text'] ?? '',
-                        ];
+                    if (!is_array($page_data)) {
+                        continue;
+                    }
+
+                    if (($page_data['page_key'] ?? '') === $page_key) {
+                        $term_page_data = $extract_city_term_row($page_data);
                         break;
                     }
                 }
             }
-            
-            // Используем данные для спецстраницы или базовые данные города
-            $seo_title = $seo_data['seo_title'] ?? '' ?: get_field('seo_title', $current_city);
-            $seo_description = $seo_data['seo_description'] ?? '' ?: get_field('seo_description', $current_city);
-            $custom_h1 = $seo_data['custom_h1'] ?? '' ?: get_field('custom_h1', $current_city);
-            $description = $seo_data['description'] ?? '' ?: get_field('description', $current_city);
-            $main_text = $seo_data['main_text'] ?? '' ?: get_field('main_text', $current_city);
-        } else {
-            // Базовые данные города (для главной страницы города)
-            $seo_title = get_field('seo_title', $current_city);
-            $seo_description = get_field('seo_description', $current_city);
-            $custom_h1 = get_field('custom_h1', $current_city);
-            $description = get_field('description', $current_city);
-            $main_text = get_field('main_text', $current_city);
+
+            // 2) Данные из page-level city repeater на главной странице (редактирование через post.php)
+            $front_page_id = (int) get_option('page_on_front');
+            if ($front_page_id > 0) {
+                $front_rows = get_field('city_pages_seo', $front_page_id);
+                if (is_array($front_rows)) {
+                    foreach ($front_rows as $row) {
+                        if (!is_array($row)) {
+                            continue;
+                        }
+
+                        $row_city_id = $resolve_city_term_id($row['city'] ?? null);
+                        if ($row_city_id > 0 && $row_city_id === (int) $current_city->term_id) {
+                            $candidate_data = $extract_page_city_row($row);
+                            if (trim(implode('', $candidate_data)) !== '') {
+                                $city_page_data = $candidate_data;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
+
+        // Приоритет: page-level city настройки (из post.php) -> term repeater по page_key -> базовые поля термина
+        $seo_title = ($city_page_data['seo_title'] ?? '') ?: ($term_page_data['seo_title'] ?? '') ?: (string) get_field('seo_title', $current_city);
+        $seo_description = ($city_page_data['seo_description'] ?? '') ?: ($term_page_data['seo_description'] ?? '') ?: (string) get_field('seo_description', $current_city);
+        $custom_h1 = ($city_page_data['custom_h1'] ?? '') ?: ($term_page_data['custom_h1'] ?? '') ?: (string) get_field('custom_h1', $current_city);
+        $description = ($city_page_data['description'] ?? '') ?: ($term_page_data['description'] ?? '') ?: (string) get_field('description', $current_city);
+        $main_text = ($city_page_data['main_text'] ?? '') ?: ($term_page_data['main_text'] ?? '') ?: (string) get_field('main_text', $current_city);
         
         // Дополнительная информация
         $population = get_field('population', $current_city);
@@ -152,10 +234,9 @@
         $profiles_query = new WP_Query($query_args);
     @endphp
     <div class="container mx-auto px-4 py-8">
-
         {{-- Header --}}
         <header class="prose mb-10 text-center max-w-4xl mx-auto">
-            <h1 class="text-3xl md:text-5xl font-bold capitalize mb-4 tracking-tight">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
                 {{ $page_title }}
                 @if (is_paged())
                     <span class="text-[#cd1d46]">| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
@@ -273,7 +354,7 @@
 
                     {{-- Кастомный контент для города (если есть) --}}
             @if (!is_paged() && $main_text)
-                <div class="prose prose-lg mt-4 max-w-none bg-black p-6 md:p-10 border border-[#cd1d46]">
+                <div class="prose prose-lg mt-4 max-w-none rounded-xl bg-black p-6 md:p-10 border border-[#cd1d46]">
                     {!! $main_text !!}
                 </div>
             @endif

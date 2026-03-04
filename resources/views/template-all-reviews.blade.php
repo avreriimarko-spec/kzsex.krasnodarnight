@@ -9,7 +9,7 @@
         
         {{-- Заголовок --}}
         <header class="text-center mb-10">
-            <h1 class="text-3xl md:text-5xl font-bold mb-4 tracking-tight text-[#cd1d46]">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
                 Все отзывы моделей
             </h1>
             <p class="text-gray-400 text-lg">

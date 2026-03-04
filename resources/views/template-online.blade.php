@@ -24,12 +24,53 @@
         $main_seo_text = '';
         
         if ($current_city) {
+            $resolve_city_term_id = static function ($raw_city): int {
+                if ($raw_city instanceof \WP_Term) {
+                    return (int) $raw_city->term_id;
+                }
+
+                if (is_object($raw_city) && isset($raw_city->term_id)) {
+                    return (int) $raw_city->term_id;
+                }
+
+                if (is_array($raw_city)) {
+                    if (isset($raw_city['term_id'])) {
+                        return (int) $raw_city['term_id'];
+                    }
+
+                    if (isset($raw_city['id'])) {
+                        return (int) $raw_city['id'];
+                    }
+
+                    if (isset($raw_city['ID'])) {
+                        return (int) $raw_city['ID'];
+                    }
+
+                    if (!empty($raw_city['slug'])) {
+                        $city_term = get_term_by('slug', (string) $raw_city['slug'], 'city');
+                        return $city_term instanceof \WP_Term ? (int) $city_term->term_id : 0;
+                    }
+                }
+
+                if (is_numeric($raw_city)) {
+                    return (int) $raw_city;
+                }
+
+                if (is_string($raw_city) && $raw_city !== '') {
+                    $city_term = get_term_by('slug', $raw_city, 'city');
+                    return $city_term instanceof \WP_Term ? (int) $city_term->term_id : 0;
+                }
+
+                return 0;
+            };
+
             // Ищем данные для онлайн страницы в репитере city_pages_seo на странице онлайн
             $city_pages_seo = get_field('city_pages_seo');
             
             if ($city_pages_seo && is_array($city_pages_seo)) {
                 foreach ($city_pages_seo as $page_data) {
-                    if (isset($page_data['city']) && is_object($page_data['city']) && $page_data['city']->term_id == $current_city->term_id) {
+                    $row_city_id = $resolve_city_term_id($page_data['city'] ?? null);
+                    if ($row_city_id > 0 && $row_city_id === (int) $current_city->term_id) {
                         $seo_title = $page_data['seo_title'] ?? '';
                         $meta_description = $page_data['meta_description'] ?? '';
                         $page_h1 = $page_data['h1'] ?? '';

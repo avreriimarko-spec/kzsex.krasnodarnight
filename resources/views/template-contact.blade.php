@@ -9,7 +9,7 @@
     <div class="bg-black text-black pt-16 pb-24">
         <div class="container mx-auto px-4 text-center max-w-4xl">
             {{-- Используем стили заголовка как в услугах --}}
-            <h1 class="text-4xl md:text-6xl font-bold capitalize mb-6 tracking-tight text-[#cd1d46]">
+            <h1 class="text-4xl md:text-6xl font-bold capitalize mb-6 tracking-tight">
                 {!! get_field('custom_h1') ?: get_the_title() !!}
             </h1>
 

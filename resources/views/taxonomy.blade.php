@@ -3,6 +3,8 @@
 @section('content')
     @php
         $filter_data = get_transient('catalog_filter_data_cache');
+        $generated_seo_data = [];
+        $generated_main_seo_text = '';
 
         if ($filter_data === false) {
             // Получаем данные для фильтров как в ProfilesCatalog
@@ -56,39 +58,27 @@
                 if ($queried_object && !is_wp_error($queried_object)) {
                     $custom_h1 = get_field('custom_h1', $queried_object);
                     $custom_description = get_field('description', $queried_object);
+                    $seo_title = get_field('seo_title', $queried_object) ?: '';
+                    $meta_description = get_field('seo_description', $queried_object) ?: '';
                     
-                    // Генерируем SEO данные для услуг
-                    if ($queried_object->taxonomy === 'service') {
-                        $service_name = $queried_object->name;
-                        $profile_count = $queried_object->count;
-                        
-                        // Определяем текущий город
-                        $city_name = 'Москва'; // по умолчанию
-                        $city_slug = get_query_var('city');
-                        if ($city_slug) {
-                            $city_term = get_term_by('slug', $city_slug, 'city');
-                            if ($city_term && !is_wp_error($city_term)) {
-                                $city_name = $city_term->name;
-                            }
-                        }
-                        
-                        // Если есть кастомные поля, используем их
-                        if ($custom_h1 || $custom_description) {
-                            $seo_title = get_field('seo_title', $queried_object) ?: '';
-                            $meta_description = get_field('seo_description', $queried_object) ?: '';
-                        }
-                        
-                        // Если нет кастомных SEO полей, генерируем по шаблону
+                    if (in_array($queried_object->taxonomy, ['metro', 'service', 'district'], true)) {
+                        $generated_seo_data = \App\Services\TaxonomySeoTextGenerator::generateForTerm($queried_object, $GLOBALS['wp_query'] ?? null);
+                        $generated_main_seo_text = $generated_seo_data['main_seo_text'] ?? '';
+
                         if (empty($seo_title)) {
-                            $seo_title = "Проститутки для услуги {$service_name} {$city_name} - {$profile_count} свободных девушек | Эскорт Интим 24/7";
+                            $seo_title = $generated_seo_data['seo_title'] ?? '';
                         }
-                        
+
                         if (empty($meta_description)) {
-                            $meta_description = "Заказать проститутку с услугой {$service_name} в городе {$city_name}. Большой каталог проверенных проституток на любой вкус с фильтрами по районам и внешности.";
+                            $meta_description = $generated_seo_data['meta_description'] ?? '';
                         }
-                        
+
                         if (empty($custom_h1)) {
-                            $custom_h1 = "Проститутки с услугой {$service_name} в {$city_name}";
+                            $custom_h1 = $generated_seo_data['h1'] ?? '';
+                        }
+
+                        if (empty($custom_description)) {
+                            $custom_description = $generated_seo_data['description'] ?? '';
                         }
                     }
                 }
@@ -104,13 +94,21 @@
                         return $seo_title;
                     }, 999);
                 }
-                
-                // Meta description будет добавлен основным фильтром в app/filters.php
+
+                if (!empty($meta_description)) {
+                    add_filter('wpseo_metadesc', function() use ($meta_description) {
+                        return $meta_description;
+                    }, 999);
+
+                    add_filter('rank_math/frontend/description', function() use ($meta_description) {
+                        return $meta_description;
+                    }, 999);
+                }
             @endphp
             
-            <h1 class="text-3xl md:text-5xl font-bold capitalize mb-4 tracking-tight text-[#cd1d46]">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
                 {!! $custom_h1 ?: ($queried_object ? $queried_object->name : get_the_archive_title()) !!} @if (is_paged())
-                    <span class="text-[#cd1d46]">| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
+                    <span>| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
                 @endif
             </h1>
             @if (!is_paged() && $custom_description)
@@ -194,9 +192,15 @@
         </div>
 
         {{-- SEO Text --}}
-        @if (!is_paged() && $seoText = get_field('main_seo_text'))
+        @php
+            $seoText = get_field('main_seo_text');
+            if (!$seoText && !empty($generated_main_seo_text)) {
+                $seoText = $generated_main_seo_text;
+            }
+        @endphp
+        @if (!is_paged() && $seoText)
             <div class="mt-16">
-                <article class="prose prose-lg prose-invert max-w-none bg-black p-8 md:p-12  border border-[#cd1d46]">
+                <article class="prose prose-lg rounded-xl prose-invert max-w-none bg-black p-8 md:p-12  border border-[#cd1d46]">
                     {!! $seoText !!}
                 </article>
             </div>

@@ -56,43 +56,7 @@
         $seo_title = $final_seo_data['seo_title'] ?: '';
         $meta_description = $final_seo_data['seo_description'] ?: '';
         $main_text = $final_seo_data['main_text'] ?: '';
-        
-        // Генерируем SEO данные для услуг с городом
-        if ($taxonomy === 'service' && empty($seo_title)) {
-            $service_name = $current_term->name;
-            $city_name = $current_city->name;
-            $profile_count = $profiles_query->found_posts;
-            
-            $seo_title = "Проститутки для услуги {$service_name} {$city_name} - {$profile_count} свободных девушек | Эскорт Интим 24/7";
-            $meta_description = "Заказать проститутку с услугой {$service_name} в городе {$city_name}. Большой каталог проверенных проституток на любой вкус с фильтрами по районам и внешности.";
-            
-            if (empty($page_title)) {
-                $page_title = "Проститутки с услугой {$service_name} в {$city_name}";
-            }
-        }
-        
-        // Устанавливаем SEO мета-теги через фильтры
-        if (!empty($seo_title)) {
-            // Добавляем пагинацию к SEO title
-            if (is_paged()) {
-                $page_num = get_query_var('paged') ?: get_query_var('page');
-                if ($page_num > 1) {
-                    $seo_title .= ' | Страница ' . $page_num;
-                }
-            }
-            
-            add_filter('pre_get_document_title', function() use ($seo_title) {
-                return $seo_title;
-            }, 999);
-            
-            // Fallback для старых версий WordPress
-            add_filter('wp_title', function() use ($seo_title) {
-                return $seo_title;
-            }, 999);
-        }
-        
-        // Meta description будет добавлен основным фильтром в app/filters.php
-        
+
         // Получаем профили для этой услуги в этом городе
         $query_args = [
             'post_type' => 'profile',
@@ -115,6 +79,60 @@
 
         $query_args = \App\Services\ProfileQuery::applyRequestFiltersToArgs($query_args, [$taxonomy]);
         $profiles_query = new WP_Query($query_args);
+
+        if (in_array($taxonomy, ['metro', 'service', 'district'], true)) {
+            $generated_seo_data = \App\Services\TaxonomySeoTextGenerator::generateForTerm($current_term, $profiles_query);
+
+            if (empty($seo_title)) {
+                $seo_title = $generated_seo_data['seo_title'] ?? '';
+            }
+
+            if (empty($meta_description)) {
+                $meta_description = $generated_seo_data['meta_description'] ?? '';
+            }
+
+            if (empty($final_seo_data['custom_h1'])) {
+                $page_title = $generated_seo_data['h1'] ?? '';
+            }
+
+            if (empty($page_description)) {
+                $page_description = $generated_seo_data['description'] ?? '';
+            }
+
+            if (empty($main_text)) {
+                $main_text = $generated_seo_data['main_seo_text'] ?? '';
+            }
+        }
+
+        // Устанавливаем SEO мета-теги через фильтры
+        if (!empty($seo_title)) {
+            // Добавляем пагинацию к SEO title
+            if (is_paged()) {
+                $page_num = get_query_var('paged') ?: get_query_var('page');
+                if ($page_num > 1) {
+                    $seo_title .= ' | Страница ' . $page_num;
+                }
+            }
+
+            add_filter('pre_get_document_title', function() use ($seo_title) {
+                return $seo_title;
+            }, 999);
+
+            // Fallback для старых версий WordPress
+            add_filter('wp_title', function() use ($seo_title) {
+                return $seo_title;
+            }, 999);
+        }
+
+        if (!empty($meta_description)) {
+            add_filter('wpseo_metadesc', function() use ($meta_description) {
+                return $meta_description;
+            }, 999);
+
+            add_filter('rank_math/frontend/description', function() use ($meta_description) {
+                return $meta_description;
+            }, 999);
+        }
     @endphp
     
     <div class="container mx-auto px-4 py-8">
@@ -128,9 +146,9 @@
                 @endif
             </h1>
             @if (!is_paged() && $page_description)
-                <p class="leading-relaxed max-w-2xl mx-auto">
-                    {{ $page_description }}
-                </p>
+                <div class="leading-relaxed max-w-2xl mx-auto">
+                    {!! $page_description !!}
+                </div>
             @endif
         </header>
 

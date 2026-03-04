@@ -101,7 +101,7 @@
                 // Meta description будет добавлен основным фильтром в app/filters.php
             @endphp
             
-            <h1 class="text-3xl md:text-5xl font-bold capitalize mb-4 tracking-tight text-[#cd1d46]">
+            <h1 class="text-3xl md:text-5xl font-bold capitalize mb-4 tracking-tight">
                 {!! $custom_h1 ?: ($queried_object ? $queried_object->name : get_the_archive_title()) !!} @if (is_paged())
                     <span class="text-[#cd1d46]">| Страница {{ get_query_var('paged') ?: get_query_var('page') }}</span>
                 @endif

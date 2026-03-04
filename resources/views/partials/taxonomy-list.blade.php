@@ -40,7 +40,7 @@
 <div class="container mx-auto px-4 py-8">
     {{-- Header --}}
     <header class="prose mb-10 text-center mx-auto">
-        <h1 class="text-3xl md:text-5xl font-bold mb-4 capitalize tracking-tight text-[#cd1d46]">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4 capitalize tracking-tight">
             {!! $pageTitle !!}
         </h1>
         @if ($intro = get_field('intro_text'))

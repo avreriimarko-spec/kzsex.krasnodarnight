@@ -13,7 +13,7 @@
     $is_home_page = ($current_request_path === $logo_path_clean);
     $site_description = trim((string) get_bloginfo('description'));
     $site_title = $siteName ?? get_bloginfo('name');
-    $footer_logo = get_theme_file_uri('/resources/images/logo.png') . '?v=20260227';
+    $footer_logo = get_theme_file_uri('/resources/images/logo_transparent.png') . '?v=20260303';
 
     // 4. Фильтр для меню футера
     add_filter('nav_menu_link_attributes', function($atts, $item, $args, $depth) use ($current_request_path, $current_city_slug, $default_city_slug) {
@@ -89,13 +89,13 @@
     <div class="container mx-auto px-4 md:px-8">
 
         {{-- 1. ВЕРХНЯЯ ЧАСТЬ: Логотип и Навигация --}}
-        <div class="pt-8 pb-12 md:pb-24 border-b border-gray-800 flex flex-col md:flex-row md:items-start gap-8 md:gap-65">
+        <div class="pt-8 pb-12 md:pb-24 border-b border-gray-800 flex flex-col md:flex-row md:items-start gap-8 md:gap-30">
             
             {{-- Логотип --}}
             @if($is_home_page)
                 {{-- Если главная: НЕ ссылка --}}
                 <div class="flex flex-col items-start cursor-default">
-                    <img src="{{ $footer_logo }}" alt="{{ $site_title }}" class="h-10 sm:h-14 w-auto object-contain" />
+                    <img src="{{ $footer_logo }}" alt="{{ $site_title }}" class="h-10 sm:h-20 w-auto object-contain" />
                     @if ($site_description !== '')
                         <div class="flex items-center w-full mt-1 gap-2">
                             <span class="h-px bg-white/40 flex-1"></span>
@@ -109,7 +109,7 @@
             @else
                 {{-- Если другая страница: Ссылка --}}
                 <a href="{{ $logo_url }}" class="flex flex-col items-start group">
-                    <img src="{{ $footer_logo }}" alt="{{ $site_title }}" class="h-10 sm:h-11 w-auto object-contain group-hover:opacity-85 transition-opacity" />
+                    <img src="{{ $footer_logo }}" alt="{{ $site_title }}" class="h-10 sm:h-20 w-auto object-contain group-hover:opacity-85 transition-opacity" />
                     @if ($site_description !== '')
                         <div class="flex items-center w-full mt-1 gap-2">
                             <span class="h-px bg-white/40 flex-1"></span>
